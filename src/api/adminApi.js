@@ -29,3 +29,10 @@ export async function deleteResource(path) {
   const { data } = await client.delete(path);
   return data.data;
 }
+
+export async function uploadImage(file) {
+  const formData = new FormData();
+  formData.append('file', file);
+  const { data } = await client.post('/admin/uploads/image', formData);
+  return data.data.url;
+}

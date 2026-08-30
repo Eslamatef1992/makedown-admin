@@ -5,6 +5,7 @@ import DataTable from '../../components/ui/DataTable';
 import Modal from '../../components/ui/Modal';
 import Field from '../../components/ui/Field';
 import BilingualField from '../../components/ui/BilingualField';
+import ImageField from '../../components/ui/ImageField';
 import { listResource, getResource, createResource, updateResource, deleteResource } from '../../api/adminApi';
 import { findMissingField } from '../../utils/validateFields';
 
@@ -30,7 +31,7 @@ export default function ProductsPage() {
   const productFields = [
     { name: 'slug', label: t('common.slug'), required: true },
     { name: 'basePrice', label: t('products.basePrice'), type: 'number', required: true },
-    { name: 'thumbnailUrl', label: t('products.thumbnailUrl') },
+    { name: 'thumbnailUrl', label: t('products.thumbnailUrl'), type: 'image' },
     { name: 'isActive', label: t('common.active'), type: 'checkbox' },
   ];
 
@@ -156,9 +157,14 @@ export default function ProductsPage() {
         {bilingualFields.map((f) => (
           <BilingualField key={f.name} field={f} form={form} onChange={(name, v) => setForm((s) => ({ ...s, [name]: v }))} />
         ))}
-        {productFields.map((f) => (
-          <Field key={f.name} field={f} value={form[f.name]} onChange={(name, v) => setForm((s) => ({ ...s, [name]: v }))} />
-        ))}
+        {productFields.map((f) => {
+          const change = (name, v) => setForm((s) => ({ ...s, [name]: v }));
+          return f.type === 'image' ? (
+            <ImageField key={f.name} field={f} value={form[f.name]} onChange={change} />
+          ) : (
+            <Field key={f.name} field={f} value={form[f.name]} onChange={change} />
+          );
+        })}
       </Modal>
 
       <Modal open={detailOpen} title={detail ? t('products.variantsFor', { name: detail.name_en }) : ''} onClose={() => setDetailOpen(false)}>

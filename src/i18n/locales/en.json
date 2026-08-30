@@ -42,7 +42,13 @@
     "message": "Message",
     "english": "English",
     "arabic": "Arabic",
-    "fillRequired": "Please fill in all required fields, including both English and Arabic where applicable."
+    "fillRequired": "Please fill in all required fields, including both English and Arabic where applicable.",
+    "uploading": "Uploading…",
+    "uploadFailed": "Upload failed",
+    "remove": "Remove",
+    "logo": "Logo",
+    "icon": "Icon",
+    "image": "Image"
   },
   "nav": {
     "dashboard": "Dashboard",

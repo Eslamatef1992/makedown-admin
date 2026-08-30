@@ -16,10 +16,11 @@ export default function ProductCategoriesPage() {
       fields={[
         { name: 'name', label: t('common.name'), bilingual: true, required: true },
         { name: 'slug', label: t('common.slug'), required: true },
+        { name: 'imageUrl', label: t('common.image'), type: 'image' },
         { name: 'sortOrder', label: t('common.sortOrder'), type: 'number' },
         { name: 'isActive', label: t('common.active'), type: 'checkbox' },
       ]}
-      toForm={(row) => ({ nameEn: row.name_en, nameAr: row.name_ar, slug: row.slug, sortOrder: row.sort_order, isActive: Boolean(row.is_active) })}
+      toForm={(row) => ({ nameEn: row.name_en, nameAr: row.name_ar, slug: row.slug, imageUrl: row.image_url, sortOrder: row.sort_order, isActive: Boolean(row.is_active) })}
     />
   );
 }

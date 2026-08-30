@@ -5,6 +5,7 @@ import DataTable from '../../components/ui/DataTable';
 import Modal from '../../components/ui/Modal';
 import Field from '../../components/ui/Field';
 import BilingualField from '../../components/ui/BilingualField';
+import ImageField from '../../components/ui/ImageField';
 import { listResource, getResource, createResource, updateResource, deleteResource } from '../../api/adminApi';
 import { findMissingField } from '../../utils/validateFields';
 
@@ -48,7 +49,7 @@ export default function QuizzesPage() {
         { value: 'hard', label: t('quizzes.hard') },
       ],
     },
-    { name: 'coverImageUrl', label: t('quizzes.coverImageUrl') },
+    { name: 'coverImageUrl', label: t('quizzes.coverImageUrl'), type: 'image' },
     { name: 'isActive', label: t('common.active'), type: 'checkbox' },
   ];
 
@@ -168,9 +169,14 @@ export default function QuizzesPage() {
         {bilingualQuizFields.map((f) => (
           <BilingualField key={f.name} field={f} form={form} onChange={(name, v) => setForm((s) => ({ ...s, [name]: v }))} />
         ))}
-        {quizFields.map((f) => (
-          <Field key={f.name} field={f} value={form[f.name]} onChange={(name, v) => setForm((s) => ({ ...s, [name]: v }))} />
-        ))}
+        {quizFields.map((f) => {
+          const change = (name, v) => setForm((s) => ({ ...s, [name]: v }));
+          return f.type === 'image' ? (
+            <ImageField key={f.name} field={f} value={form[f.name]} onChange={change} />
+          ) : (
+            <Field key={f.name} field={f} value={form[f.name]} onChange={change} />
+          );
+        })}
       </Modal>
 
       <Modal open={detailOpen} title={detail ? t('quizzes.questionsFor', { title: detail.title_en }) : ''} onClose={() => setDetailOpen(false)}>

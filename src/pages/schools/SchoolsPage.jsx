@@ -18,6 +18,7 @@ export default function SchoolsPage() {
         { name: 'code', label: t('common.code'), required: true },
         { name: 'contactEmail', label: t('common.contactEmail'), type: 'email' },
         { name: 'contactPhone', label: t('common.contactPhone') },
+        { name: 'logoUrl', label: t('common.logo'), type: 'image' },
         { name: 'address', label: t('common.address'), type: 'textarea' },
         { name: 'isActive', label: t('common.active'), type: 'checkbox' },
       ]}
@@ -27,6 +28,7 @@ export default function SchoolsPage() {
         code: row.code,
         contactEmail: row.contact_email,
         contactPhone: row.contact_phone,
+        logoUrl: row.logo_url,
         address: row.address,
         isActive: Boolean(row.is_active),
       })}
