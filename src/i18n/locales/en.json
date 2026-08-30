@@ -69,6 +69,7 @@
     "chatting": "Chatting",
     "ecommerce": "Ecommerce",
     "products": "Products",
+    "variantTypes": "Variant Types",
     "packages": "Packages",
     "getInTouch": "Get in touch",
     "cms": "CMS",
@@ -159,7 +160,22 @@
     "noVariants": "No variants yet",
     "sku": "SKU",
     "stock": "Stock",
-    "addVariant": "+ Add variant"
+    "addVariant": "+ Add variant",
+    "generateVariants": "Generate variants",
+    "generateVariantsHint": "Pick which variant types apply to this product, choose the values, then generate every combination automatically.",
+    "noVariantTypes": "No variant types yet — add them from Variant Types in the Ecommerce menu.",
+    "generatedResult": "{{created}} created, {{skipped}} already existed",
+    "compareAtPrice": "Compare-at price (optional)"
+  },
+  "variantTypes": {
+    "title": "Ecommerce — Variant Types",
+    "hint": "Reusable variant types (e.g. Color, Width, Height). Add values to each, then pick them when generating a product's variants.",
+    "values": "Values",
+    "valuesFor": "Values — {{name}}",
+    "noValues": "No values yet",
+    "valueEn": "Value (English)",
+    "valueAr": "Value (Arabic)",
+    "addValue": "+ Add value"
   },
   "productCategories": {
     "title": "Ecommerce — Categories"

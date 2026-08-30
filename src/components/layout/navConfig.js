@@ -28,6 +28,7 @@ export const NAV_SECTIONS = [
     children: [
       { labelKey: 'nav.products', to: '/products' },
       { labelKey: 'nav.categories', to: '/product-categories' },
+      { labelKey: 'nav.variantTypes', to: '/variant-types' },
     ],
   },
   { labelKey: 'nav.packages', to: '/packages' },

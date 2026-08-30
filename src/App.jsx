@@ -15,6 +15,7 @@ import OrdersPage from './pages/orders/OrdersPage';
 import ChatPage from './pages/chat/ChatPage';
 import ProductsPage from './pages/products/ProductsPage';
 import ProductCategoriesPage from './pages/products/ProductCategoriesPage';
+import VariantTypesPage from './pages/variant-types/VariantTypesPage';
 import PackagesPage from './pages/packages/PackagesPage';
 import ContactMessagesPage from './pages/contact/ContactMessagesPage';
 import CmsPageEditor from './pages/cms/CmsPageEditor';
@@ -54,6 +55,7 @@ export default function App() {
 
           <Route path="/products" element={<Protected><ProductsPage /></Protected>} />
           <Route path="/product-categories" element={<Protected><ProductCategoriesPage /></Protected>} />
+          <Route path="/variant-types" element={<Protected><VariantTypesPage /></Protected>} />
 
           <Route path="/packages" element={<Protected><PackagesPage /></Protected>} />
           <Route path="/contact-messages" element={<Protected><ContactMessagesPage /></Protected>} />

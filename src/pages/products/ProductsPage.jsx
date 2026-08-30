@@ -24,6 +24,18 @@ export default function ProductsPage() {
   const [detail, setDetail] = useState(null);
   const [variantForm, setVariantForm] = useState({ sku: '', price: '', stockQuantity: 0 });
 
+  const [variantTypes, setVariantTypes] = useState([]);
+  const [selectedTypeValues, setSelectedTypeValues] = useState({});
+  const [generateForm, setGenerateForm] = useState({ price: '', compareAtPrice: '', stockQuantity: 0 });
+  const [generating, setGenerating] = useState(false);
+  const [generateMessage, setGenerateMessage] = useState('');
+
+  useEffect(() => {
+    getResource('/admin/variant-types/with-values')
+      .then((rows) => setVariantTypes((rows || []).filter((r) => r.is_active)))
+      .catch(() => setVariantTypes([]));
+  }, []);
+
   const bilingualFields = [
     { name: 'name', label: t('common.name'), bilingual: true, required: true },
     { name: 'description', label: t('common.description'), bilingual: true, type: 'textarea', required: false },
@@ -89,7 +101,53 @@ export default function ProductsPage() {
 
   const openDetail = async (row) => {
     setDetail(await getResource(`/admin/products/${row.id}`));
+    setSelectedTypeValues({});
+    setGenerateForm({ price: '', compareAtPrice: '', stockQuantity: 0 });
+    setGenerateMessage('');
     setDetailOpen(true);
+  };
+
+  const toggleTypeValue = (typeId, valueId) => {
+    setSelectedTypeValues((prev) => {
+      const current = prev[typeId] || [];
+      const next = current.includes(valueId) ? current.filter((v) => v !== valueId) : [...current, valueId];
+      return { ...prev, [typeId]: next };
+    });
+  };
+
+  const generateVariants = async () => {
+    const selections = Object.entries(selectedTypeValues)
+      .filter(([, valueIds]) => valueIds.length)
+      .map(([typeId, valueIds]) => ({ typeId: Number(typeId), valueIds }));
+    if (!selections.length || !generateForm.price) return;
+    setGenerating(true);
+    setGenerateMessage('');
+    try {
+      const result = await createResource(`/admin/products/${detail.id}/variants/generate`, {
+        selections,
+        price: Number(generateForm.price),
+        compareAtPrice: generateForm.compareAtPrice ? Number(generateForm.compareAtPrice) : undefined,
+        stockQuantity: Number(generateForm.stockQuantity) || 0,
+      });
+      setGenerateMessage(t('products.generatedResult', { created: result.createdCount, skipped: result.skippedCount }));
+      setDetail(await getResource(`/admin/products/${detail.id}`));
+    } finally {
+      setGenerating(false);
+    }
+  };
+
+  const formatVariantAttrs = (v) => {
+    let attrs = v.attributes_json;
+    if (typeof attrs === 'string') {
+      try {
+        attrs = JSON.parse(attrs);
+      } catch {
+        attrs = {};
+      }
+    }
+    attrs = attrs || {};
+    const entries = Object.entries(attrs);
+    return entries.length ? entries.map(([k, val]) => `${k}: ${val}`).join(', ') : null;
   };
 
   const addVariant = async () => {
@@ -173,7 +231,10 @@ export default function ProductsPage() {
             <div className="rounded-xl border border-linen-200">
               {(detail.variants || []).map((v) => (
                 <div key={v.id} className="flex items-center justify-between border-b border-linen-100 px-4 py-2 text-sm last:border-0">
-                  <span>{v.sku} — {v.price} KWD — {t('products.stock')} {v.stock_quantity}</span>
+                  <span>
+                    {v.sku} — {v.price} KWD — {t('products.stock')} {v.stock_quantity}
+                    {formatVariantAttrs(v) && <span className="ms-2 text-espresso-400">({formatVariantAttrs(v)})</span>}
+                  </span>
                   <button onClick={() => deleteVariant(v.id)} className="font-medium text-carnation-600 hover:underline">{t('common.delete')}</button>
                 </div>
               ))}
@@ -205,6 +266,77 @@ export default function ProductsPage() {
             <button onClick={addVariant} className="w-full rounded-xl bg-carissma-600 py-2 text-sm font-semibold text-white hover:bg-carissma-700">
               {t('products.addVariant')}
             </button>
+
+            <div className="rounded-xl border border-linen-200 p-4">
+              <p className="text-sm font-semibold text-espresso-900">{t('products.generateVariants')}</p>
+              <p className="mt-1 text-xs text-espresso-500">{t('products.generateVariantsHint')}</p>
+
+              {variantTypes.length === 0 && (
+                <p className="mt-3 text-sm text-espresso-400">{t('products.noVariantTypes')}</p>
+              )}
+
+              {variantTypes.map((vt) => (
+                <div key={vt.id} className="mt-3">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-espresso-500">{vt.name_en}</p>
+                  <div className="mt-1.5 flex flex-wrap gap-2">
+                    {(vt.values || []).map((val) => {
+                      const active = (selectedTypeValues[vt.id] || []).includes(val.id);
+                      return (
+                        <button
+                          key={val.id}
+                          type="button"
+                          onClick={() => toggleTypeValue(vt.id, val.id)}
+                          className={`rounded-full border px-3 py-1 text-xs font-medium transition ${
+                            active
+                              ? 'border-carissma-600 bg-carissma-600 text-white'
+                              : 'border-linen-300 text-espresso-700 hover:border-carissma-400'
+                          }`}
+                        >
+                          {val.value_en}
+                        </button>
+                      );
+                    })}
+                    {(vt.values || []).length === 0 && <span className="text-xs text-espresso-400">{t('variantTypes.noValues')}</span>}
+                  </div>
+                </div>
+              ))}
+
+              {variantTypes.length > 0 && (
+                <>
+                  <div className="mt-4 grid grid-cols-3 gap-2">
+                    <input
+                      placeholder={t('common.price')}
+                      type="number"
+                      value={generateForm.price}
+                      onChange={(e) => setGenerateForm((f) => ({ ...f, price: e.target.value }))}
+                      className="rounded-xl border border-linen-300 px-3 py-2 text-sm"
+                    />
+                    <input
+                      placeholder={t('products.compareAtPrice')}
+                      type="number"
+                      value={generateForm.compareAtPrice}
+                      onChange={(e) => setGenerateForm((f) => ({ ...f, compareAtPrice: e.target.value }))}
+                      className="rounded-xl border border-linen-300 px-3 py-2 text-sm"
+                    />
+                    <input
+                      placeholder={t('products.stock')}
+                      type="number"
+                      value={generateForm.stockQuantity}
+                      onChange={(e) => setGenerateForm((f) => ({ ...f, stockQuantity: e.target.value }))}
+                      className="rounded-xl border border-linen-300 px-3 py-2 text-sm"
+                    />
+                  </div>
+                  <button
+                    onClick={generateVariants}
+                    disabled={generating || !generateForm.price}
+                    className="mt-3 w-full rounded-xl bg-espresso-800 py-2 text-sm font-semibold text-white hover:bg-espresso-900 disabled:opacity-60"
+                  >
+                    {generating ? t('common.saving') : t('products.generateVariants')}
+                  </button>
+                  {generateMessage && <p className="mt-2 text-xs font-medium text-carissma-700">{generateMessage}</p>}
+                </>
+              )}
+            </div>
           </div>
         )}
       </Modal>
