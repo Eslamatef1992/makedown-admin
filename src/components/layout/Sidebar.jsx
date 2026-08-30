@@ -44,7 +44,7 @@ export default function Sidebar() {
   return (
     <aside className="flex h-screen w-64 shrink-0 flex-col border-r border-linen-200 bg-white">
       <div className="flex items-center gap-3 px-5 py-6">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-carissma-600 font-bold text-white">MD</div>
+        <img src="/logo-mark.png" alt="Make Down" className="h-10 w-10 object-contain" />
         <div>
           <p className="text-sm font-semibold text-espresso-900">Make Down</p>
           <p className="text-xs text-espresso-500">Admin panel</p>

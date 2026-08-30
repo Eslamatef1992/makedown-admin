@@ -36,9 +36,7 @@ export default function Login() {
 
       <div className="relative w-full max-w-md rounded-3xl bg-white/90 p-8 shadow-xl backdrop-blur">
         <div className="mb-8 flex flex-col items-center text-center">
-          <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-carissma-600 text-2xl font-bold text-white">
-            MD
-          </div>
+          <img src="/logo-mark.png" alt="Make Down" className="mb-4 h-20 w-20 object-contain" />
           <h1 className="text-2xl font-semibold text-espresso-900">Welcome back</h1>
           <p className="mt-1 text-sm text-espresso-500">Sign in to Make Down</p>
         </div>
