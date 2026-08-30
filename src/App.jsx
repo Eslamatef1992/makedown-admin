@@ -20,6 +20,7 @@ import ContactMessagesPage from './pages/contact/ContactMessagesPage';
 import CmsPageEditor from './pages/cms/CmsPageEditor';
 import FaqsPage from './pages/cms/FaqsPage';
 import SocialLinksPage from './pages/cms/SocialLinksPage';
+import HomeVideoPage from './pages/cms/HomeVideoPage';
 
 function Protected({ children }) {
   return <ProtectedRoute>{children}</ProtectedRoute>;
@@ -59,6 +60,7 @@ export default function App() {
           <Route path="/cms/pages/:slug" element={<Protected><CmsPageEditor /></Protected>} />
           <Route path="/cms/faqs" element={<Protected><FaqsPage /></Protected>} />
           <Route path="/cms/social-links" element={<Protected><SocialLinksPage /></Protected>} />
+          <Route path="/cms/home-video" element={<Protected><HomeVideoPage /></Protected>} />
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

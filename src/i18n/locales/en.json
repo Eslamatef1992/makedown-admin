@@ -80,6 +80,7 @@
     "contactUs": "Contact us",
     "socialMedia": "Social media",
     "howItWorks": "How it works",
+    "homeVideo": "Home page video",
     "adminPanel": "Admin panel"
   },
   "login": {
@@ -210,7 +211,9 @@
   "cms": {
     "pageTitle": "Page title",
     "content": "Content (HTML)",
-    "saved": "Saved"
+    "saved": "Saved",
+    "homeVideoUrl": "YouTube URL",
+    "homeVideoHint": "Paste a YouTube video link (e.g. https://youtube.com/watch?v=...). It will play as the video on the website home page."
   },
   "quizzes": {
     "title": "Education — Games",

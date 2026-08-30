@@ -43,6 +43,7 @@ export const NAV_SECTIONS = [
       { labelKey: 'nav.contactUs', to: '/contact-messages' },
       { labelKey: 'nav.socialMedia', to: '/cms/social-links' },
       { labelKey: 'nav.howItWorks', to: '/cms/pages/how-it-works' },
+      { labelKey: 'nav.homeVideo', to: '/cms/home-video' },
     ],
   },
 ];
