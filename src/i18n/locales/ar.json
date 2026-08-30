@@ -111,12 +111,18 @@
     "activeGameSessions": "جلسات الألعاب النشطة",
     "totalQuizzes": "الألعاب النشطة",
     "newContactMessages": "الرسائل الجديدة",
-    "totalPackagesSold": "الباقات المباعة"
+    "totalPackagesSold": "الباقات المباعة",
+    "totalGameCategories": "فئات الألعاب",
+    "totalPackages": "الباقات النشطة",
+    "totalProductCategories": "فئات المنتجات",
+    "totalAdmins": "المشرفون",
+    "totalFaqs": "الأسئلة الشائعة النشطة"
   },
   "admins": {
     "title": "المشرفون",
     "password": "كلمة المرور (اتركها فارغة للاحتفاظ بالحالية)",
-    "lastLogin": "آخر تسجيل دخول"
+    "lastLogin": "آخر تسجيل دخول",
+    "role": "الدور"
   },
   "roles": {
     "title": "الأدوار",

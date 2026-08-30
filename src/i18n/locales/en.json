@@ -112,12 +112,18 @@
     "activeGameSessions": "Active game sessions",
     "totalQuizzes": "Active games",
     "newContactMessages": "New messages",
-    "totalPackagesSold": "Packages sold"
+    "totalPackagesSold": "Packages sold",
+    "totalGameCategories": "Game categories",
+    "totalPackages": "Active packages",
+    "totalProductCategories": "Product categories",
+    "totalAdmins": "Admins",
+    "totalFaqs": "Active FAQs"
   },
   "admins": {
     "title": "Admins",
     "password": "Password (leave blank to keep current)",
-    "lastLogin": "Last login"
+    "lastLogin": "Last login",
+    "role": "Role"
   },
   "roles": {
     "title": "Roles",

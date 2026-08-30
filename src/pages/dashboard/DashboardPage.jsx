@@ -4,8 +4,9 @@ import AdminLayout from '../../components/layout/AdminLayout';
 import { getResource } from '../../api/adminApi';
 
 const CARD_KEYS = [
-  'totalUsers', 'specialUsers', 'totalSchools', 'totalProducts', 'totalOrders', 'guestOrders',
-  'pendingOrders', 'revenue', 'activeGameSessions', 'totalQuizzes', 'newContactMessages', 'totalPackagesSold',
+  'totalUsers', 'specialUsers', 'totalAdmins', 'totalSchools', 'totalQuizzes', 'totalGameCategories',
+  'totalProducts', 'totalProductCategories', 'totalPackages', 'totalPackagesSold', 'totalOrders', 'guestOrders',
+  'pendingOrders', 'revenue', 'activeGameSessions', 'totalFaqs', 'newContactMessages',
 ];
 
 export default function DashboardPage() {
