@@ -80,6 +80,7 @@
     "contactUs": "اتصل بنا",
     "socialMedia": "وسائل التواصل الاجتماعي",
     "howItWorks": "كيف تعمل",
+    "contactInfo": "معلومات التواصل",
     "adminPanel": "لوحة الإدارة"
   },
   "login": {
@@ -218,7 +219,11 @@
     "content": "المحتوى (HTML)",
     "saved": "تم الحفظ",
     "homeVideoUrl": "رابط يوتيوب",
-    "homeVideoHint": "الصق رابط فيديو يوتيوب (مثال: https://youtube.com/watch?v=...). سيتم عرضه في الصفحة الرئيسية للموقع."
+    "homeVideoHint": "الصق رابط فيديو يوتيوب (مثال: https://youtube.com/watch?v=...). سيتم عرضه في الصفحة الرئيسية للموقع.",
+    "companyEmail": "البريد الإلكتروني للشركة",
+    "supportEmail": "بريد الدعم الإلكتروني",
+    "phone": "رقم الهاتف",
+    "contactInfoHint": "يظهر في صفحة تواصل معنا على الموقع."
   },
   "quizzes": {
     "title": "التعليم — الألعاب",

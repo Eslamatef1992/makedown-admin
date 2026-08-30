@@ -81,6 +81,7 @@
     "socialMedia": "Social media",
     "howItWorks": "How it works",
     "homeVideo": "Home page video",
+    "contactInfo": "Contact info",
     "adminPanel": "Admin panel"
   },
   "login": {
@@ -219,7 +220,11 @@
     "content": "Content (HTML)",
     "saved": "Saved",
     "homeVideoUrl": "YouTube URL",
-    "homeVideoHint": "Paste a YouTube video link (e.g. https://youtube.com/watch?v=...). It will play as the video on the website home page."
+    "homeVideoHint": "Paste a YouTube video link (e.g. https://youtube.com/watch?v=...). It will play as the video on the website home page.",
+    "companyEmail": "Company email",
+    "supportEmail": "Support email",
+    "phone": "Phone number",
+    "contactInfoHint": "Shown on the website Contact Us page."
   },
   "quizzes": {
     "title": "Education — Games",

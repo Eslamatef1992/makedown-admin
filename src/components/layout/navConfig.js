@@ -44,6 +44,7 @@ export const NAV_SECTIONS = [
       { labelKey: 'nav.socialMedia', to: '/cms/social-links' },
       { labelKey: 'nav.howItWorks', to: '/cms/pages/how-it-works' },
       { labelKey: 'nav.homeVideo', to: '/cms/home-video' },
+      { labelKey: 'nav.contactInfo', to: '/cms/contact-info' },
     ],
   },
 ];
