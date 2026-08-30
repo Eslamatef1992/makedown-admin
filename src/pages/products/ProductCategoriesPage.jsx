@@ -1,21 +1,23 @@
+import { useTranslation } from 'react-i18next';
 import CrudPage from '../generic/CrudPage';
 
 export default function ProductCategoriesPage() {
+  const { t } = useTranslation();
   return (
     <CrudPage
-      title="Ecommerce — Categories"
+      title={t('productCategories.title')}
       basePath="/admin/product-categories"
       columns={[
-        { key: 'name', label: 'Name' },
-        { key: 'slug', label: 'Slug' },
-        { key: 'sort_order', label: 'Order' },
-        { key: 'is_active', label: 'Active', render: (r) => (r.is_active ? 'Yes' : 'No') },
+        { key: 'name', label: t('common.name') },
+        { key: 'slug', label: t('common.slug') },
+        { key: 'sort_order', label: t('common.order') },
+        { key: 'is_active', label: t('common.active'), render: (r) => (r.is_active ? t('common.yes') : t('common.no')) },
       ]}
       fields={[
-        { name: 'name', label: 'Name', required: true },
-        { name: 'slug', label: 'Slug', required: true },
-        { name: 'sortOrder', label: 'Sort order', type: 'number' },
-        { name: 'isActive', label: 'Active', type: 'checkbox' },
+        { name: 'name', label: t('common.name'), required: true },
+        { name: 'slug', label: t('common.slug'), required: true },
+        { name: 'sortOrder', label: t('common.sortOrder'), type: 'number' },
+        { name: 'isActive', label: t('common.active'), type: 'checkbox' },
       ]}
       toForm={(row) => ({ name: row.name, slug: row.slug, sortOrder: row.sort_order, isActive: Boolean(row.is_active) })}
     />

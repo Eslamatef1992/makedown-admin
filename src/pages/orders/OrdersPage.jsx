@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import AdminLayout from '../../components/layout/AdminLayout';
 import DataTable from '../../components/ui/DataTable';
 import Modal from '../../components/ui/Modal';
@@ -8,6 +9,7 @@ import { listResource, getResource, updateResource } from '../../api/adminApi';
 const STATUS_OPTIONS = ['pending', 'paid', 'processing', 'shipped', 'delivered', 'cancelled', 'refunded'];
 
 export default function OrdersPage() {
+  const { t } = useTranslation();
   const { scope } = useParams(); // 'guest' for /orders/guest
   const isGuest = scope === 'guest';
   const [rows, setRows] = useState([]);
@@ -44,30 +46,30 @@ export default function OrdersPage() {
   };
 
   return (
-    <AdminLayout title={isGuest ? 'Orders as a guest' : 'Orders'}>
+    <AdminLayout title={isGuest ? t('orders.guestTitle') : t('orders.title')}>
       <DataTable
         loading={loading}
         rows={rows}
         columns={[
-          { key: 'order_number', label: 'Order #' },
-          { key: 'user_name', label: 'Customer', render: (r) => r.user_name || r.guest_name || 'Guest' },
-          { key: 'status', label: 'Status' },
-          { key: 'payment_status', label: 'Payment' },
-          { key: 'grand_total', label: 'Total (KWD)' },
-          { key: 'created_at', label: 'Date' },
+          { key: 'order_number', label: t('orders.orderNumber') },
+          { key: 'user_name', label: t('orders.customer'), render: (r) => r.user_name || r.guest_name || t('orders.guest') },
+          { key: 'status', label: t('common.status') },
+          { key: 'payment_status', label: t('orders.payment') },
+          { key: 'grand_total', label: t('orders.total') },
+          { key: 'created_at', label: t('orders.date') },
         ]}
         onEdit={view}
       />
 
-      <Modal open={open} title={viewing ? `Order ${viewing.order_number}` : ''} onClose={() => setOpen(false)}>
+      <Modal open={open} title={viewing ? t('orders.orderTitle', { number: viewing.order_number }) : ''} onClose={() => setOpen(false)}>
         {viewing && (
           <div className="space-y-4 text-sm">
             <p>
-              <span className="font-medium text-espresso-700">Customer:</span>{' '}
-              {viewing.user_name || viewing.guest_name || 'Guest'} ({viewing.user_email || viewing.guest_email})
+              <span className="font-medium text-espresso-700">{t('orders.customer')}:</span>{' '}
+              {viewing.user_name || viewing.guest_name || t('orders.guest')} ({viewing.user_email || viewing.guest_email})
             </p>
             <label className="block">
-              <span className="mb-1.5 block text-sm font-medium text-espresso-800">Status</span>
+              <span className="mb-1.5 block text-sm font-medium text-espresso-800">{t('common.status')}</span>
               <select
                 value={viewing.status}
                 onChange={(e) => changeStatus(e.target.value)}
@@ -86,7 +88,7 @@ export default function OrdersPage() {
                 </div>
               ))}
             </div>
-            <p className="text-right font-semibold text-espresso-900">Total: {viewing.grand_total} KWD</p>
+            <p className="text-end font-semibold text-espresso-900">{t('orders.total2', { amount: viewing.grand_total })}</p>
           </div>
         )}
       </Modal>

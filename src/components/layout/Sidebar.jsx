@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { NAV_SECTIONS } from './navConfig';
 
-function SectionLink({ item }) {
+function SectionLink({ item, t }) {
   return (
     <NavLink
       to={item.to}
@@ -13,12 +14,12 @@ function SectionLink({ item }) {
         }`
       }
     >
-      {item.label}
+      {t(item.labelKey)}
     </NavLink>
   );
 }
 
-function SectionGroup({ section }) {
+function SectionGroup({ section, t }) {
   const [open, setOpen] = useState(true);
   return (
     <div>
@@ -26,13 +27,13 @@ function SectionGroup({ section }) {
         onClick={() => setOpen((o) => !o)}
         className="flex w-full items-center justify-between rounded-xl px-3 py-2 text-sm font-semibold text-espresso-800 hover:bg-carissma-50"
       >
-        {section.label}
-        <span className={`transition-transform ${open ? 'rotate-90' : ''}`}>›</span>
+        {t(section.labelKey)}
+        <span className={`transition-transform ${open ? 'rotate-90' : ''} rtl:-scale-x-100`}>›</span>
       </button>
       {open && (
-        <div className="ml-2 mt-1 space-y-1 border-l border-linen-200 pl-3">
+        <div className="me-2 mt-1 space-y-1 border-s border-linen-200 ps-3">
           {section.children.map((child) => (
-            <SectionLink key={child.to} item={child} />
+            <SectionLink key={child.to} item={child} t={t} />
           ))}
         </div>
       )}
@@ -41,19 +42,24 @@ function SectionGroup({ section }) {
 }
 
 export default function Sidebar() {
+  const { t } = useTranslation();
   return (
-    <aside className="flex h-screen w-64 shrink-0 flex-col border-r border-linen-200 bg-white">
+    <aside className="flex h-screen w-64 shrink-0 flex-col border-e border-linen-200 bg-white">
       <div className="flex items-center gap-3 px-5 py-6">
         <img src="/logo-mark.png" alt="Make Down" className="h-10 w-10 object-contain" />
         <div>
           <p className="text-sm font-semibold text-espresso-900">Make Down</p>
-          <p className="text-xs text-espresso-500">Admin panel</p>
+          <p className="text-xs text-espresso-500">{t('nav.adminPanel')}</p>
         </div>
       </div>
 
       <nav className="flex-1 space-y-1 overflow-y-auto px-3 pb-6">
         {NAV_SECTIONS.map((section) =>
-          section.children ? <SectionGroup key={section.label} section={section} /> : <SectionLink key={section.to} item={section} />
+          section.children ? (
+            <SectionGroup key={section.labelKey} section={section} t={t} />
+          ) : (
+            <SectionLink key={section.to} item={section} t={t} />
+          )
         )}
       </nav>
     </aside>

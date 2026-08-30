@@ -1,18 +1,20 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import AdminLayout from '../../components/layout/AdminLayout';
 import { getResource, updateResource } from '../../api/adminApi';
 
-const TITLES = {
-  'about-us': 'About us',
-  'privacy-policy': 'Privacy policy',
-  'terms-and-conditions': 'Terms and conditions',
-  'return-policy': 'Return policy',
-  'how-it-works': 'How it works',
+const TITLE_KEYS = {
+  'about-us': 'nav.aboutUs',
+  'privacy-policy': 'nav.privacyPolicy',
+  'terms-and-conditions': 'nav.termsAndConditions',
+  'return-policy': 'nav.returnPolicy',
+  'how-it-works': 'nav.howItWorks',
 };
 
 export default function CmsPageEditor() {
   const { slug } = useParams();
+  const { t } = useTranslation();
   const [title, setTitle] = useState('');
   const [contentHtml, setContentHtml] = useState('');
   const [loading, setLoading] = useState(true);
@@ -41,14 +43,16 @@ export default function CmsPageEditor() {
     }
   };
 
+  const pageTitle = TITLE_KEYS[slug] ? t(TITLE_KEYS[slug]) : slug;
+
   return (
-    <AdminLayout title={TITLES[slug] || slug}>
+    <AdminLayout title={pageTitle}>
       {loading ? (
-        <p className="text-espresso-400">Loading…</p>
+        <p className="text-espresso-400">{t('common.loading')}</p>
       ) : (
         <div className="max-w-3xl rounded-2xl border border-linen-200 bg-white p-6">
           <label className="mb-4 block">
-            <span className="mb-1.5 block text-sm font-medium text-espresso-800">Page title</span>
+            <span className="mb-1.5 block text-sm font-medium text-espresso-800">{t('cms.pageTitle')}</span>
             <input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
@@ -56,11 +60,12 @@ export default function CmsPageEditor() {
             />
           </label>
           <label className="mb-4 block">
-            <span className="mb-1.5 block text-sm font-medium text-espresso-800">Content (HTML)</span>
+            <span className="mb-1.5 block text-sm font-medium text-espresso-800">{t('cms.content')}</span>
             <textarea
               value={contentHtml}
               onChange={(e) => setContentHtml(e.target.value)}
               rows={16}
+              dir="ltr"
               className="w-full rounded-xl border border-linen-300 px-3 py-2.5 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-carissma-500"
             />
           </label>
@@ -70,9 +75,9 @@ export default function CmsPageEditor() {
               disabled={saving}
               className="rounded-xl bg-carissma-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-carissma-700 disabled:opacity-60"
             >
-              {saving ? 'Saving…' : 'Save'}
+              {saving ? t('common.saving') : t('common.save')}
             </button>
-            {saved && <span className="text-sm text-carissma-600">Saved</span>}
+            {saved && <span className="text-sm text-carissma-600">{t('cms.saved')}</span>}
           </div>
         </div>
       )}

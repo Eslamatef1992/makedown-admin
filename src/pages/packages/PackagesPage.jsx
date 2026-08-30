@@ -1,25 +1,27 @@
+import { useTranslation } from 'react-i18next';
 import CrudPage from '../generic/CrudPage';
 
 export default function PackagesPage() {
+  const { t } = useTranslation();
   return (
     <CrudPage
-      title="Packages"
+      title={t('packages.title')}
       basePath="/admin/packages"
       columns={[
-        { key: 'name', label: 'Name' },
-        { key: 'price', label: 'Price (KWD)' },
-        { key: 'credits', label: 'Credits' },
-        { key: 'validity_days', label: 'Validity (days)' },
-        { key: 'is_active', label: 'Active', render: (r) => (r.is_active ? 'Yes' : 'No') },
+        { key: 'name', label: t('common.name') },
+        { key: 'price', label: t('common.price') },
+        { key: 'credits', label: t('common.credits') },
+        { key: 'validity_days', label: t('common.validityDays') },
+        { key: 'is_active', label: t('common.active'), render: (r) => (r.is_active ? t('common.yes') : t('common.no')) },
       ]}
       fields={[
-        { name: 'name', label: 'Name', required: true },
-        { name: 'description', label: 'Description', type: 'textarea' },
-        { name: 'price', label: 'Price (KWD)', type: 'number', required: true },
-        { name: 'credits', label: 'Credits', type: 'number', required: true },
-        { name: 'validityDays', label: 'Validity (days)', type: 'number' },
-        { name: 'sortOrder', label: 'Sort order', type: 'number' },
-        { name: 'isActive', label: 'Active', type: 'checkbox' },
+        { name: 'name', label: t('common.name'), required: true },
+        { name: 'description', label: t('common.description'), type: 'textarea' },
+        { name: 'price', label: t('common.price'), type: 'number', required: true },
+        { name: 'credits', label: t('common.credits'), type: 'number', required: true },
+        { name: 'validityDays', label: t('common.validityDays'), type: 'number' },
+        { name: 'sortOrder', label: t('common.sortOrder'), type: 'number' },
+        { name: 'isActive', label: t('common.active'), type: 'checkbox' },
       ]}
       toForm={(row) => ({
         name: row.name,

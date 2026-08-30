@@ -1,0 +1,223 @@
+{
+  "common": {
+    "search": "بحث…",
+    "addNew": "+ إضافة جديد",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "save": "حفظ",
+    "saving": "جارٍ الحفظ…",
+    "cancel": "إلغاء",
+    "active": "نشط",
+    "inactive": "غير نشط",
+    "yes": "نعم",
+    "no": "لا",
+    "manage": "إدارة",
+    "loading": "جارٍ التحميل…",
+    "noRecords": "لا توجد سجلات بعد",
+    "confirmDelete": "هل تريد حذف هذا السجل؟",
+    "somethingWentWrong": "حدث خطأ ما",
+    "select": "اختر…",
+    "name": "الاسم",
+    "description": "الوصف",
+    "slug": "الرابط المختصر",
+    "order": "الترتيب",
+    "sortOrder": "ترتيب العرض",
+    "status": "الحالة",
+    "email": "البريد الإلكتروني",
+    "phone": "الهاتف",
+    "code": "الرمز",
+    "contactEmail": "بريد التواصل",
+    "contactPhone": "هاتف التواصل",
+    "address": "العنوان",
+    "url": "الرابط",
+    "platform": "المنصة",
+    "price": "السعر (د.ك)",
+    "credits": "الرصيد",
+    "validityDays": "مدة الصلاحية (أيام)",
+    "date": "التاريخ",
+    "createdAt": "تاريخ الإنشاء",
+    "receivedAt": "تاريخ الاستلام",
+    "subject": "الموضوع",
+    "from": "من",
+    "message": "الرسالة"
+  },
+  "nav": {
+    "dashboard": "لوحة التحكم",
+    "admins": "المشرفون",
+    "roles": "الأدوار",
+    "userManagement": "إدارة المستخدمين",
+    "users": "المستخدمون",
+    "specialUsers": "المستخدمون المميزون",
+    "education": "التعليم",
+    "schools": "المدارس",
+    "games": "الألعاب",
+    "categories": "التصنيفات",
+    "gamesHistory": "سجل الألعاب",
+    "orders": "الطلبات",
+    "ordersGuest": "طلبات الزوار",
+    "chatting": "المحادثات",
+    "ecommerce": "المتجر",
+    "products": "المنتجات",
+    "packages": "الباقات",
+    "getInTouch": "تواصل معنا",
+    "cms": "إدارة المحتوى",
+    "aboutUs": "من نحن",
+    "privacyPolicy": "سياسة الخصوصية",
+    "termsAndConditions": "الشروط والأحكام",
+    "returnPolicy": "سياسة الاسترجاع",
+    "faq": "الأسئلة الشائعة",
+    "contactUs": "اتصل بنا",
+    "socialMedia": "وسائل التواصل الاجتماعي",
+    "howItWorks": "كيف تعمل",
+    "adminPanel": "لوحة الإدارة"
+  },
+  "login": {
+    "welcomeBack": "مرحبًا بعودتك",
+    "subtitle": "تسجيل الدخول إلى Make Down",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "rememberMe": "تذكرني",
+    "signIn": "تسجيل الدخول",
+    "signingIn": "جارٍ تسجيل الدخول…",
+    "invalidCredentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة",
+    "footer": "جميع الحقوق محفوظة لشركة Teknulugy @{{year}}"
+  },
+  "topbar": {
+    "logout": "تسجيل الخروج",
+    "language": "English"
+  },
+  "dashboard": {
+    "title": "لوحة التحكم",
+    "couldNotLoad": "تعذر تحميل الإحصائيات",
+    "totalUsers": "إجمالي المستخدمين",
+    "specialUsers": "المستخدمون المميزون",
+    "totalSchools": "المدارس النشطة",
+    "totalProducts": "المنتجات النشطة",
+    "totalOrders": "إجمالي الطلبات",
+    "guestOrders": "طلبات الزوار",
+    "pendingOrders": "الطلبات المعلقة",
+    "revenue": "الإيرادات (د.ك)",
+    "activeGameSessions": "جلسات الألعاب النشطة",
+    "totalQuizzes": "الألعاب النشطة",
+    "newContactMessages": "الرسائل الجديدة",
+    "totalPackagesSold": "الباقات المباعة"
+  },
+  "admins": {
+    "title": "المشرفون",
+    "password": "كلمة المرور (اتركها فارغة للاحتفاظ بالحالية)",
+    "lastLogin": "آخر تسجيل دخول"
+  },
+  "roles": {
+    "title": "الأدوار",
+    "addRole": "إضافة دور",
+    "editRole": "تعديل دور",
+    "confirmDelete": "هل تريد حذف هذا الدور؟",
+    "permissions": "الصلاحيات",
+    "permissionsFor": "الصلاحيات — {{name}}"
+  },
+  "users": {
+    "title": "المستخدمون",
+    "specialTitle": "المستخدمون المميزون",
+    "searchPlaceholder": "ابحث بالاسم أو البريد الإلكتروني أو الهاتف…",
+    "verified": "موثّق",
+    "special": "مميز"
+  },
+  "schools": {
+    "title": "المدارس"
+  },
+  "gameCategories": {
+    "title": "التصنيفات"
+  },
+  "products": {
+    "title": "المتجر — المنتجات",
+    "basePrice": "السعر الأساسي (د.ك)",
+    "thumbnailUrl": "رابط الصورة المصغرة",
+    "variants": "المتغيرات",
+    "variantsFor": "المتغيرات — {{name}}",
+    "addProduct": "إضافة منتج",
+    "editProduct": "تعديل منتج",
+    "confirmDelete": "هل تريد حذف هذا المنتج (ومتغيراته)؟",
+    "noVariants": "لا توجد متغيرات بعد",
+    "sku": "رمز المنتج (SKU)",
+    "stock": "المخزون",
+    "addVariant": "+ إضافة متغير"
+  },
+  "productCategories": {
+    "title": "المتجر — التصنيفات"
+  },
+  "packages": {
+    "title": "الباقات"
+  },
+  "faqs": {
+    "title": "الأسئلة الشائعة",
+    "question": "السؤال",
+    "answer": "الإجابة"
+  },
+  "socialLinks": {
+    "title": "وسائل التواصل الاجتماعي",
+    "platformHint": "المنصة (مثال: انستغرام)"
+  },
+  "contact": {
+    "title": "تواصل معنا",
+    "phone": "الهاتف",
+    "markReplied": "وضع علامة \"تم الرد\"",
+    "messageFallback": "رسالة"
+  },
+  "gameSessions": {
+    "title": "سجل الألعاب",
+    "game": "اللعبة",
+    "mode": "النمط",
+    "school": "المدرسة",
+    "players": "اللاعبون",
+    "created": "تاريخ الإنشاء",
+    "joinCode": "رمز الانضمام",
+    "player": "اللاعب",
+    "team": "الفريق",
+    "score": "النتيجة",
+    "guest": "زائر"
+  },
+  "orders": {
+    "title": "الطلبات",
+    "guestTitle": "طلبات الزوار",
+    "orderNumber": "رقم الطلب",
+    "customer": "العميل",
+    "payment": "الدفع",
+    "total": "الإجمالي (د.ك)",
+    "date": "التاريخ",
+    "orderTitle": "الطلب {{number}}",
+    "guest": "زائر",
+    "total2": "الإجمالي: {{amount}} د.ك"
+  },
+  "chat": {
+    "title": "المحادثات",
+    "readOnlyNote": "عرض للقراءة فقط لمحادثات المستخدمين. إرسال الرسائل يتم مباشرة على الموقع (Socket.io) — أدوات الإشراف الكاملة قادمة لاحقًا.",
+    "noConversations": "لا توجد محادثات بعد",
+    "noMessagesYet": "لا توجد رسائل بعد",
+    "conversation": "محادثة",
+    "selectConversation": "اختر محادثة"
+  },
+  "cms": {
+    "pageTitle": "عنوان الصفحة",
+    "content": "المحتوى (HTML)",
+    "saved": "تم الحفظ"
+  },
+  "quizzes": {
+    "title": "التعليم — الألعاب",
+    "difficulty": "مستوى الصعوبة",
+    "easy": "سهل",
+    "medium": "متوسط",
+    "hard": "صعب",
+    "coverImageUrl": "رابط صورة الغلاف",
+    "questions": "الأسئلة",
+    "questionsFor": "الأسئلة — {{title}}",
+    "addGame": "إضافة لعبة",
+    "editGame": "تعديل لعبة",
+    "confirmDelete": "هل تريد حذف هذه اللعبة (وأسئلتها)؟",
+    "noQuestions": "لا توجد أسئلة بعد",
+    "questionText": "نص السؤال",
+    "option": "الخيار {{n}}",
+    "correctHint": "اختر زر الاختيار بجانب الإجابة الصحيحة.",
+    "addQuestion": "+ إضافة سؤال",
+    "minOptionsAlert": "أضف خيارين على الأقل"
+  }
+}

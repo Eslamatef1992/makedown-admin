@@ -1,4 +1,7 @@
+import { useTranslation } from 'react-i18next';
+
 export default function Field({ field, value, onChange }) {
+  const { t } = useTranslation();
   const common = {
     id: field.name,
     name: field.name,
@@ -16,7 +19,7 @@ export default function Field({ field, value, onChange }) {
       {field.type === 'textarea' && <textarea {...common} rows={field.rows || 4} />}
       {field.type === 'select' && (
         <select {...common}>
-          <option value="">Select…</option>
+          <option value="">{t('common.select')}</option>
           {field.options.map((opt) => (
             <option key={opt.value} value={opt.value}>
               {opt.label}

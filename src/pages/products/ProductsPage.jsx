@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import AdminLayout from '../../components/layout/AdminLayout';
 import DataTable from '../../components/ui/DataTable';
 import Modal from '../../components/ui/Modal';
@@ -6,6 +7,7 @@ import Field from '../../components/ui/Field';
 import { listResource, getResource, createResource, updateResource, deleteResource } from '../../api/adminApi';
 
 export default function ProductsPage() {
+  const { t } = useTranslation();
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -19,12 +21,12 @@ export default function ProductsPage() {
   const [variantForm, setVariantForm] = useState({ sku: '', price: '', stockQuantity: 0 });
 
   const productFields = [
-    { name: 'name', label: 'Name', required: true },
-    { name: 'slug', label: 'Slug', required: true },
-    { name: 'description', label: 'Description', type: 'textarea' },
-    { name: 'basePrice', label: 'Base price (KWD)', type: 'number', required: true },
-    { name: 'thumbnailUrl', label: 'Thumbnail URL' },
-    { name: 'isActive', label: 'Active', type: 'checkbox' },
+    { name: 'name', label: t('common.name'), required: true },
+    { name: 'slug', label: t('common.slug'), required: true },
+    { name: 'description', label: t('common.description'), type: 'textarea' },
+    { name: 'basePrice', label: t('products.basePrice'), type: 'number', required: true },
+    { name: 'thumbnailUrl', label: t('products.thumbnailUrl') },
+    { name: 'isActive', label: t('common.active'), type: 'checkbox' },
   ];
 
   const load = useCallback(async () => {
@@ -65,7 +67,7 @@ export default function ProductsPage() {
     load();
   };
   const onDelete = async (row) => {
-    if (!confirm('Delete this product (and its variants)?')) return;
+    if (!confirm(t('products.confirmDelete'))) return;
     await deleteResource(`/admin/products/${row.id}`);
     load();
   };
@@ -91,16 +93,16 @@ export default function ProductsPage() {
   };
 
   return (
-    <AdminLayout title="Ecommerce — Products">
+    <AdminLayout title={t('products.title')}>
       <div className="mb-4 flex items-center justify-between gap-3">
         <input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search…"
+          placeholder={t('common.search')}
           className="w-64 rounded-xl border border-linen-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-carissma-500"
         />
         <button onClick={openCreate} className="rounded-xl bg-carissma-600 px-4 py-2 text-sm font-semibold text-white hover:bg-carissma-700">
-          + Add new
+          {t('common.addNew')}
         </button>
       </div>
 
@@ -108,18 +110,18 @@ export default function ProductsPage() {
         loading={loading}
         rows={rows}
         columns={[
-          { key: 'name', label: 'Name' },
-          { key: 'base_price', label: 'Base price (KWD)' },
+          { key: 'name', label: t('common.name') },
+          { key: 'base_price', label: t('products.basePrice') },
           {
             key: 'variants',
-            label: 'Variants',
+            label: t('products.variants'),
             render: (r) => (
               <button onClick={() => openDetail(r)} className="font-medium text-carissma-600 hover:underline">
-                Manage
+                {t('common.manage')}
               </button>
             ),
           },
-          { key: 'is_active', label: 'Active', render: (r) => (r.is_active ? 'Yes' : 'No') },
+          { key: 'is_active', label: t('common.active'), render: (r) => (r.is_active ? t('common.yes') : t('common.no')) },
         ]}
         onEdit={openEdit}
         onDelete={onDelete}
@@ -127,12 +129,12 @@ export default function ProductsPage() {
 
       <Modal
         open={modalOpen}
-        title={editing ? 'Edit product' : 'Add product'}
+        title={editing ? t('products.editProduct') : t('products.addProduct')}
         onClose={() => setModalOpen(false)}
         footer={
           <>
-            <button onClick={() => setModalOpen(false)} className="rounded-xl px-4 py-2 text-sm font-medium text-espresso-600 hover:bg-linen-100">Cancel</button>
-            <button onClick={onSave} className="rounded-xl bg-carissma-600 px-4 py-2 text-sm font-semibold text-white hover:bg-carissma-700">Save</button>
+            <button onClick={() => setModalOpen(false)} className="rounded-xl px-4 py-2 text-sm font-medium text-espresso-600 hover:bg-linen-100">{t('common.cancel')}</button>
+            <button onClick={onSave} className="rounded-xl bg-carissma-600 px-4 py-2 text-sm font-semibold text-white hover:bg-carissma-700">{t('common.save')}</button>
           </>
         }
       >
@@ -141,35 +143,35 @@ export default function ProductsPage() {
         ))}
       </Modal>
 
-      <Modal open={detailOpen} title={detail ? `Variants — ${detail.name}` : ''} onClose={() => setDetailOpen(false)}>
+      <Modal open={detailOpen} title={detail ? t('products.variantsFor', { name: detail.name }) : ''} onClose={() => setDetailOpen(false)}>
         {detail && (
           <div className="space-y-4">
             <div className="rounded-xl border border-linen-200">
               {(detail.variants || []).map((v) => (
                 <div key={v.id} className="flex items-center justify-between border-b border-linen-100 px-4 py-2 text-sm last:border-0">
-                  <span>{v.sku} — {v.price} KWD — stock {v.stock_quantity}</span>
-                  <button onClick={() => deleteVariant(v.id)} className="font-medium text-carnation-600 hover:underline">Delete</button>
+                  <span>{v.sku} — {v.price} KWD — {t('products.stock')} {v.stock_quantity}</span>
+                  <button onClick={() => deleteVariant(v.id)} className="font-medium text-carnation-600 hover:underline">{t('common.delete')}</button>
                 </div>
               ))}
-              {(detail.variants || []).length === 0 && <p className="p-4 text-sm text-espresso-400">No variants yet</p>}
+              {(detail.variants || []).length === 0 && <p className="p-4 text-sm text-espresso-400">{t('products.noVariants')}</p>}
             </div>
 
             <div className="grid grid-cols-3 gap-2">
               <input
-                placeholder="SKU"
+                placeholder={t('products.sku')}
                 value={variantForm.sku}
                 onChange={(e) => setVariantForm((f) => ({ ...f, sku: e.target.value }))}
                 className="rounded-xl border border-linen-300 px-3 py-2 text-sm"
               />
               <input
-                placeholder="Price"
+                placeholder={t('common.price')}
                 type="number"
                 value={variantForm.price}
                 onChange={(e) => setVariantForm((f) => ({ ...f, price: e.target.value }))}
                 className="rounded-xl border border-linen-300 px-3 py-2 text-sm"
               />
               <input
-                placeholder="Stock"
+                placeholder={t('products.stock')}
                 type="number"
                 value={variantForm.stockQuantity}
                 onChange={(e) => setVariantForm((f) => ({ ...f, stockQuantity: e.target.value }))}
@@ -177,7 +179,7 @@ export default function ProductsPage() {
               />
             </div>
             <button onClick={addVariant} className="w-full rounded-xl bg-carissma-600 py-2 text-sm font-semibold text-white hover:bg-carissma-700">
-              + Add variant
+              {t('products.addVariant')}
             </button>
           </div>
         )}

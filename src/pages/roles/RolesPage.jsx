@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import AdminLayout from '../../components/layout/AdminLayout';
 import DataTable from '../../components/ui/DataTable';
 import Modal from '../../components/ui/Modal';
 import { listResource, createResource, updateResource, deleteResource, getResource, putResource } from '../../api/adminApi';
 
 export default function RolesPage() {
+  const { t } = useTranslation();
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
@@ -47,7 +49,7 @@ export default function RolesPage() {
     load();
   };
   const onDelete = async (row) => {
-    if (!confirm('Delete this role?')) return;
+    if (!confirm(t('roles.confirmDelete'))) return;
     await deleteResource(`/admin/roles/${row.id}`);
     load();
   };
@@ -82,10 +84,10 @@ export default function RolesPage() {
   }, {});
 
   return (
-    <AdminLayout title="Roles">
+    <AdminLayout title={t('roles.title')}>
       <div className="mb-4 flex justify-end">
         <button onClick={openCreate} className="rounded-xl bg-carissma-600 px-4 py-2 text-sm font-semibold text-white hover:bg-carissma-700">
-          + Add new
+          {t('common.addNew')}
         </button>
       </div>
 
@@ -93,14 +95,14 @@ export default function RolesPage() {
         loading={loading}
         rows={rows}
         columns={[
-          { key: 'name', label: 'Name' },
-          { key: 'description', label: 'Description' },
+          { key: 'name', label: t('common.name') },
+          { key: 'description', label: t('common.description') },
           {
             key: 'permissions',
-            label: 'Permissions',
+            label: t('roles.permissions'),
             render: (r) => (
               <button onClick={() => openPermissions(r)} className="font-medium text-carissma-600 hover:underline">
-                Manage
+                {t('common.manage')}
               </button>
             ),
           },
@@ -111,21 +113,21 @@ export default function RolesPage() {
 
       <Modal
         open={modalOpen}
-        title={editing ? 'Edit role' : 'Add role'}
+        title={editing ? t('roles.editRole') : t('roles.addRole')}
         onClose={() => setModalOpen(false)}
         footer={
           <>
             <button onClick={() => setModalOpen(false)} className="rounded-xl px-4 py-2 text-sm font-medium text-espresso-600 hover:bg-linen-100">
-              Cancel
+              {t('common.cancel')}
             </button>
             <button onClick={onSave} className="rounded-xl bg-carissma-600 px-4 py-2 text-sm font-semibold text-white hover:bg-carissma-700">
-              Save
+              {t('common.save')}
             </button>
           </>
         }
       >
         <label className="mb-4 block">
-          <span className="mb-1.5 block text-sm font-medium text-espresso-800">Name</span>
+          <span className="mb-1.5 block text-sm font-medium text-espresso-800">{t('common.name')}</span>
           <input
             value={form.name}
             onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
@@ -133,7 +135,7 @@ export default function RolesPage() {
           />
         </label>
         <label className="mb-4 block">
-          <span className="mb-1.5 block text-sm font-medium text-espresso-800">Description</span>
+          <span className="mb-1.5 block text-sm font-medium text-espresso-800">{t('common.description')}</span>
           <input
             value={form.description}
             onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
@@ -144,15 +146,15 @@ export default function RolesPage() {
 
       <Modal
         open={permModalOpen}
-        title={`Permissions — ${permRole?.name || ''}`}
+        title={t('roles.permissionsFor', { name: permRole?.name || '' })}
         onClose={() => setPermModalOpen(false)}
         footer={
           <>
             <button onClick={() => setPermModalOpen(false)} className="rounded-xl px-4 py-2 text-sm font-medium text-espresso-600 hover:bg-linen-100">
-              Cancel
+              {t('common.cancel')}
             </button>
             <button onClick={savePermissions} className="rounded-xl bg-carissma-600 px-4 py-2 text-sm font-semibold text-white hover:bg-carissma-700">
-              Save
+              {t('common.save')}
             </button>
           </>
         }

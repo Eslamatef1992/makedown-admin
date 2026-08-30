@@ -1,21 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import AdminLayout from '../../components/layout/AdminLayout';
 import DataTable from '../../components/ui/DataTable';
 import Modal from '../../components/ui/Modal';
 import Field from '../../components/ui/Field';
 import { listResource, getResource, createResource, updateResource, deleteResource } from '../../api/adminApi';
 
-const quizFields = [
-  { name: 'title', label: 'Title', required: true },
-  { name: 'description', label: 'Description', type: 'textarea' },
-  { name: 'difficulty', label: 'Difficulty', type: 'select', options: [
-    { value: 'easy', label: 'Easy' }, { value: 'medium', label: 'Medium' }, { value: 'hard', label: 'Hard' },
-  ] },
-  { name: 'coverImageUrl', label: 'Cover image URL' },
-  { name: 'isActive', label: 'Active', type: 'checkbox' },
-];
-
 export default function QuizzesPage() {
+  const { t } = useTranslation();
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -27,6 +19,23 @@ export default function QuizzesPage() {
   const [detailOpen, setDetailOpen] = useState(false);
   const [detail, setDetail] = useState(null);
   const [qForm, setQForm] = useState({ questionText: '', options: ['', '', '', ''], correctOptionIndex: 0, points: 100, timeLimitSeconds: 20 });
+
+  const quizFields = [
+    { name: 'title', label: t('common.name'), required: true },
+    { name: 'description', label: t('common.description'), type: 'textarea' },
+    {
+      name: 'difficulty',
+      label: t('quizzes.difficulty'),
+      type: 'select',
+      options: [
+        { value: 'easy', label: t('quizzes.easy') },
+        { value: 'medium', label: t('quizzes.medium') },
+        { value: 'hard', label: t('quizzes.hard') },
+      ],
+    },
+    { name: 'coverImageUrl', label: t('quizzes.coverImageUrl') },
+    { name: 'isActive', label: t('common.active'), type: 'checkbox' },
+  ];
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -58,7 +67,7 @@ export default function QuizzesPage() {
     load();
   };
   const onDelete = async (row) => {
-    if (!confirm('Delete this game (and its questions)?')) return;
+    if (!confirm(t('quizzes.confirmDelete'))) return;
     await deleteResource(`/admin/quizzes/${row.id}`);
     load();
   };
@@ -69,7 +78,7 @@ export default function QuizzesPage() {
   };
 
   const addQuestion = async () => {
-    if (qForm.options.filter((o) => o.trim()).length < 2) return alert('Add at least 2 options');
+    if (qForm.options.filter((o) => o.trim()).length < 2) return alert(t('quizzes.minOptionsAlert'));
     await createResource(`/admin/quizzes/${detail.id}/questions`, qForm);
     setQForm({ questionText: '', options: ['', '', '', ''], correctOptionIndex: 0, points: 100, timeLimitSeconds: 20 });
     setDetail(await getResource(`/admin/quizzes/${detail.id}`));
@@ -81,14 +90,14 @@ export default function QuizzesPage() {
   };
 
   return (
-    <AdminLayout title="Education — Games">
+    <AdminLayout title={t('quizzes.title')}>
       <div className="mb-4 flex items-center justify-between gap-3">
         <input
-          value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search…"
+          value={search} onChange={(e) => setSearch(e.target.value)} placeholder={t('common.search')}
           className="w-64 rounded-xl border border-linen-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-carissma-500"
         />
         <button onClick={openCreate} className="rounded-xl bg-carissma-600 px-4 py-2 text-sm font-semibold text-white hover:bg-carissma-700">
-          + Add new
+          {t('common.addNew')}
         </button>
       </div>
 
@@ -96,14 +105,14 @@ export default function QuizzesPage() {
         loading={loading}
         rows={rows}
         columns={[
-          { key: 'title', label: 'Title' },
-          { key: 'difficulty', label: 'Difficulty' },
+          { key: 'title', label: t('common.name') },
+          { key: 'difficulty', label: t('quizzes.difficulty') },
           {
             key: 'questions',
-            label: 'Questions',
-            render: (r) => <button onClick={() => openDetail(r)} className="font-medium text-carissma-600 hover:underline">Manage</button>,
+            label: t('quizzes.questions'),
+            render: (r) => <button onClick={() => openDetail(r)} className="font-medium text-carissma-600 hover:underline">{t('common.manage')}</button>,
           },
-          { key: 'is_active', label: 'Active', render: (r) => (r.is_active ? 'Yes' : 'No') },
+          { key: 'is_active', label: t('common.active'), render: (r) => (r.is_active ? t('common.yes') : t('common.no')) },
         ]}
         onEdit={openEdit}
         onDelete={onDelete}
@@ -111,12 +120,12 @@ export default function QuizzesPage() {
 
       <Modal
         open={modalOpen}
-        title={editing ? 'Edit game' : 'Add game'}
+        title={editing ? t('quizzes.editGame') : t('quizzes.addGame')}
         onClose={() => setModalOpen(false)}
         footer={
           <>
-            <button onClick={() => setModalOpen(false)} className="rounded-xl px-4 py-2 text-sm font-medium text-espresso-600 hover:bg-linen-100">Cancel</button>
-            <button onClick={onSave} className="rounded-xl bg-carissma-600 px-4 py-2 text-sm font-semibold text-white hover:bg-carissma-700">Save</button>
+            <button onClick={() => setModalOpen(false)} className="rounded-xl px-4 py-2 text-sm font-medium text-espresso-600 hover:bg-linen-100">{t('common.cancel')}</button>
+            <button onClick={onSave} className="rounded-xl bg-carissma-600 px-4 py-2 text-sm font-semibold text-white hover:bg-carissma-700">{t('common.save')}</button>
           </>
         }
       >
@@ -125,7 +134,7 @@ export default function QuizzesPage() {
         ))}
       </Modal>
 
-      <Modal open={detailOpen} title={detail ? `Questions — ${detail.title}` : ''} onClose={() => setDetailOpen(false)}>
+      <Modal open={detailOpen} title={detail ? t('quizzes.questionsFor', { title: detail.title }) : ''} onClose={() => setDetailOpen(false)}>
         {detail && (
           <div className="space-y-4">
             <div className="rounded-xl border border-linen-200">
@@ -137,15 +146,15 @@ export default function QuizzesPage() {
                       {JSON.parse(q.options_json).map((o, i) => `${i === q.correct_option_index ? '✓ ' : ''}${o}`).join(' · ')}
                     </p>
                   </div>
-                  <button onClick={() => deleteQuestion(q.id)} className="shrink-0 font-medium text-carnation-600 hover:underline">Delete</button>
+                  <button onClick={() => deleteQuestion(q.id)} className="shrink-0 font-medium text-carnation-600 hover:underline">{t('common.delete')}</button>
                 </div>
               ))}
-              {(detail.questions || []).length === 0 && <p className="p-4 text-sm text-espresso-400">No questions yet</p>}
+              {(detail.questions || []).length === 0 && <p className="p-4 text-sm text-espresso-400">{t('quizzes.noQuestions')}</p>}
             </div>
 
             <div className="space-y-2 rounded-xl bg-linen-50 p-4">
               <input
-                placeholder="Question text"
+                placeholder={t('quizzes.questionText')}
                 value={qForm.questionText}
                 onChange={(e) => setQForm((f) => ({ ...f, questionText: e.target.value }))}
                 className="w-full rounded-xl border border-linen-300 px-3 py-2 text-sm"
@@ -159,7 +168,7 @@ export default function QuizzesPage() {
                     onChange={() => setQForm((f) => ({ ...f, correctOptionIndex: i }))}
                   />
                   <input
-                    placeholder={`Option ${i + 1}`}
+                    placeholder={t('quizzes.option', { n: i + 1 })}
                     value={opt}
                     onChange={(e) => {
                       const options = [...qForm.options];
@@ -170,9 +179,9 @@ export default function QuizzesPage() {
                   />
                 </div>
               ))}
-              <p className="text-xs text-espresso-400">Select the radio button next to the correct answer.</p>
+              <p className="text-xs text-espresso-400">{t('quizzes.correctHint')}</p>
               <button onClick={addQuestion} className="w-full rounded-xl bg-carissma-600 py-2 text-sm font-semibold text-white hover:bg-carissma-700">
-                + Add question
+                {t('quizzes.addQuestion')}
               </button>
             </div>
           </div>

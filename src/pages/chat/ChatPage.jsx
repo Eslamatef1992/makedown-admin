@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import AdminLayout from '../../components/layout/AdminLayout';
 import { listResource, getResource } from '../../api/adminApi';
 
 export default function ChatPage() {
+  const { t } = useTranslation();
   const [threads, setThreads] = useState([]);
   const [activeId, setActiveId] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -20,27 +22,25 @@ export default function ChatPage() {
   };
 
   return (
-    <AdminLayout title="Chatting">
-      <p className="mb-4 text-sm text-espresso-500">
-        Read-only view of user-to-user conversations. Sending messages happens live on the website (Socket.io) — full moderation tools are a follow-up.
-      </p>
+    <AdminLayout title={t('chat.title')}>
+      <p className="mb-4 text-sm text-espresso-500">{t('chat.readOnlyNote')}</p>
       <div className="flex h-[calc(100vh-220px)] overflow-hidden rounded-2xl border border-linen-200 bg-white">
-        <div className="w-72 shrink-0 overflow-y-auto border-r border-linen-200">
-          {loading && <p className="p-4 text-sm text-espresso-400">Loading…</p>}
-          {!loading && threads.length === 0 && <p className="p-4 text-sm text-espresso-400">No conversations yet</p>}
-          {threads.map((t) => (
+        <div className="w-72 shrink-0 overflow-y-auto border-e border-linen-200">
+          {loading && <p className="p-4 text-sm text-espresso-400">{t('common.loading')}</p>}
+          {!loading && threads.length === 0 && <p className="p-4 text-sm text-espresso-400">{t('chat.noConversations')}</p>}
+          {threads.map((th) => (
             <button
-              key={t.id}
-              onClick={() => openThread(t.id)}
-              className={`block w-full border-b border-linen-100 p-4 text-left text-sm hover:bg-linen-50 ${activeId === t.id ? 'bg-carissma-50' : ''}`}
+              key={th.id}
+              onClick={() => openThread(th.id)}
+              className={`block w-full border-b border-linen-100 p-4 text-start text-sm hover:bg-linen-50 ${activeId === th.id ? 'bg-carissma-50' : ''}`}
             >
-              <p className="font-medium text-espresso-800">{t.participant_names || 'Conversation'}</p>
-              <p className="truncate text-espresso-500">{t.last_message || 'No messages yet'}</p>
+              <p className="font-medium text-espresso-800">{th.participant_names || t('chat.conversation')}</p>
+              <p className="truncate text-espresso-500">{th.last_message || t('chat.noMessagesYet')}</p>
             </button>
           ))}
         </div>
         <div className="flex-1 overflow-y-auto p-4">
-          {!activeId && <p className="text-sm text-espresso-400">Select a conversation</p>}
+          {!activeId && <p className="text-sm text-espresso-400">{t('chat.selectConversation')}</p>}
           {activeId && (
             <div className="space-y-3">
               {messages.map((m) => (

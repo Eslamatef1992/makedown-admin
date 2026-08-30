@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import AdminLayout from '../../components/layout/AdminLayout';
 import DataTable from '../../components/ui/DataTable';
 import Modal from '../../components/ui/Modal';
@@ -18,8 +19,10 @@ import { listResource, createResource, updateResource, deleteResource } from '..
  *  - fields: [{ name, label, type, required?, options? }]  (form for create/edit)
  *  - toForm(row) -> initial form state when editing (defaults to row itself)
  *  - searchable: boolean (adds a search box, sent as ?search=)
+ *  - addLabel / editLabel: optional overrides for the create/edit modal title
  */
-export default function CrudPage({ title, basePath, columns, fields, toForm, searchable = true }) {
+export default function CrudPage({ title, basePath, columns, fields, toForm, searchable = true, addLabel, editLabel }) {
+  const { t } = useTranslation();
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -71,14 +74,14 @@ export default function CrudPage({ title, basePath, columns, fields, toForm, sea
       setModalOpen(false);
       load();
     } catch (err) {
-      setError(err.response?.data?.message || 'Something went wrong');
+      setError(err.response?.data?.message || t('common.somethingWentWrong'));
     } finally {
       setSaving(false);
     }
   };
 
   const onDelete = async (row) => {
-    if (!confirm(`Delete this record?`)) return;
+    if (!confirm(t('common.confirmDelete'))) return;
     await deleteResource(`${basePath}/${row.id}`);
     load();
   };
@@ -90,7 +93,7 @@ export default function CrudPage({ title, basePath, columns, fields, toForm, sea
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search…"
+            placeholder={t('common.search')}
             className="w-64 rounded-xl border border-linen-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-carissma-500"
           />
         ) : (
@@ -98,7 +101,7 @@ export default function CrudPage({ title, basePath, columns, fields, toForm, sea
         )}
         {fields && (
           <button onClick={openCreate} className="rounded-xl bg-carissma-600 px-4 py-2 text-sm font-semibold text-white hover:bg-carissma-700">
-            + Add new
+            {t('common.addNew')}
           </button>
         )}
       </div>
@@ -114,19 +117,19 @@ export default function CrudPage({ title, basePath, columns, fields, toForm, sea
       {fields && (
         <Modal
           open={modalOpen}
-          title={editing ? 'Edit' : 'Add new'}
+          title={editing ? (editLabel || t('common.edit')) : (addLabel || t('common.addNew'))}
           onClose={() => setModalOpen(false)}
           footer={
             <>
               <button onClick={() => setModalOpen(false)} className="rounded-xl px-4 py-2 text-sm font-medium text-espresso-600 hover:bg-linen-100">
-                Cancel
+                {t('common.cancel')}
               </button>
               <button
                 onClick={onSave}
                 disabled={saving}
                 className="rounded-xl bg-carissma-600 px-4 py-2 text-sm font-semibold text-white hover:bg-carissma-700 disabled:opacity-60"
               >
-                {saving ? 'Saving…' : 'Save'}
+                {saving ? t('common.saving') : t('common.save')}
               </button>
             </>
           }

@@ -1,0 +1,223 @@
+{
+  "common": {
+    "search": "Search…",
+    "addNew": "+ Add new",
+    "edit": "Edit",
+    "delete": "Delete",
+    "save": "Save",
+    "saving": "Saving…",
+    "cancel": "Cancel",
+    "active": "Active",
+    "inactive": "Inactive",
+    "yes": "Yes",
+    "no": "No",
+    "manage": "Manage",
+    "loading": "Loading…",
+    "noRecords": "No records yet",
+    "confirmDelete": "Delete this record?",
+    "somethingWentWrong": "Something went wrong",
+    "select": "Select…",
+    "name": "Name",
+    "description": "Description",
+    "slug": "Slug",
+    "order": "Order",
+    "sortOrder": "Sort order",
+    "status": "Status",
+    "email": "Email",
+    "phone": "Phone",
+    "code": "Code",
+    "contactEmail": "Contact email",
+    "contactPhone": "Contact phone",
+    "address": "Address",
+    "url": "URL",
+    "platform": "Platform",
+    "price": "Price (KWD)",
+    "credits": "Credits",
+    "validityDays": "Validity (days)",
+    "date": "Date",
+    "createdAt": "Created",
+    "receivedAt": "Received",
+    "subject": "Subject",
+    "from": "From",
+    "message": "Message"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "admins": "Admins",
+    "roles": "Roles",
+    "userManagement": "User management",
+    "users": "Users",
+    "specialUsers": "Special users",
+    "education": "Education",
+    "schools": "Schools",
+    "games": "Games",
+    "categories": "Categories",
+    "gamesHistory": "Games history",
+    "orders": "Orders",
+    "ordersGuest": "Orders as a guest",
+    "chatting": "Chatting",
+    "ecommerce": "Ecommerce",
+    "products": "Products",
+    "packages": "Packages",
+    "getInTouch": "Get in touch",
+    "cms": "CMS",
+    "aboutUs": "About us",
+    "privacyPolicy": "Privacy policy",
+    "termsAndConditions": "Terms and conditions",
+    "returnPolicy": "Return policy",
+    "faq": "FAQ",
+    "contactUs": "Contact us",
+    "socialMedia": "Social media",
+    "howItWorks": "How it works",
+    "adminPanel": "Admin panel"
+  },
+  "login": {
+    "welcomeBack": "Welcome back",
+    "subtitle": "Sign in to Make Down",
+    "email": "Email",
+    "password": "Password",
+    "rememberMe": "Remember me",
+    "signIn": "Sign in",
+    "signingIn": "Signing in…",
+    "invalidCredentials": "Invalid email or password",
+    "footer": "All Rights Reserved By Teknulugy Company @{{year}}"
+  },
+  "topbar": {
+    "logout": "Log out",
+    "language": "العربية"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "couldNotLoad": "Could not load stats",
+    "totalUsers": "Total users",
+    "specialUsers": "Special users",
+    "totalSchools": "Active schools",
+    "totalProducts": "Active products",
+    "totalOrders": "Total orders",
+    "guestOrders": "Guest orders",
+    "pendingOrders": "Pending orders",
+    "revenue": "Revenue (KWD)",
+    "activeGameSessions": "Active game sessions",
+    "totalQuizzes": "Active games",
+    "newContactMessages": "New messages",
+    "totalPackagesSold": "Packages sold"
+  },
+  "admins": {
+    "title": "Admins",
+    "password": "Password (leave blank to keep current)",
+    "lastLogin": "Last login"
+  },
+  "roles": {
+    "title": "Roles",
+    "addRole": "Add role",
+    "editRole": "Edit role",
+    "confirmDelete": "Delete this role?",
+    "permissions": "Permissions",
+    "permissionsFor": "Permissions — {{name}}"
+  },
+  "users": {
+    "title": "Users",
+    "specialTitle": "Special users",
+    "searchPlaceholder": "Search by name, email or phone…",
+    "verified": "Verified",
+    "special": "Special"
+  },
+  "schools": {
+    "title": "Schools"
+  },
+  "gameCategories": {
+    "title": "Categories"
+  },
+  "products": {
+    "title": "Ecommerce — Products",
+    "basePrice": "Base price (KWD)",
+    "thumbnailUrl": "Thumbnail URL",
+    "variants": "Variants",
+    "variantsFor": "Variants — {{name}}",
+    "addProduct": "Add product",
+    "editProduct": "Edit product",
+    "confirmDelete": "Delete this product (and its variants)?",
+    "noVariants": "No variants yet",
+    "sku": "SKU",
+    "stock": "Stock",
+    "addVariant": "+ Add variant"
+  },
+  "productCategories": {
+    "title": "Ecommerce — Categories"
+  },
+  "packages": {
+    "title": "Packages"
+  },
+  "faqs": {
+    "title": "FAQ",
+    "question": "Question",
+    "answer": "Answer"
+  },
+  "socialLinks": {
+    "title": "Social media",
+    "platformHint": "Platform (e.g. Instagram)"
+  },
+  "contact": {
+    "title": "Get in touch",
+    "phone": "Phone",
+    "markReplied": "Mark as replied",
+    "messageFallback": "Message"
+  },
+  "gameSessions": {
+    "title": "Games history",
+    "game": "Game",
+    "mode": "Mode",
+    "school": "School",
+    "players": "Players",
+    "created": "Created",
+    "joinCode": "Join code",
+    "player": "Player",
+    "team": "Team",
+    "score": "Score",
+    "guest": "Guest"
+  },
+  "orders": {
+    "title": "Orders",
+    "guestTitle": "Orders as a guest",
+    "orderNumber": "Order #",
+    "customer": "Customer",
+    "payment": "Payment",
+    "total": "Total (KWD)",
+    "date": "Date",
+    "orderTitle": "Order {{number}}",
+    "guest": "Guest",
+    "total2": "Total: {{amount}} KWD"
+  },
+  "chat": {
+    "title": "Chatting",
+    "readOnlyNote": "Read-only view of user-to-user conversations. Sending messages happens live on the website (Socket.io) — full moderation tools are a follow-up.",
+    "noConversations": "No conversations yet",
+    "noMessagesYet": "No messages yet",
+    "conversation": "Conversation",
+    "selectConversation": "Select a conversation"
+  },
+  "cms": {
+    "pageTitle": "Page title",
+    "content": "Content (HTML)",
+    "saved": "Saved"
+  },
+  "quizzes": {
+    "title": "Education — Games",
+    "difficulty": "Difficulty",
+    "easy": "Easy",
+    "medium": "Medium",
+    "hard": "Hard",
+    "coverImageUrl": "Cover image URL",
+    "questions": "Questions",
+    "questionsFor": "Questions — {{title}}",
+    "addGame": "Add game",
+    "editGame": "Edit game",
+    "confirmDelete": "Delete this game (and its questions)?",
+    "noQuestions": "No questions yet",
+    "questionText": "Question text",
+    "option": "Option {{n}}",
+    "correctHint": "Select the radio button next to the correct answer.",
+    "addQuestion": "+ Add question",
+    "minOptionsAlert": "Add at least 2 options"
+  }
+}
