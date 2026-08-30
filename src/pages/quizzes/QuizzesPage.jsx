@@ -4,7 +4,18 @@ import AdminLayout from '../../components/layout/AdminLayout';
 import DataTable from '../../components/ui/DataTable';
 import Modal from '../../components/ui/Modal';
 import Field from '../../components/ui/Field';
+import BilingualField from '../../components/ui/BilingualField';
 import { listResource, getResource, createResource, updateResource, deleteResource } from '../../api/adminApi';
+
+const EMPTY_QUESTION = {
+  questionTextEn: '',
+  questionTextAr: '',
+  optionsEn: ['', '', '', ''],
+  optionsAr: ['', '', '', ''],
+  correctOptionIndex: 0,
+  points: 100,
+  timeLimitSeconds: 20,
+};
 
 export default function QuizzesPage() {
   const { t } = useTranslation();
@@ -18,11 +29,13 @@ export default function QuizzesPage() {
 
   const [detailOpen, setDetailOpen] = useState(false);
   const [detail, setDetail] = useState(null);
-  const [qForm, setQForm] = useState({ questionText: '', options: ['', '', '', ''], correctOptionIndex: 0, points: 100, timeLimitSeconds: 20 });
+  const [qForm, setQForm] = useState(EMPTY_QUESTION);
 
+  const bilingualQuizFields = [
+    { name: 'title', label: t('common.name'), bilingual: true, required: true },
+    { name: 'description', label: t('common.description'), bilingual: true, type: 'textarea', required: false },
+  ];
   const quizFields = [
-    { name: 'title', label: t('common.name'), required: true },
-    { name: 'description', label: t('common.description'), type: 'textarea' },
     {
       name: 'difficulty',
       label: t('quizzes.difficulty'),
@@ -55,7 +68,9 @@ export default function QuizzesPage() {
   const openEdit = (row) => {
     setEditing(row);
     setForm({
-      title: row.title, description: row.description, difficulty: row.difficulty,
+      titleEn: row.title_en, titleAr: row.title_ar,
+      descriptionEn: row.description_en, descriptionAr: row.description_ar,
+      difficulty: row.difficulty,
       coverImageUrl: row.cover_image_url, isActive: Boolean(row.is_active),
     });
     setModalOpen(true);
@@ -77,10 +92,22 @@ export default function QuizzesPage() {
     setDetailOpen(true);
   };
 
+  const setOption = (lang, index, value) => {
+    setQForm((f) => {
+      const key = lang === 'en' ? 'optionsEn' : 'optionsAr';
+      const options = [...f[key]];
+      options[index] = value;
+      return { ...f, [key]: options };
+    });
+  };
+
   const addQuestion = async () => {
-    if (qForm.options.filter((o) => o.trim()).length < 2) return alert(t('quizzes.minOptionsAlert'));
+    const filledEn = qForm.optionsEn.filter((o) => o.trim()).length;
+    const filledAr = qForm.optionsAr.filter((o) => o.trim()).length;
+    if (!qForm.questionTextEn.trim() || !qForm.questionTextAr.trim()) return alert(t('quizzes.questionTextBothRequired'));
+    if (filledEn < 2 || filledAr < 2) return alert(t('quizzes.minOptionsAlert'));
     await createResource(`/admin/quizzes/${detail.id}/questions`, qForm);
-    setQForm({ questionText: '', options: ['', '', '', ''], correctOptionIndex: 0, points: 100, timeLimitSeconds: 20 });
+    setQForm(EMPTY_QUESTION);
     setDetail(await getResource(`/admin/quizzes/${detail.id}`));
   };
 
@@ -105,7 +132,7 @@ export default function QuizzesPage() {
         loading={loading}
         rows={rows}
         columns={[
-          { key: 'title', label: t('common.name') },
+          { key: 'title_en', label: t('common.name') },
           { key: 'difficulty', label: t('quizzes.difficulty') },
           {
             key: 'questions',
@@ -129,21 +156,25 @@ export default function QuizzesPage() {
           </>
         }
       >
+        {bilingualQuizFields.map((f) => (
+          <BilingualField key={f.name} field={f} form={form} onChange={(name, v) => setForm((s) => ({ ...s, [name]: v }))} />
+        ))}
         {quizFields.map((f) => (
           <Field key={f.name} field={f} value={form[f.name]} onChange={(name, v) => setForm((s) => ({ ...s, [name]: v }))} />
         ))}
       </Modal>
 
-      <Modal open={detailOpen} title={detail ? t('quizzes.questionsFor', { title: detail.title }) : ''} onClose={() => setDetailOpen(false)}>
+      <Modal open={detailOpen} title={detail ? t('quizzes.questionsFor', { title: detail.title_en }) : ''} onClose={() => setDetailOpen(false)}>
         {detail && (
           <div className="space-y-4">
             <div className="rounded-xl border border-linen-200">
               {(detail.questions || []).map((q) => (
                 <div key={q.id} className="flex items-start justify-between border-b border-linen-100 px-4 py-3 text-sm last:border-0">
                   <div>
-                    <p className="font-medium text-espresso-800">{q.question_text}</p>
+                    <p className="font-medium text-espresso-800">{q.question_text_en}</p>
+                    <p dir="rtl" className="text-espresso-700">{q.question_text_ar}</p>
                     <p className="text-espresso-500">
-                      {JSON.parse(q.options_json).map((o, i) => `${i === q.correct_option_index ? '✓ ' : ''}${o}`).join(' · ')}
+                      {JSON.parse(q.options_json_en).map((o, i) => `${i === q.correct_option_index ? '✓ ' : ''}${o}`).join(' · ')}
                     </p>
                   </div>
                   <button onClick={() => deleteQuestion(q.id)} className="shrink-0 font-medium text-carnation-600 hover:underline">{t('common.delete')}</button>
@@ -154,12 +185,20 @@ export default function QuizzesPage() {
 
             <div className="space-y-2 rounded-xl bg-linen-50 p-4">
               <input
-                placeholder={t('quizzes.questionText')}
-                value={qForm.questionText}
-                onChange={(e) => setQForm((f) => ({ ...f, questionText: e.target.value }))}
+                placeholder={`${t('quizzes.questionText')} — ${t('common.english')}`}
+                value={qForm.questionTextEn}
+                dir="ltr"
+                onChange={(e) => setQForm((f) => ({ ...f, questionTextEn: e.target.value }))}
                 className="w-full rounded-xl border border-linen-300 px-3 py-2 text-sm"
               />
-              {qForm.options.map((opt, i) => (
+              <input
+                placeholder={`${t('quizzes.questionText')} — ${t('common.arabic')}`}
+                value={qForm.questionTextAr}
+                dir="rtl"
+                onChange={(e) => setQForm((f) => ({ ...f, questionTextAr: e.target.value }))}
+                className="w-full rounded-xl border border-linen-300 px-3 py-2 text-sm"
+              />
+              {qForm.optionsEn.map((_, i) => (
                 <div key={i} className="flex items-center gap-2">
                   <input
                     type="radio"
@@ -168,13 +207,17 @@ export default function QuizzesPage() {
                     onChange={() => setQForm((f) => ({ ...f, correctOptionIndex: i }))}
                   />
                   <input
-                    placeholder={t('quizzes.option', { n: i + 1 })}
-                    value={opt}
-                    onChange={(e) => {
-                      const options = [...qForm.options];
-                      options[i] = e.target.value;
-                      setQForm((f) => ({ ...f, options }));
-                    }}
+                    placeholder={`${t('quizzes.option', { n: i + 1 })} (${t('common.english')})`}
+                    value={qForm.optionsEn[i]}
+                    dir="ltr"
+                    onChange={(e) => setOption('en', i, e.target.value)}
+                    className="flex-1 rounded-xl border border-linen-300 px-3 py-2 text-sm"
+                  />
+                  <input
+                    placeholder={`${t('quizzes.option', { n: i + 1 })} (${t('common.arabic')})`}
+                    value={qForm.optionsAr[i]}
+                    dir="rtl"
+                    onChange={(e) => setOption('ar', i, e.target.value)}
                     className="flex-1 rounded-xl border border-linen-300 px-3 py-2 text-sm"
                   />
                 </div>

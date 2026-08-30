@@ -4,6 +4,7 @@ import AdminLayout from '../../components/layout/AdminLayout';
 import DataTable from '../../components/ui/DataTable';
 import Modal from '../../components/ui/Modal';
 import Field from '../../components/ui/Field';
+import BilingualField from '../../components/ui/BilingualField';
 import { listResource, createResource, updateResource, deleteResource } from '../../api/adminApi';
 
 /**
@@ -135,9 +136,13 @@ export default function CrudPage({ title, basePath, columns, fields, toForm, sea
           }
         >
           {error && <p className="mb-4 rounded-xl bg-carnation-50 px-3 py-2 text-sm text-carnation-700">{error}</p>}
-          {fields.map((field) => (
-            <Field key={field.name} field={field} value={form[field.name]} onChange={onFieldChange} />
-          ))}
+          {fields.map((field) =>
+            field.bilingual ? (
+              <BilingualField key={field.name} field={field} form={form} onChange={onFieldChange} />
+            ) : (
+              <Field key={field.name} field={field} value={form[field.name]} onChange={onFieldChange} />
+            )
+          )}
         </Modal>
       )}
     </AdminLayout>

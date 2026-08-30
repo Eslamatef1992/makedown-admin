@@ -9,17 +9,24 @@ export default function FaqsPage() {
       basePath="/admin/cms/faqs"
       searchable={false}
       columns={[
-        { key: 'question', label: t('faqs.question') },
+        { key: 'question_en', label: t('faqs.question') },
         { key: 'sort_order', label: t('common.order') },
         { key: 'is_active', label: t('common.active'), render: (r) => (r.is_active ? t('common.yes') : t('common.no')) },
       ]}
       fields={[
-        { name: 'question', label: t('faqs.question'), required: true },
-        { name: 'answer', label: t('faqs.answer'), type: 'textarea', required: true },
+        { name: 'question', label: t('faqs.question'), bilingual: true, required: true },
+        { name: 'answer', label: t('faqs.answer'), bilingual: true, type: 'textarea', required: true },
         { name: 'sortOrder', label: t('common.sortOrder'), type: 'number' },
         { name: 'isActive', label: t('common.active'), type: 'checkbox' },
       ]}
-      toForm={(row) => ({ question: row.question, answer: row.answer, sortOrder: row.sort_order, isActive: Boolean(row.is_active) })}
+      toForm={(row) => ({
+        questionEn: row.question_en,
+        questionAr: row.question_ar,
+        answerEn: row.answer_en,
+        answerAr: row.answer_ar,
+        sortOrder: row.sort_order,
+        isActive: Boolean(row.is_active),
+      })}
     />
   );
 }

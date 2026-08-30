@@ -4,6 +4,7 @@ import AdminLayout from '../../components/layout/AdminLayout';
 import DataTable from '../../components/ui/DataTable';
 import Modal from '../../components/ui/Modal';
 import Field from '../../components/ui/Field';
+import BilingualField from '../../components/ui/BilingualField';
 import { listResource, getResource, createResource, updateResource, deleteResource } from '../../api/adminApi';
 
 export default function ProductsPage() {
@@ -20,10 +21,12 @@ export default function ProductsPage() {
   const [detail, setDetail] = useState(null);
   const [variantForm, setVariantForm] = useState({ sku: '', price: '', stockQuantity: 0 });
 
+  const bilingualFields = [
+    { name: 'name', label: t('common.name'), bilingual: true, required: true },
+    { name: 'description', label: t('common.description'), bilingual: true, type: 'textarea', required: false },
+  ];
   const productFields = [
-    { name: 'name', label: t('common.name'), required: true },
     { name: 'slug', label: t('common.slug'), required: true },
-    { name: 'description', label: t('common.description'), type: 'textarea' },
     { name: 'basePrice', label: t('products.basePrice'), type: 'number', required: true },
     { name: 'thumbnailUrl', label: t('products.thumbnailUrl') },
     { name: 'isActive', label: t('common.active'), type: 'checkbox' },
@@ -51,9 +54,11 @@ export default function ProductsPage() {
   const openEdit = (row) => {
     setEditing(row);
     setForm({
-      name: row.name,
+      nameEn: row.name_en,
+      nameAr: row.name_ar,
       slug: row.slug,
-      description: row.description,
+      descriptionEn: row.description_en,
+      descriptionAr: row.description_ar,
       basePrice: row.base_price,
       thumbnailUrl: row.thumbnail_url,
       isActive: Boolean(row.is_active),
@@ -110,7 +115,7 @@ export default function ProductsPage() {
         loading={loading}
         rows={rows}
         columns={[
-          { key: 'name', label: t('common.name') },
+          { key: 'name_en', label: t('common.name') },
           { key: 'base_price', label: t('products.basePrice') },
           {
             key: 'variants',
@@ -138,6 +143,9 @@ export default function ProductsPage() {
           </>
         }
       >
+        {bilingualFields.map((f) => (
+          <BilingualField key={f.name} field={f} form={form} onChange={(name, v) => setForm((s) => ({ ...s, [name]: v }))} />
+        ))}
         {productFields.map((f) => (
           <Field key={f.name} field={f} value={form[f.name]} onChange={(name, v) => setForm((s) => ({ ...s, [name]: v }))} />
         ))}

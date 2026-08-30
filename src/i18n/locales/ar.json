@@ -39,7 +39,9 @@
     "receivedAt": "تاريخ الاستلام",
     "subject": "الموضوع",
     "from": "من",
-    "message": "الرسالة"
+    "message": "الرسالة",
+    "english": "الإنجليزية",
+    "arabic": "العربية"
   },
   "nav": {
     "dashboard": "لوحة التحكم",
@@ -218,6 +220,7 @@
     "option": "الخيار {{n}}",
     "correctHint": "اختر زر الاختيار بجانب الإجابة الصحيحة.",
     "addQuestion": "+ إضافة سؤال",
-    "minOptionsAlert": "أضف خيارين على الأقل"
+    "minOptionsAlert": "أضف خيارين على الأقل",
+    "questionTextBothRequired": "نص السؤال مطلوب باللغتين الإنجليزية والعربية"
   }
 }

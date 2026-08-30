@@ -11,6 +11,7 @@ export default function Field({ field, value, onChange }) {
       'w-full rounded-xl border border-linen-300 px-3 py-2.5 text-sm text-espresso-900 focus:outline-none focus:ring-2 focus:ring-carissma-500',
     placeholder: field.placeholder,
     required: field.required,
+    dir: field.dir,
   };
 
   return (

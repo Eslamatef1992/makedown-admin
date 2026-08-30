@@ -8,13 +8,13 @@ export default function SchoolsPage() {
       title={t('schools.title')}
       basePath="/admin/schools"
       columns={[
-        { key: 'name', label: t('common.name') },
+        { key: 'name_en', label: t('common.name') },
         { key: 'code', label: t('common.code') },
         { key: 'contact_email', label: t('common.contactEmail') },
         { key: 'is_active', label: t('common.active'), render: (r) => (r.is_active ? t('common.yes') : t('common.no')) },
       ]}
       fields={[
-        { name: 'name', label: t('common.name'), required: true },
+        { name: 'name', label: t('common.name'), bilingual: true, required: true },
         { name: 'code', label: t('common.code'), required: true },
         { name: 'contactEmail', label: t('common.contactEmail'), type: 'email' },
         { name: 'contactPhone', label: t('common.contactPhone') },
@@ -22,7 +22,8 @@ export default function SchoolsPage() {
         { name: 'isActive', label: t('common.active'), type: 'checkbox' },
       ]}
       toForm={(row) => ({
-        name: row.name,
+        nameEn: row.name_en,
+        nameAr: row.name_ar,
         code: row.code,
         contactEmail: row.contact_email,
         contactPhone: row.contact_phone,

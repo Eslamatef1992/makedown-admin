@@ -39,7 +39,9 @@
     "receivedAt": "Received",
     "subject": "Subject",
     "from": "From",
-    "message": "Message"
+    "message": "Message",
+    "english": "English",
+    "arabic": "Arabic"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -218,6 +220,7 @@
     "option": "Option {{n}}",
     "correctHint": "Select the radio button next to the correct answer.",
     "addQuestion": "+ Add question",
-    "minOptionsAlert": "Add at least 2 options"
+    "minOptionsAlert": "Add at least 2 options",
+    "questionTextBothRequired": "Question text is required in both English and Arabic"
   }
 }
