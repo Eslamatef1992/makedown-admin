@@ -6,6 +6,7 @@ import Modal from '../../components/ui/Modal';
 import Field from '../../components/ui/Field';
 import BilingualField from '../../components/ui/BilingualField';
 import { listResource, createResource, updateResource, deleteResource } from '../../api/adminApi';
+import { findMissingField } from '../../utils/validateFields';
 
 /**
  * Generic list + create/edit modal + delete page, driven entirely by config.
@@ -64,6 +65,10 @@ export default function CrudPage({ title, basePath, columns, fields, toForm, sea
   const onFieldChange = (name, value) => setForm((f) => ({ ...f, [name]: value }));
 
   const onSave = async () => {
+    if (findMissingField(fields, form)) {
+      setError(t('common.fillRequired'));
+      return;
+    }
     setSaving(true);
     setError('');
     try {

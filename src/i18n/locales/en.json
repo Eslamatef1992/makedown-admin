@@ -41,7 +41,8 @@
     "from": "From",
     "message": "Message",
     "english": "English",
-    "arabic": "Arabic"
+    "arabic": "Arabic",
+    "fillRequired": "Please fill in all required fields, including both English and Arabic where applicable."
   },
   "nav": {
     "dashboard": "Dashboard",

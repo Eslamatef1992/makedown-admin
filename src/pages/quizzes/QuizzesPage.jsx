@@ -6,6 +6,7 @@ import Modal from '../../components/ui/Modal';
 import Field from '../../components/ui/Field';
 import BilingualField from '../../components/ui/BilingualField';
 import { listResource, getResource, createResource, updateResource, deleteResource } from '../../api/adminApi';
+import { findMissingField } from '../../utils/validateFields';
 
 const EMPTY_QUESTION = {
   questionTextEn: '',
@@ -26,6 +27,7 @@ export default function QuizzesPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState({});
+  const [error, setError] = useState('');
 
   const [detailOpen, setDetailOpen] = useState(false);
   const [detail, setDetail] = useState(null);
@@ -64,7 +66,7 @@ export default function QuizzesPage() {
     load();
   }, [load]);
 
-  const openCreate = () => { setEditing(null); setForm({}); setModalOpen(true); };
+  const openCreate = () => { setEditing(null); setForm({}); setError(''); setModalOpen(true); };
   const openEdit = (row) => {
     setEditing(row);
     setForm({
@@ -73,9 +75,15 @@ export default function QuizzesPage() {
       difficulty: row.difficulty,
       coverImageUrl: row.cover_image_url, isActive: Boolean(row.is_active),
     });
+    setError('');
     setModalOpen(true);
   };
   const onSave = async () => {
+    if (findMissingField([...bilingualQuizFields, ...quizFields], form)) {
+      setError(t('common.fillRequired'));
+      return;
+    }
+    setError('');
     if (editing) await updateResource(`/admin/quizzes/${editing.id}`, form);
     else await createResource('/admin/quizzes', form);
     setModalOpen(false);
@@ -156,6 +164,7 @@ export default function QuizzesPage() {
           </>
         }
       >
+        {error && <p className="mb-4 rounded-xl bg-carnation-50 px-3 py-2 text-sm text-carnation-700">{error}</p>}
         {bilingualQuizFields.map((f) => (
           <BilingualField key={f.name} field={f} form={form} onChange={(name, v) => setForm((s) => ({ ...s, [name]: v }))} />
         ))}

@@ -6,6 +6,7 @@ import Modal from '../../components/ui/Modal';
 import Field from '../../components/ui/Field';
 import BilingualField from '../../components/ui/BilingualField';
 import { listResource, getResource, createResource, updateResource, deleteResource } from '../../api/adminApi';
+import { findMissingField } from '../../utils/validateFields';
 
 export default function ProductsPage() {
   const { t } = useTranslation();
@@ -16,6 +17,7 @@ export default function ProductsPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState({});
+  const [error, setError] = useState('');
 
   const [detailOpen, setDetailOpen] = useState(false);
   const [detail, setDetail] = useState(null);
@@ -49,6 +51,7 @@ export default function ProductsPage() {
   const openCreate = () => {
     setEditing(null);
     setForm({});
+    setError('');
     setModalOpen(true);
   };
   const openEdit = (row) => {
@@ -63,9 +66,15 @@ export default function ProductsPage() {
       thumbnailUrl: row.thumbnail_url,
       isActive: Boolean(row.is_active),
     });
+    setError('');
     setModalOpen(true);
   };
   const onSave = async () => {
+    if (findMissingField([...bilingualFields, ...productFields], form)) {
+      setError(t('common.fillRequired'));
+      return;
+    }
+    setError('');
     if (editing) await updateResource(`/admin/products/${editing.id}`, form);
     else await createResource('/admin/products', form);
     setModalOpen(false);
@@ -143,6 +152,7 @@ export default function ProductsPage() {
           </>
         }
       >
+        {error && <p className="mb-4 rounded-xl bg-carnation-50 px-3 py-2 text-sm text-carnation-700">{error}</p>}
         {bilingualFields.map((f) => (
           <BilingualField key={f.name} field={f} form={form} onChange={(name, v) => setForm((s) => ({ ...s, [name]: v }))} />
         ))}
@@ -151,7 +161,7 @@ export default function ProductsPage() {
         ))}
       </Modal>
 
-      <Modal open={detailOpen} title={detail ? t('products.variantsFor', { name: detail.name }) : ''} onClose={() => setDetailOpen(false)}>
+      <Modal open={detailOpen} title={detail ? t('products.variantsFor', { name: detail.name_en }) : ''} onClose={() => setDetailOpen(false)}>
         {detail && (
           <div className="space-y-4">
             <div className="rounded-xl border border-linen-200">
