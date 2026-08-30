@@ -104,7 +104,7 @@ export default function Login() {
                 value={form.email}
                 onChange={onChange}
                 required
-                className="w-full rounded-2xl border border-carissma-200 bg-carissma-50 px-4 py-3 text-carissma-400 placeholder:text-carissma-200 focus:outline-none focus:ring-2 focus:ring-carissma-400"
+                className="w-full rounded-2xl border border-carissma-200 bg-white px-4 py-3 text-espresso-900 placeholder:text-carissma-300 focus:outline-none focus:ring-2 focus:ring-carissma-400"
               />
               {emailValid && (
                 <span className="pointer-events-none absolute inset-y-0 end-4 flex items-center">
@@ -124,7 +124,7 @@ export default function Login() {
                 value={form.password}
                 onChange={onChange}
                 required
-                className="w-full rounded-2xl border border-carissma-200 bg-carissma-50 px-4 py-3 text-carissma-400 placeholder:text-carissma-200 focus:outline-none focus:ring-2 focus:ring-carissma-400"
+                className="w-full rounded-2xl border border-carissma-200 bg-white px-4 py-3 text-espresso-900 placeholder:text-carissma-300 focus:outline-none focus:ring-2 focus:ring-carissma-400"
               />
               <button
                 type="button"
@@ -159,9 +159,14 @@ export default function Login() {
           </button>
         </form>
 
-        <p className="mt-8 text-center text-xs font-bold text-espresso-900">
+        <a
+          href="https://teknulugy.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-8 block text-center text-xs font-bold text-espresso-900 transition hover:text-carissma-500 hover:underline"
+        >
           {t('login.footer', { year: new Date().getFullYear() })}
-        </p>
+        </a>
       </div>
     </div>
   );
