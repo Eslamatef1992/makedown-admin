@@ -48,7 +48,9 @@
     "remove": "Remove",
     "logo": "Logo",
     "icon": "Icon",
-    "image": "Image"
+    "image": "Image",
+    "show": "Show password",
+    "hide": "Hide password"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -81,8 +83,8 @@
     "adminPanel": "Admin panel"
   },
   "login": {
-    "welcomeBack": "Welcome back",
-    "subtitle": "Sign in to Make Down",
+    "welcomeBack": "Welcome Back",
+    "subtitle": "Sign In To Make Down",
     "email": "Email",
     "password": "Password",
     "rememberMe": "Remember me",
