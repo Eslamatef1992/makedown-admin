@@ -148,6 +148,7 @@
     "verified": "Verified",
     "special": "Special",
     "addSpecialUser": "+ Add special user",
+    "editSpecialUser": "Edit special user",
     "firstName": "First name",
     "lastName": "Last name",
     "password": "Password",

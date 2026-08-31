@@ -10,6 +10,7 @@ const EMPTY_FORM = {
   firstName: '',
   lastName: '',
   email: '',
+  phone: '',
   password: '',
   followersCount: 0,
   followingCount: 0,
@@ -24,6 +25,7 @@ export default function UsersPage() {
   const [search, setSearch] = useState('');
 
   const [modalOpen, setModalOpen] = useState(false);
+  const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(EMPTY_FORM);
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
@@ -55,24 +57,50 @@ export default function UsersPage() {
   };
 
   const openCreate = () => {
+    setEditing(null);
     setForm(EMPTY_FORM);
     setError('');
     setModalOpen(true);
   };
 
+  const openEdit = (row) => {
+    setEditing(row);
+    setForm({
+      firstName: row.first_name || '',
+      lastName: row.last_name || '',
+      email: row.email || '',
+      phone: row.phone || '',
+      password: '',
+      followersCount: row.followers_count ?? 0,
+      followingCount: row.following_count ?? 0,
+    });
+    setError('');
+    setModalOpen(true);
+  };
+
   const onSave = async () => {
-    if (!form.firstName || !form.lastName || !form.email || !form.password) {
+    if (!form.firstName || !form.lastName || (!editing && (!form.email || !form.password))) {
       setError(t('common.fillRequired'));
       return;
     }
     setError('');
     setSaving(true);
     try {
-      await createResource('/admin/users', {
-        ...form,
-        followersCount: Number(form.followersCount) || 0,
-        followingCount: Number(form.followingCount) || 0,
-      });
+      if (editing) {
+        await updateResource(`/admin/users/${editing.id}`, {
+          firstName: form.firstName,
+          lastName: form.lastName,
+          phone: form.phone,
+          followersCount: Number(form.followersCount) || 0,
+          followingCount: Number(form.followingCount) || 0,
+        });
+      } else {
+        await createResource('/admin/users', {
+          ...form,
+          followersCount: Number(form.followersCount) || 0,
+          followingCount: Number(form.followingCount) || 0,
+        });
+      }
       setModalOpen(false);
       load();
     } catch (err) {
@@ -130,11 +158,11 @@ export default function UsersPage() {
         )}
       </div>
 
-      <DataTable loading={loading} rows={rows} columns={columns} />
+      <DataTable loading={loading} rows={rows} columns={columns} onEdit={isSpecial ? openEdit : undefined} />
 
       <Modal
         open={modalOpen}
-        title={t('users.addSpecialUser')}
+        title={editing ? t('users.editSpecialUser') : t('users.addSpecialUser')}
         onClose={() => setModalOpen(false)}
         footer={
           <>
@@ -172,25 +200,38 @@ export default function UsersPage() {
           </div>
         </div>
 
-        <div className="mb-4">
-          <span className="mb-1.5 block text-sm font-medium text-espresso-800">{t('common.email')}</span>
-          <input
-            type="email"
-            value={form.email}
-            onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
-            className="w-full rounded-xl border border-linen-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-carissma-500"
-          />
+        <div className="mb-4 grid grid-cols-2 gap-3">
+          <div>
+            <span className="mb-1.5 block text-sm font-medium text-espresso-800">{t('common.email')}</span>
+            <input
+              type="email"
+              value={form.email}
+              disabled={Boolean(editing)}
+              onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
+              className="w-full rounded-xl border border-linen-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-carissma-500 disabled:bg-linen-50 disabled:text-espresso-400"
+            />
+          </div>
+          <div>
+            <span className="mb-1.5 block text-sm font-medium text-espresso-800">{t('common.phone')}</span>
+            <input
+              value={form.phone}
+              onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
+              className="w-full rounded-xl border border-linen-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-carissma-500"
+            />
+          </div>
         </div>
 
-        <div className="mb-4">
-          <span className="mb-1.5 block text-sm font-medium text-espresso-800">{t('users.password')}</span>
-          <input
-            type="password"
-            value={form.password}
-            onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))}
-            className="w-full rounded-xl border border-linen-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-carissma-500"
-          />
-        </div>
+        {!editing && (
+          <div className="mb-4">
+            <span className="mb-1.5 block text-sm font-medium text-espresso-800">{t('users.password')}</span>
+            <input
+              type="password"
+              value={form.password}
+              onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))}
+              className="w-full rounded-xl border border-linen-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-carissma-500"
+            />
+          </div>
+        )}
 
         <div className="grid grid-cols-2 gap-3">
           <div>
