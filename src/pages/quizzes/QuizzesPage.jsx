@@ -72,7 +72,7 @@ export default function QuizzesPage() {
 
   const bilingualQuizFields = [
     { name: 'title', label: t('common.name'), bilingual: true, required: true },
-    { name: 'description', label: t('common.description'), bilingual: true, type: 'textarea', required: false },
+    { name: 'description', label: t('quizzes.howToPlay'), bilingual: true, type: 'textarea', required: false },
   ];
   const quizFields = [
     {
