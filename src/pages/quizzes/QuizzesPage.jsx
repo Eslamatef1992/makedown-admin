@@ -6,7 +6,7 @@ import Modal from '../../components/ui/Modal';
 import Field from '../../components/ui/Field';
 import BilingualField from '../../components/ui/BilingualField';
 import ImageField from '../../components/ui/ImageField';
-import { listResource, getResource, createResource, updateResource, deleteResource } from '../../api/adminApi';
+import { listResource, getResource, createResource, updateResource, deleteResource, uploadImage } from '../../api/adminApi';
 import { findMissingField } from '../../utils/validateFields';
 
 const EMPTY_QUESTION = {
@@ -17,7 +17,16 @@ const EMPTY_QUESTION = {
   correctOptionIndex: 0,
   points: 100,
   timeLimitSeconds: 20,
+  questionType: 'text',
+  mediaUrl: '',
 };
+
+const QUESTION_TYPES = [
+  { value: 'text', label: 'Text' },
+  { value: 'image', label: 'Image' },
+  { value: 'audio', label: 'Audio (listening)' },
+  { value: 'qr', label: 'QR-gated' },
+];
 
 export default function QuizzesPage() {
   const { t } = useTranslation();
@@ -33,6 +42,7 @@ export default function QuizzesPage() {
   const [detailOpen, setDetailOpen] = useState(false);
   const [detail, setDetail] = useState(null);
   const [qForm, setQForm] = useState(EMPTY_QUESTION);
+  const [mediaUploading, setMediaUploading] = useState(false);
 
   const bilingualQuizFields = [
     { name: 'title', label: t('common.name'), bilingual: true, required: true },
@@ -199,6 +209,23 @@ export default function QuizzesPage() {
             </div>
 
             <div className="space-y-2 rounded-xl bg-linen-50 p-4">
+              <div className="flex flex-wrap gap-2">
+                {QUESTION_TYPES.map((qt) => (
+                  <button
+                    key={qt.value}
+                    type="button"
+                    onClick={() => setQForm((f) => ({ ...f, questionType: qt.value }))}
+                    className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition ${
+                      qForm.questionType === qt.value
+                        ? 'border-carissma-500 bg-carissma-600 text-white'
+                        : 'border-linen-300 text-espresso-600 hover:border-carissma-300'
+                    }`}
+                  >
+                    {qt.label}
+                  </button>
+                ))}
+              </div>
+
               <input
                 placeholder={`${t('quizzes.questionText')} — ${t('common.english')}`}
                 value={qForm.questionTextEn}
@@ -213,6 +240,70 @@ export default function QuizzesPage() {
                 onChange={(e) => setQForm((f) => ({ ...f, questionTextAr: e.target.value }))}
                 className="w-full rounded-xl border border-linen-300 px-3 py-2 text-sm"
               />
+
+              {(qForm.questionType === 'image' || qForm.questionType === 'audio') && (
+                <div>
+                  <span className="mb-1.5 block text-xs font-medium text-espresso-600">
+                    {qForm.questionType === 'image' ? 'Question image' : 'Audio clip'}
+                  </span>
+                  {qForm.mediaUrl && (
+                    <div className="mb-2 flex items-center gap-3">
+                      {qForm.questionType === 'image' ? (
+                        <img src={qForm.mediaUrl} alt="" className="h-16 w-16 rounded-xl border border-linen-200 object-cover" />
+                      ) : (
+                        <audio controls src={qForm.mediaUrl} className="h-9" />
+                      )}
+                      <button type="button" onClick={() => setQForm((f) => ({ ...f, mediaUrl: '' }))} className="text-xs font-medium text-carnation-600 hover:underline">
+                        {t('common.remove')}
+                      </button>
+                    </div>
+                  )}
+                  <input
+                    type="file"
+                    accept={qForm.questionType === 'image' ? 'image/*' : 'audio/*'}
+                    disabled={mediaUploading}
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      setMediaUploading(true);
+                      try {
+                        const url = await uploadImage(file);
+                        setQForm((f) => ({ ...f, mediaUrl: url }));
+                      } finally {
+                        setMediaUploading(false);
+                        e.target.value = '';
+                      }
+                    }}
+                    className="w-full rounded-xl border border-linen-300 px-3 py-2 text-sm file:me-3 file:rounded-lg file:border-0 file:bg-carissma-100 file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-carissma-700 hover:file:bg-carissma-200"
+                  />
+                  {mediaUploading && <p className="mt-1 text-xs text-espresso-400">{t('common.uploading')}</p>}
+                </div>
+              )}
+              {qForm.questionType === 'qr' && (
+                <p className="rounded-xl bg-carissma-50 px-3 py-2 text-xs text-carissma-700">
+                  Players must scan a QR code shown on screen before this question's timer starts — no extra media needed.
+                </p>
+              )}
+
+              <div className="flex gap-2">
+                <input
+                  type="number"
+                  min={0}
+                  placeholder="Points"
+                  value={qForm.points}
+                  onChange={(e) => setQForm((f) => ({ ...f, points: Number(e.target.value) }))}
+                  className="w-1/2 rounded-xl border border-linen-300 px-3 py-2 text-sm"
+                />
+                <input
+                  type="number"
+                  min={5}
+                  placeholder="Time limit (seconds)"
+                  value={qForm.timeLimitSeconds}
+                  onChange={(e) => setQForm((f) => ({ ...f, timeLimitSeconds: Number(e.target.value) }))}
+                  className="w-1/2 rounded-xl border border-linen-300 px-3 py-2 text-sm"
+                />
+              </div>
+
               {qForm.optionsEn.map((_, i) => (
                 <div key={i} className="flex items-center gap-2">
                   <input
