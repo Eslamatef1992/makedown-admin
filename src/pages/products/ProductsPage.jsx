@@ -27,6 +27,7 @@ export default function ProductsPage() {
   const [uploadingImage, setUploadingImage] = useState(false);
   const [imageError, setImageError] = useState('');
   const [variantError, setVariantError] = useState('');
+  const [pendingImages, setPendingImages] = useState([]); // new-product images picked before the product exists yet
 
   const [variantTypes, setVariantTypes] = useState([]);
   const [selectedTypeValues, setSelectedTypeValues] = useState({});
@@ -69,6 +70,7 @@ export default function ProductsPage() {
     setEditing(null);
     setForm({});
     setError('');
+    setPendingImages([]);
     setModalOpen(true);
   };
   const openEdit = (row) => {
@@ -84,7 +86,23 @@ export default function ProductsPage() {
       isActive: Boolean(row.is_active),
     });
     setError('');
+    setPendingImages([]);
     setModalOpen(true);
+  };
+
+  const onPickPendingImages = (e) => {
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
+    setPendingImages((prev) => [...prev, ...files.map((file) => ({ file, previewUrl: URL.createObjectURL(file) }))]);
+    e.target.value = '';
+  };
+
+  const removePendingImage = (index) => {
+    setPendingImages((prev) => {
+      const removed = prev[index];
+      if (removed) URL.revokeObjectURL(removed.previewUrl);
+      return prev.filter((_, i) => i !== index);
+    });
   };
   const onSave = async () => {
     if (findMissingField([...bilingualFields, ...productFields], form)) {
@@ -105,6 +123,16 @@ export default function ProductsPage() {
       // images right away instead of having to close this modal and hunt
       // for "Manage".
       const createdProduct = await createResource('/admin/products', form);
+      // Upload any images the admin already picked in the create form
+      // itself, so they don't have to redo it in the follow-up Manage step.
+      for (const pending of pendingImages) {
+        // eslint-disable-next-line no-await-in-loop
+        const url = await uploadImage(pending.file);
+        // eslint-disable-next-line no-await-in-loop
+        await createResource(`/admin/products/${createdProduct.id}/images`, { imageUrl: url });
+        URL.revokeObjectURL(pending.previewUrl);
+      }
+      setPendingImages([]);
       setModalOpen(false);
       load();
       setSelectedTypeValues({});
@@ -112,7 +140,7 @@ export default function ProductsPage() {
       setGenerateMessage('');
       setVariantError('');
       setImageError('');
-      setDetail({ ...createdProduct, variants: [], images: [] });
+      setDetail(pendingImages.length ? await getResource(`/admin/products/${createdProduct.id}`) : { ...createdProduct, variants: [], images: [] });
       setDetailOpen(true);
     } catch (err) {
       setError(err.response?.data?.message || t('common.somethingWentWrong'));
@@ -281,6 +309,7 @@ export default function ProductsPage() {
           <BilingualField key={f.name} field={f} form={form} onChange={(name, v) => setForm((s) => ({ ...s, [name]: v }))} />
         ))}
         {productFields.map((f) => {
+          if (f.name === 'isActive') return null;
           const change = (name, v) => setForm((s) => ({ ...s, [name]: v }));
           return f.type === 'image' ? (
             <ImageField key={f.name} field={f} value={form[f.name]} onChange={change} />
@@ -288,6 +317,37 @@ export default function ProductsPage() {
             <Field key={f.name} field={f} value={form[f.name]} onChange={change} />
           );
         })}
+
+        {!editing && (
+          <div className="mb-4">
+            <span className="mb-1.5 block text-sm font-medium text-espresso-800">{t('products.images')}</span>
+            <div className="flex flex-wrap gap-3">
+              {pendingImages.map((img, i) => (
+                <div key={img.previewUrl} className="group relative h-16 w-16 overflow-hidden rounded-xl border border-linen-200">
+                  <img src={img.previewUrl} alt="" className="h-full w-full object-cover" />
+                  <button
+                    type="button"
+                    onClick={() => removePendingImage(i)}
+                    className="absolute inset-0 flex items-center justify-center bg-espresso-900/50 text-xs font-semibold text-white opacity-0 transition group-hover:opacity-100"
+                  >
+                    {t('common.remove')}
+                  </button>
+                </div>
+              ))}
+            </div>
+            <input
+              type="file"
+              accept="image/png,image/jpeg,image/jpg,image/gif,image/webp"
+              multiple
+              onChange={onPickPendingImages}
+              className="mt-3 w-full rounded-xl border border-linen-300 px-3 py-2.5 text-sm text-espresso-900 file:me-3 file:rounded-lg file:border-0 file:bg-carissma-100 file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-carissma-700 hover:file:bg-carissma-200 focus:outline-none focus:ring-2 focus:ring-carissma-500"
+            />
+          </div>
+        )}
+
+        {productFields.filter((f) => f.name === 'isActive').map((f) => (
+          <Field key={f.name} field={f} value={form[f.name]} onChange={(name, v) => setForm((s) => ({ ...s, [name]: v }))} />
+        ))}
       </Modal>
 
       <Modal open={detailOpen} title={detail ? t('products.manageFor', { name: detail.name_en }) : ''} onClose={() => setDetailOpen(false)}>
