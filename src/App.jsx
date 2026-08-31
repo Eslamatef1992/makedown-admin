@@ -16,12 +16,14 @@ import ChatPage from './pages/chat/ChatPage';
 import ProductsPage from './pages/products/ProductsPage';
 import ProductCategoriesPage from './pages/products/ProductCategoriesPage';
 import VariantTypesPage from './pages/variant-types/VariantTypesPage';
+import CouponsPage from './pages/coupons/CouponsPage';
 import PackagesPage from './pages/packages/PackagesPage';
 import ContactMessagesPage from './pages/contact/ContactMessagesPage';
 import CmsPageEditor from './pages/cms/CmsPageEditor';
 import FaqsPage from './pages/cms/FaqsPage';
 import SocialLinksPage from './pages/cms/SocialLinksPage';
 import HomeVideoPage from './pages/cms/HomeVideoPage';
+import DeliveryFeePage from './pages/cms/DeliveryFeePage';
 import ContactInfoPage from './pages/cms/ContactInfoPage';
 
 function Protected({ children, schoolAllowed }) {
@@ -56,6 +58,7 @@ export default function App() {
           <Route path="/products" element={<Protected><ProductsPage /></Protected>} />
           <Route path="/product-categories" element={<Protected><ProductCategoriesPage /></Protected>} />
           <Route path="/variant-types" element={<Protected><VariantTypesPage /></Protected>} />
+          <Route path="/coupons" element={<Protected><CouponsPage /></Protected>} />
 
           <Route path="/packages" element={<Protected><PackagesPage /></Protected>} />
           <Route path="/contact-messages" element={<Protected><ContactMessagesPage /></Protected>} />
@@ -64,6 +67,7 @@ export default function App() {
           <Route path="/cms/faqs" element={<Protected><FaqsPage /></Protected>} />
           <Route path="/cms/social-links" element={<Protected><SocialLinksPage /></Protected>} />
           <Route path="/cms/home-video" element={<Protected><HomeVideoPage /></Protected>} />
+          <Route path="/cms/delivery-fee" element={<Protected><DeliveryFeePage /></Protected>} />
           <Route path="/cms/contact-info" element={<Protected><ContactInfoPage /></Protected>} />
 
           <Route path="*" element={<Navigate to="/" replace />} />

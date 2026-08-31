@@ -71,6 +71,8 @@
     "ecommerce": "Ecommerce",
     "products": "Products",
     "variantTypes": "Variant Types",
+    "coupons": "Coupons",
+    "deliveryFee": "Delivery Fee",
     "packages": "Packages",
     "getInTouch": "Get in touch",
     "cms": "CMS",
@@ -171,6 +173,23 @@
     "noVariantTypes": "No variant types yet — add them from Variant Types in the Ecommerce menu.",
     "generatedResult": "{{created}} created, {{skipped}} already existed",
     "compareAtPrice": "Compare-at price (optional)"
+  },
+  "coupons": {
+    "title": "Coupons",
+    "code": "Code",
+    "type": "Type",
+    "percentage": "Percentage",
+    "fixed": "Fixed amount",
+    "discount": "Discount",
+    "value": "Value",
+    "minSubtotal": "Minimum order subtotal",
+    "maxUses": "Maximum uses",
+    "used": "Used",
+    "expiresAt": "Expires at"
+  },
+  "deliveryFee": {
+    "amount": "Delivery fee (KWD)",
+    "hint": "Flat fee added to every order's total at checkout."
   },
   "variantTypes": {
     "title": "Ecommerce — Variant Types",
