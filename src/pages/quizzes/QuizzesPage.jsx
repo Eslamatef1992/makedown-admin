@@ -177,13 +177,33 @@ export default function QuizzesPage() {
     });
   };
 
+  // Only as many option slots as the admin actually filled in get sent —
+  // a question can have just 1 option, it isn't required to use all 4
+  // slots the form shows. A slot only counts as "used" once BOTH its
+  // English and Arabic text are filled in; correctOptionIndex is remapped
+  // from the visible slot position to the position in the trimmed array
+  // that actually gets submitted.
   const addQuestion = async () => {
-    const filledEn = qForm.optionsEn.filter((o) => o.trim()).length;
-    const filledAr = qForm.optionsAr.filter((o) => o.trim()).length;
     if (!qForm.questionTextEn.trim() || !qForm.questionTextAr.trim()) return alert(t('quizzes.questionTextBothRequired'));
-    if (filledEn < 2 || filledAr < 2) return alert(t('quizzes.minOptionsAlert'));
+
+    const isHalfFilled = qForm.optionsEn.some((en, i) => Boolean(en.trim()) !== Boolean(qForm.optionsAr[i].trim()));
+    if (isHalfFilled) return alert(t('quizzes.optionBothLanguagesAlert'));
+
+    const usedIndices = qForm.optionsEn.map((_, i) => i).filter((i) => qForm.optionsEn[i].trim() && qForm.optionsAr[i].trim());
+    if (usedIndices.length < 1) return alert(t('quizzes.minOptionsAlert'));
+
+    const correctOptionIndex = usedIndices.indexOf(qForm.correctOptionIndex);
+    if (correctOptionIndex === -1) return alert(t('quizzes.correctOptionMustBeFilledAlert'));
+
+    const payload = {
+      ...qForm,
+      optionsEn: usedIndices.map((i) => qForm.optionsEn[i]),
+      optionsAr: usedIndices.map((i) => qForm.optionsAr[i]),
+      correctOptionIndex,
+    };
+
     try {
-      await createResource(`/admin/quizzes/${detail.id}/questions`, qForm);
+      await createResource(`/admin/quizzes/${detail.id}/questions`, payload);
       setQForm(EMPTY_QUESTION);
       setDetail(await getResource(`/admin/quizzes/${detail.id}`));
     } catch (err) {
