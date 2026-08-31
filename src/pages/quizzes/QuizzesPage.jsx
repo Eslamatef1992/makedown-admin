@@ -254,8 +254,13 @@ export default function QuizzesPage() {
           <div className="space-y-4">
             <div className="rounded-xl border border-linen-200">
               {(detail.questions || []).map((q) => (
-                <div key={q.id} className="flex items-start justify-between border-b border-linen-100 px-4 py-3 text-sm last:border-0">
-                  <div>
+                <div key={q.id} className="flex items-start gap-3 border-b border-linen-100 px-4 py-3 text-sm last:border-0">
+                  {q.question_type === 'image' && q.media_url ? (
+                    <img src={q.media_url} alt="" className="h-12 w-12 flex-none rounded-lg border border-linen-200 object-cover" />
+                  ) : q.question_type === 'audio' && q.media_url ? (
+                    <span className="flex h-12 w-12 flex-none items-center justify-center rounded-lg border border-linen-200 bg-linen-50 text-lg text-espresso-400">🔊</span>
+                  ) : null}
+                  <div className="flex-1">
                     <p className="font-medium text-espresso-800">{q.question_text_en}</p>
                     <p dir="rtl" className="text-espresso-700">{q.question_text_ar}</p>
                     <p className="text-espresso-500">
