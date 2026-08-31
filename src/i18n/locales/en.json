@@ -75,6 +75,7 @@
     "coupons": "Coupons",
     "deliveryFee": "Delivery Fee",
     "packages": "Packages",
+    "cashOnDelivery": "Cash On Delivery",
     "getInTouch": "Get in touch",
     "cms": "CMS",
     "aboutUs": "About us",
@@ -204,6 +205,13 @@
   "deliveryFee": {
     "amount": "Delivery fee (KWD)",
     "hint": "Flat fee added to every order's total at checkout."
+  },
+  "cashOnDelivery": {
+    "intro": "Control where customers can pay in cash instead of online. Off by default for packages, on by default for products.",
+    "products": "Products",
+    "productsHint": "Allow Cash On Delivery when checking out physical products from the shop.",
+    "packages": "Packages",
+    "packagesHint": "Allow Cash as a payment option when purchasing a package. Games are still activated right away — the customer settles payment in cash."
   },
   "variantTypes": {
     "title": "Ecommerce — Variant Types",

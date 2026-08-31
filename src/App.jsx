@@ -23,6 +23,7 @@ import FaqsPage from './pages/cms/FaqsPage';
 import SocialLinksPage from './pages/cms/SocialLinksPage';
 import HomeVideoPage from './pages/cms/HomeVideoPage';
 import DeliveryFeePage from './pages/cms/DeliveryFeePage';
+import CashOnDeliveryPage from './pages/cms/CashOnDeliveryPage';
 import ContactInfoPage from './pages/cms/ContactInfoPage';
 
 function Protected({ children, schoolAllowed }) {
@@ -66,6 +67,7 @@ export default function App() {
           <Route path="/cms/social-links" element={<Protected><SocialLinksPage /></Protected>} />
           <Route path="/cms/home-video" element={<Protected><HomeVideoPage /></Protected>} />
           <Route path="/cms/delivery-fee" element={<Protected><DeliveryFeePage /></Protected>} />
+          <Route path="/cms/cash-on-delivery" element={<Protected><CashOnDeliveryPage /></Protected>} />
           <Route path="/cms/contact-info" element={<Protected><ContactInfoPage /></Protected>} />
 
           <Route path="*" element={<Navigate to="/" replace />} />

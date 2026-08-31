@@ -33,6 +33,7 @@ export const NAV_SECTIONS = [
     ],
   },
   { labelKey: 'nav.packages', to: '/packages' },
+  { labelKey: 'nav.cashOnDelivery', to: '/cms/cash-on-delivery' },
   { labelKey: 'nav.getInTouch', to: '/contact-messages' },
   {
     labelKey: 'nav.cms',
