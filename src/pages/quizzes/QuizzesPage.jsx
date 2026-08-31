@@ -38,6 +38,7 @@ export default function QuizzesPage() {
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState({});
   const [error, setError] = useState('');
+  const [saving, setSaving] = useState(false);
 
   const [detailOpen, setDetailOpen] = useState(false);
   const [detail, setDetail] = useState(null);
@@ -94,11 +95,18 @@ export default function QuizzesPage() {
       setError(t('common.fillRequired'));
       return;
     }
+    setSaving(true);
     setError('');
-    if (editing) await updateResource(`/admin/quizzes/${editing.id}`, form);
-    else await createResource('/admin/quizzes', form);
-    setModalOpen(false);
-    load();
+    try {
+      if (editing) await updateResource(`/admin/quizzes/${editing.id}`, form);
+      else await createResource('/admin/quizzes', form);
+      setModalOpen(false);
+      load();
+    } catch (err) {
+      setError(err.response?.data?.message || t('common.somethingWentWrong'));
+    } finally {
+      setSaving(false);
+    }
   };
   const onDelete = async (row) => {
     if (!confirm(t('quizzes.confirmDelete'))) return;
@@ -125,9 +133,13 @@ export default function QuizzesPage() {
     const filledAr = qForm.optionsAr.filter((o) => o.trim()).length;
     if (!qForm.questionTextEn.trim() || !qForm.questionTextAr.trim()) return alert(t('quizzes.questionTextBothRequired'));
     if (filledEn < 2 || filledAr < 2) return alert(t('quizzes.minOptionsAlert'));
-    await createResource(`/admin/quizzes/${detail.id}/questions`, qForm);
-    setQForm(EMPTY_QUESTION);
-    setDetail(await getResource(`/admin/quizzes/${detail.id}`));
+    try {
+      await createResource(`/admin/quizzes/${detail.id}/questions`, qForm);
+      setQForm(EMPTY_QUESTION);
+      setDetail(await getResource(`/admin/quizzes/${detail.id}`));
+    } catch (err) {
+      alert(err.response?.data?.message || t('common.somethingWentWrong'));
+    }
   };
 
   const deleteQuestion = async (questionId) => {
@@ -171,7 +183,7 @@ export default function QuizzesPage() {
         footer={
           <>
             <button onClick={() => setModalOpen(false)} className="rounded-xl px-4 py-2 text-sm font-medium text-espresso-600 hover:bg-linen-100">{t('common.cancel')}</button>
-            <button onClick={onSave} className="rounded-xl bg-carissma-600 px-4 py-2 text-sm font-semibold text-white hover:bg-carissma-700">{t('common.save')}</button>
+            <button onClick={onSave} disabled={saving} className="rounded-xl bg-carissma-600 px-4 py-2 text-sm font-semibold text-white hover:bg-carissma-700 disabled:opacity-60">{saving ? t('common.saving') : t('common.save')}</button>
           </>
         }
       >
