@@ -245,7 +245,11 @@
     "date": "Date",
     "orderTitle": "Order {{number}}",
     "guest": "Guest",
-    "total2": "Total: {{amount}} KWD"
+    "total2": "Total: {{amount}} KWD",
+    "searchPlaceholder": "Search by order #, customer, or email",
+    "allStatuses": "All Statuses",
+    "allPaymentStatuses": "All Payment Statuses",
+    "print": "Print"
   },
   "chat": {
     "title": "Chatting",

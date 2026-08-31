@@ -20,8 +20,6 @@ export const NAV_SECTIONS = [
   },
   { labelKey: 'nav.categories', to: '/game-categories' },
   { labelKey: 'nav.gamesHistory', to: '/game-sessions' },
-  { labelKey: 'nav.orders', to: '/orders' },
-  { labelKey: 'nav.ordersGuest', to: '/orders/guest' },
   { labelKey: 'nav.chatting', to: '/chat' },
   {
     labelKey: 'nav.ecommerce',
@@ -31,6 +29,8 @@ export const NAV_SECTIONS = [
       { labelKey: 'nav.variantTypes', to: '/variant-types' },
       { labelKey: 'nav.coupons', to: '/coupons' },
       { labelKey: 'nav.deliveryFee', to: '/cms/delivery-fee' },
+      { labelKey: 'nav.orders', to: '/orders' },
+      { labelKey: 'nav.ordersGuest', to: '/orders/guest' },
     ],
   },
   { labelKey: 'nav.packages', to: '/packages' },

@@ -244,7 +244,11 @@
     "date": "التاريخ",
     "orderTitle": "الطلب {{number}}",
     "guest": "زائر",
-    "total2": "الإجمالي: {{amount}} د.ك"
+    "total2": "الإجمالي: {{amount}} د.ك",
+    "searchPlaceholder": "ابحث برقم الطلب أو اسم العميل أو البريد الإلكتروني",
+    "allStatuses": "كل الحالات",
+    "allPaymentStatuses": "كل حالات الدفع",
+    "print": "طباعة"
   },
   "chat": {
     "title": "المحادثات",
