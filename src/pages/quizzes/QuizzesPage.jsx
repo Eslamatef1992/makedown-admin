@@ -9,6 +9,21 @@ import ImageField from '../../components/ui/ImageField';
 import { listResource, getResource, createResource, updateResource, deleteResource, uploadImage } from '../../api/adminApi';
 import { findMissingField } from '../../utils/validateFields';
 
+// MySQL's JSON-typed columns (options_json_en/options_json_ar) come back
+// from the API already deserialized into real arrays in most cases, but
+// guard for a plain JSON string too so this never crashes either way.
+const parseOptions = (value) => {
+  if (Array.isArray(value)) return value;
+  if (typeof value === 'string') {
+    try {
+      return JSON.parse(value);
+    } catch (err) {
+      return [];
+    }
+  }
+  return [];
+};
+
 const EMPTY_QUESTION = {
   questionTextEn: '',
   questionTextAr: '',
@@ -264,7 +279,7 @@ export default function QuizzesPage() {
                     <p className="font-medium text-espresso-800">{q.question_text_en}</p>
                     <p dir="rtl" className="text-espresso-700">{q.question_text_ar}</p>
                     <p className="text-espresso-500">
-                      {JSON.parse(q.options_json_en).map((o, i) => `${i === q.correct_option_index ? '✓ ' : ''}${o}`).join(' · ')}
+                      {parseOptions(q.options_json_en).map((o, i) => `${i === q.correct_option_index ? '✓ ' : ''}${o}`).join(' · ')}
                     </p>
                   </div>
                   <button onClick={() => deleteQuestion(q.id)} className="shrink-0 font-medium text-carnation-600 hover:underline">{t('common.delete')}</button>
