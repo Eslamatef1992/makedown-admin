@@ -123,7 +123,6 @@
     "totalPackagesSold": "Packages sold",
     "totalGameCategories": "Game categories",
     "totalPackages": "Active packages",
-    "totalProductCategories": "Product categories",
     "totalAdmins": "Admins",
     "totalFaqs": "Active FAQs"
   },
@@ -149,9 +148,12 @@
     "special": "Special",
     "addSpecialUser": "+ Add special user",
     "editSpecialUser": "Edit special user",
+    "editUser": "Edit user",
     "firstName": "First name",
     "lastName": "Last name",
     "password": "Password",
+    "newPassword": "New password",
+    "newPasswordPlaceholder": "Leave blank to keep current password",
     "followersCount": "Followers",
     "followingCount": "Following"
   },
@@ -213,9 +215,6 @@
     "valueAr": "Value (Arabic)",
     "addValue": "+ Add value",
     "hexColor": "Swatch color (for Color-type values)"
-  },
-  "productCategories": {
-    "title": "Ecommerce — Categories"
   },
   "packages": {
     "title": "Packages"

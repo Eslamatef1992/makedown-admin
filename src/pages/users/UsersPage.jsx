@@ -12,6 +12,7 @@ const EMPTY_FORM = {
   email: '',
   phone: '',
   password: '',
+  newPassword: '',
   followersCount: 0,
   followingCount: 0,
 };
@@ -71,6 +72,7 @@ export default function UsersPage() {
       email: row.email || '',
       phone: row.phone || '',
       password: '',
+      newPassword: '',
       followersCount: row.followers_count ?? 0,
       followingCount: row.following_count ?? 0,
     });
@@ -93,6 +95,7 @@ export default function UsersPage() {
           phone: form.phone,
           followersCount: Number(form.followersCount) || 0,
           followingCount: Number(form.followingCount) || 0,
+          ...(form.newPassword ? { password: form.newPassword } : {}),
         });
       } else {
         await createResource('/admin/users', {
@@ -135,12 +138,10 @@ export default function UsersPage() {
     },
   ];
 
-  if (isSpecial) {
-    columns.push(
-      { key: 'followers_count', label: t('users.followersCount'), render: (r) => r.followers_count ?? 0 },
-      { key: 'following_count', label: t('users.followingCount'), render: (r) => r.following_count ?? 0 }
-    );
-  }
+  columns.push(
+    { key: 'followers_count', label: t('users.followersCount'), render: (r) => r.followers_count ?? 0 },
+    { key: 'following_count', label: t('users.followingCount'), render: (r) => r.following_count ?? 0 }
+  );
 
   return (
     <AdminLayout title={isSpecial ? t('users.specialTitle') : t('users.title')}>
@@ -158,11 +159,11 @@ export default function UsersPage() {
         )}
       </div>
 
-      <DataTable loading={loading} rows={rows} columns={columns} onEdit={isSpecial ? openEdit : undefined} />
+      <DataTable loading={loading} rows={rows} columns={columns} onEdit={openEdit} />
 
       <Modal
         open={modalOpen}
-        title={editing ? t('users.editSpecialUser') : t('users.addSpecialUser')}
+        title={editing ? (isSpecial ? t('users.editSpecialUser') : t('users.editUser')) : t('users.addSpecialUser')}
         onClose={() => setModalOpen(false)}
         footer={
           <>
@@ -228,6 +229,19 @@ export default function UsersPage() {
               type="password"
               value={form.password}
               onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))}
+              className="w-full rounded-xl border border-linen-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-carissma-500"
+            />
+          </div>
+        )}
+
+        {editing && (
+          <div className="mb-4">
+            <span className="mb-1.5 block text-sm font-medium text-espresso-800">{t('users.newPassword')}</span>
+            <input
+              type="password"
+              value={form.newPassword}
+              placeholder={t('users.newPasswordPlaceholder')}
+              onChange={(e) => setForm((f) => ({ ...f, newPassword: e.target.value }))}
               className="w-full rounded-xl border border-linen-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-carissma-500"
             />
           </div>

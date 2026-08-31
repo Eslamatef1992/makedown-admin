@@ -122,7 +122,6 @@
     "totalPackagesSold": "الباقات المباعة",
     "totalGameCategories": "فئات الألعاب",
     "totalPackages": "الباقات النشطة",
-    "totalProductCategories": "فئات المنتجات",
     "totalAdmins": "المشرفون",
     "totalFaqs": "الأسئلة الشائعة النشطة"
   },
@@ -148,9 +147,12 @@
     "special": "مميز",
     "addSpecialUser": "+ إضافة مستخدم مميز",
     "editSpecialUser": "تعديل مستخدم مميز",
+    "editUser": "تعديل المستخدم",
     "firstName": "الاسم الأول",
     "lastName": "اسم العائلة",
     "password": "كلمة المرور",
+    "newPassword": "كلمة مرور جديدة",
+    "newPasswordPlaceholder": "اتركها فارغة للاحتفاظ بكلمة المرور الحالية",
     "followersCount": "المتابعون",
     "followingCount": "يتابع"
   },
@@ -212,9 +214,6 @@
     "valueAr": "القيمة (عربي)",
     "addValue": "+ إضافة قيمة",
     "hexColor": "لون العينة (لقيم نوع اللون)"
-  },
-  "productCategories": {
-    "title": "المتجر — التصنيفات"
   },
   "packages": {
     "title": "الباقات"
