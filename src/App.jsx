@@ -14,7 +14,6 @@ import GameSessionsPage from './pages/game-sessions/GameSessionsPage';
 import OrdersPage from './pages/orders/OrdersPage';
 import ChatPage from './pages/chat/ChatPage';
 import ProductsPage from './pages/products/ProductsPage';
-import ProductCategoriesPage from './pages/products/ProductCategoriesPage';
 import VariantTypesPage from './pages/variant-types/VariantTypesPage';
 import CouponsPage from './pages/coupons/CouponsPage';
 import PackagesPage from './pages/packages/PackagesPage';
@@ -56,7 +55,6 @@ export default function App() {
           <Route path="/chat" element={<Protected><ChatPage /></Protected>} />
 
           <Route path="/products" element={<Protected><ProductsPage /></Protected>} />
-          <Route path="/product-categories" element={<Protected><ProductCategoriesPage /></Protected>} />
           <Route path="/variant-types" element={<Protected><VariantTypesPage /></Protected>} />
           <Route path="/coupons" element={<Protected><CouponsPage /></Protected>} />
 

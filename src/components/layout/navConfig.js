@@ -25,7 +25,6 @@ export const NAV_SECTIONS = [
     labelKey: 'nav.ecommerce',
     children: [
       { labelKey: 'nav.products', to: '/products' },
-      { labelKey: 'nav.categories', to: '/product-categories' },
       { labelKey: 'nav.variantTypes', to: '/variant-types' },
       { labelKey: 'nav.coupons', to: '/coupons' },
       { labelKey: 'nav.deliveryFee', to: '/cms/delivery-fee' },

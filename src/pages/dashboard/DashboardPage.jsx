@@ -5,7 +5,7 @@ import { getResource } from '../../api/adminApi';
 
 const CARD_KEYS = [
   'totalUsers', 'specialUsers', 'totalAdmins', 'totalSchools', 'totalQuizzes', 'totalGameCategories',
-  'totalProducts', 'totalProductCategories', 'totalPackages', 'totalPackagesSold', 'totalOrders', 'guestOrders',
+  'totalProducts', 'totalPackages', 'totalPackagesSold', 'totalOrders', 'guestOrders',
   'pendingOrders', 'revenue', 'activeGameSessions', 'totalFaqs', 'newContactMessages',
 ];
 
