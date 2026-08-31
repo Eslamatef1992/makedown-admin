@@ -50,7 +50,8 @@
     "icon": "Icon",
     "image": "Image",
     "show": "Show password",
-    "hide": "Hide password"
+    "hide": "Hide password",
+    "print": "Print"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -249,7 +250,8 @@
     "searchPlaceholder": "Search by order #, customer, or email",
     "allStatuses": "All Statuses",
     "allPaymentStatuses": "All Payment Statuses",
-    "print": "Print"
+    "print": "Print",
+    "address": "Address"
   },
   "chat": {
     "title": "Chatting",
@@ -288,6 +290,8 @@
     "correctHint": "Select the radio button next to the correct answer.",
     "addQuestion": "+ Add question",
     "minOptionsAlert": "Add at least 2 options",
-    "questionTextBothRequired": "Question text is required in both English and Arabic"
+    "questionTextBothRequired": "Question text is required in both English and Arabic",
+    "category": "Category",
+    "noCategory": "No category"
   }
 }

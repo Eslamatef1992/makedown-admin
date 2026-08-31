@@ -39,6 +39,7 @@ export default function QuizzesPage() {
   const [form, setForm] = useState({});
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
+  const [categories, setCategories] = useState([]);
 
   const [detailOpen, setDetailOpen] = useState(false);
   const [detail, setDetail] = useState(null);
@@ -50,6 +51,12 @@ export default function QuizzesPage() {
     { name: 'description', label: t('common.description'), bilingual: true, type: 'textarea', required: false },
   ];
   const quizFields = [
+    {
+      name: 'categoryId',
+      label: t('quizzes.category'),
+      type: 'select',
+      options: categories.map((c) => ({ value: String(c.id), label: c.name_en })),
+    },
     {
       name: 'difficulty',
       label: t('quizzes.difficulty'),
@@ -78,12 +85,19 @@ export default function QuizzesPage() {
     load();
   }, [load]);
 
-  const openCreate = () => { setEditing(null); setForm({}); setError(''); setModalOpen(true); };
+  useEffect(() => {
+    listResource('/admin/game-categories', { pageSize: 200 })
+      .then((result) => setCategories(result.rows || []))
+      .catch(() => setCategories([]));
+  }, []);
+
+  const openCreate = () => { setEditing(null); setForm({ categoryId: '' }); setError(''); setModalOpen(true); };
   const openEdit = (row) => {
     setEditing(row);
     setForm({
       titleEn: row.title_en, titleAr: row.title_ar,
       descriptionEn: row.description_en, descriptionAr: row.description_ar,
+      categoryId: row.category_id ? String(row.category_id) : '',
       difficulty: row.difficulty,
       coverImageUrl: row.cover_image_url, isActive: Boolean(row.is_active),
     });
@@ -164,6 +178,11 @@ export default function QuizzesPage() {
         rows={rows}
         columns={[
           { key: 'title_en', label: t('common.name') },
+          {
+            key: 'category_id',
+            label: t('quizzes.category'),
+            render: (r) => categories.find((c) => c.id === r.category_id)?.name_en || t('quizzes.noCategory'),
+          },
           { key: 'difficulty', label: t('quizzes.difficulty') },
           {
             key: 'questions',

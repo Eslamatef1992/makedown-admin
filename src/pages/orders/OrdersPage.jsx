@@ -15,6 +15,16 @@ function escapeHtml(value) {
   ));
 }
 
+function formatAddress(shippingAddressJson) {
+  if (!shippingAddressJson) return '';
+  try {
+    const a = typeof shippingAddressJson === 'string' ? JSON.parse(shippingAddressJson) : shippingAddressJson;
+    return [a.governorate, a.area, a.block && `Block ${a.block}`, a.street].filter(Boolean).join(', ');
+  } catch {
+    return '';
+  }
+}
+
 function printHtml(title, bodyHtml) {
   const win = window.open('', '_blank', 'width=860,height=960');
   if (!win) return;
@@ -162,6 +172,11 @@ export default function OrdersPage() {
     printHtml(t('orders.orderTitle', { number: order.order_number }), body);
   };
 
+  const printRow = async (row) => {
+    const detail = await getResource(`/admin/orders/${row.id}`);
+    printOrder(detail);
+  };
+
   return (
     <AdminLayout title={isGuest ? t('orders.guestTitle') : t('orders.title')}>
       <div className="mb-4 flex flex-wrap items-center gap-3">
@@ -207,12 +222,22 @@ export default function OrdersPage() {
         columns={[
           { key: 'order_number', label: t('orders.orderNumber') },
           { key: 'user_name', label: t('orders.customer'), render: (r) => r.user_name || r.guest_name || t('orders.guest') },
+          {
+            key: 'address',
+            label: t('orders.address'),
+            render: (r) => (
+              <span className="block max-w-[220px] truncate" title={formatAddress(r.shipping_address_json)}>
+                {formatAddress(r.shipping_address_json) || '—'}
+              </span>
+            ),
+          },
           { key: 'status', label: t('common.status') },
           { key: 'payment_status', label: t('orders.payment') },
           { key: 'grand_total', label: t('orders.total'), render: (r) => `${Number(r.grand_total).toFixed(3)} ${r.currency || 'KWD'}` },
           { key: 'created_at', label: t('orders.date'), render: (r) => new Date(r.created_at).toLocaleString() },
         ]}
         onEdit={view}
+        onPrint={printRow}
       />
 
       <Modal open={open} title={viewing ? t('orders.orderTitle', { number: viewing.order_number }) : ''} onClose={() => setOpen(false)}>
