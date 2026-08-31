@@ -28,6 +28,9 @@ export default function ProductsPage() {
   const [imageError, setImageError] = useState('');
   const [variantError, setVariantError] = useState('');
   const [pendingImages, setPendingImages] = useState([]); // new-product images picked before the product exists yet
+  const [editImages, setEditImages] = useState([]); // existing product's images, shown/added while editing
+  const [uploadingEditImage, setUploadingEditImage] = useState(false);
+  const [editImageError, setEditImageError] = useState('');
 
   const [variantTypes, setVariantTypes] = useState([]);
   const [selectedTypeValues, setSelectedTypeValues] = useState({});
@@ -73,7 +76,7 @@ export default function ProductsPage() {
     setPendingImages([]);
     setModalOpen(true);
   };
-  const openEdit = (row) => {
+  const openEdit = async (row) => {
     setEditing(row);
     setForm({
       nameEn: row.name_en,
@@ -87,7 +90,45 @@ export default function ProductsPage() {
     });
     setError('');
     setPendingImages([]);
+    setEditImages([]);
+    setEditImageError('');
     setModalOpen(true);
+    // The row from the table doesn't carry the gallery images — fetch the
+    // full product so the edit form can show (and let you add to) them,
+    // same as the create form does for a brand-new product.
+    try {
+      const full = await getResource(`/admin/products/${row.id}`);
+      setEditImages(full.images || []);
+    } catch {
+      setEditImages([]);
+    }
+  };
+
+  const onAddEditImages = async (e) => {
+    const files = Array.from(e.target.files || []);
+    if (!files.length || !editing) return;
+    setUploadingEditImage(true);
+    setEditImageError('');
+    try {
+      for (const file of files) {
+        // eslint-disable-next-line no-await-in-loop
+        const url = await uploadImage(file);
+        // eslint-disable-next-line no-await-in-loop
+        await createResource(`/admin/products/${editing.id}/images`, { imageUrl: url });
+      }
+      const full = await getResource(`/admin/products/${editing.id}`);
+      setEditImages(full.images || []);
+    } catch (err) {
+      setEditImageError(err.response?.data?.message || t('common.uploadFailed'));
+    } finally {
+      setUploadingEditImage(false);
+      e.target.value = '';
+    }
+  };
+
+  const removeEditImage = async (imageId) => {
+    await deleteResource(`/admin/products/${editing.id}/images/${imageId}`);
+    setEditImages((prev) => prev.filter((img) => img.id !== imageId));
   };
 
   const onPickPendingImages = (e) => {
@@ -318,32 +359,46 @@ export default function ProductsPage() {
           );
         })}
 
-        {!editing && (
-          <div className="mb-4">
-            <span className="mb-1.5 block text-sm font-medium text-espresso-800">{t('products.images')}</span>
-            <div className="flex flex-wrap gap-3">
-              {pendingImages.map((img, i) => (
-                <div key={img.previewUrl} className="group relative h-16 w-16 overflow-hidden rounded-xl border border-linen-200">
-                  <img src={img.previewUrl} alt="" className="h-full w-full object-cover" />
-                  <button
-                    type="button"
-                    onClick={() => removePendingImage(i)}
-                    className="absolute inset-0 flex items-center justify-center bg-espresso-900/50 text-xs font-semibold text-white opacity-0 transition group-hover:opacity-100"
-                  >
-                    {t('common.remove')}
-                  </button>
-                </div>
-              ))}
-            </div>
-            <input
-              type="file"
-              accept="image/png,image/jpeg,image/jpg,image/gif,image/webp"
-              multiple
-              onChange={onPickPendingImages}
-              className="mt-3 w-full rounded-xl border border-linen-300 px-3 py-2.5 text-sm text-espresso-900 file:me-3 file:rounded-lg file:border-0 file:bg-carissma-100 file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-carissma-700 hover:file:bg-carissma-200 focus:outline-none focus:ring-2 focus:ring-carissma-500"
-            />
+        <div className="mb-4">
+          <span className="mb-1.5 block text-sm font-medium text-espresso-800">{t('products.images')}</span>
+          <div className="flex flex-wrap gap-3">
+            {editing
+              ? editImages.map((img) => (
+                  <div key={img.id} className="group relative h-16 w-16 overflow-hidden rounded-xl border border-linen-200">
+                    <img src={img.image_url} alt="" className="h-full w-full object-cover" />
+                    <button
+                      type="button"
+                      onClick={() => removeEditImage(img.id)}
+                      className="absolute inset-0 flex items-center justify-center bg-espresso-900/50 text-xs font-semibold text-white opacity-0 transition group-hover:opacity-100"
+                    >
+                      {t('common.remove')}
+                    </button>
+                  </div>
+                ))
+              : pendingImages.map((img, i) => (
+                  <div key={img.previewUrl} className="group relative h-16 w-16 overflow-hidden rounded-xl border border-linen-200">
+                    <img src={img.previewUrl} alt="" className="h-full w-full object-cover" />
+                    <button
+                      type="button"
+                      onClick={() => removePendingImage(i)}
+                      className="absolute inset-0 flex items-center justify-center bg-espresso-900/50 text-xs font-semibold text-white opacity-0 transition group-hover:opacity-100"
+                    >
+                      {t('common.remove')}
+                    </button>
+                  </div>
+                ))}
           </div>
-        )}
+          <input
+            type="file"
+            accept="image/png,image/jpeg,image/jpg,image/gif,image/webp"
+            multiple
+            onChange={editing ? onAddEditImages : onPickPendingImages}
+            disabled={editing && uploadingEditImage}
+            className="mt-3 w-full rounded-xl border border-linen-300 px-3 py-2.5 text-sm text-espresso-900 file:me-3 file:rounded-lg file:border-0 file:bg-carissma-100 file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-carissma-700 hover:file:bg-carissma-200 focus:outline-none focus:ring-2 focus:ring-carissma-500 disabled:opacity-60"
+          />
+          {editing && uploadingEditImage && <p className="mt-1.5 text-xs text-espresso-400">{t('common.uploading')}</p>}
+          {editing && editImageError && <p className="mt-1.5 text-xs text-carnation-600">{editImageError}</p>}
+        </div>
 
         {productFields.filter((f) => f.name === 'isActive').map((f) => (
           <Field key={f.name} field={f} value={form[f.name]} onChange={(name, v) => setForm((s) => ({ ...s, [name]: v }))} />
