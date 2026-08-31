@@ -67,6 +67,16 @@ export default function QuizzesPage() {
         { value: 'hard', label: t('quizzes.hard') },
       ],
     },
+    {
+      name: 'supportedModes',
+      label: t('quizzes.supportedModes'),
+      type: 'select',
+      options: [
+        { value: 'both', label: t('quizzes.modeBoth') },
+        { value: 'solo', label: t('quizzes.modeSolo') },
+        { value: 'team', label: t('quizzes.modeTeam') },
+      ],
+    },
     { name: 'coverImageUrl', label: t('quizzes.coverImageUrl'), type: 'image' },
     { name: 'isActive', label: t('common.active'), type: 'checkbox' },
   ];
@@ -91,7 +101,7 @@ export default function QuizzesPage() {
       .catch(() => setCategories([]));
   }, []);
 
-  const openCreate = () => { setEditing(null); setForm({ categoryId: '' }); setError(''); setModalOpen(true); };
+  const openCreate = () => { setEditing(null); setForm({ categoryId: '', supportedModes: 'both' }); setError(''); setModalOpen(true); };
   const openEdit = (row) => {
     setEditing(row);
     setForm({
@@ -99,6 +109,7 @@ export default function QuizzesPage() {
       descriptionEn: row.description_en, descriptionAr: row.description_ar,
       categoryId: row.category_id ? String(row.category_id) : '',
       difficulty: row.difficulty,
+      supportedModes: row.supported_modes || 'both',
       coverImageUrl: row.cover_image_url, isActive: Boolean(row.is_active),
     });
     setError('');
@@ -177,6 +188,16 @@ export default function QuizzesPage() {
         loading={loading}
         rows={rows}
         columns={[
+          {
+            key: 'cover_image_url',
+            label: t('quizzes.coverImageUrl'),
+            render: (r) =>
+              r.cover_image_url ? (
+                <img src={r.cover_image_url} alt="" className="h-10 w-10 rounded-lg border border-linen-200 object-cover" />
+              ) : (
+                <span className="flex h-10 w-10 items-center justify-center rounded-lg border border-dashed border-linen-300 text-xs text-espresso-300">—</span>
+              ),
+          },
           { key: 'title_en', label: t('common.name') },
           {
             key: 'category_id',
@@ -184,6 +205,14 @@ export default function QuizzesPage() {
             render: (r) => categories.find((c) => c.id === r.category_id)?.name_en || t('quizzes.noCategory'),
           },
           { key: 'difficulty', label: t('quizzes.difficulty') },
+          {
+            key: 'supported_modes',
+            label: t('quizzes.supportedModes'),
+            render: (r) => {
+              const labels = { solo: t('quizzes.modeSolo'), team: t('quizzes.modeTeam'), both: t('quizzes.modeBoth') };
+              return labels[r.supported_modes] || labels.both;
+            },
+          },
           {
             key: 'questions',
             label: t('quizzes.questions'),

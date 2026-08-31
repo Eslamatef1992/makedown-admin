@@ -181,7 +181,8 @@
     "compareAtPrice": "سعر المقارنة (اختياري)",
     "images": "صور المنتج",
     "noImages": "لا توجد صور بعد",
-    "manageFor": "إدارة — {{name}}"
+    "manageFor": "إدارة — {{name}}",
+    "priceRequired": "السعر مطلوب"
   },
   "coupons": {
     "title": "كوبونات الخصم",
@@ -301,6 +302,10 @@
     "minOptionsAlert": "أضف خيارين على الأقل",
     "questionTextBothRequired": "نص السؤال مطلوب باللغتين الإنجليزية والعربية",
     "category": "الفئة",
-    "noCategory": "بدون فئة"
+    "noCategory": "بدون فئة",
+    "supportedModes": "وضع اللعب",
+    "modeSolo": "فردي فقط",
+    "modeTeam": "جماعي فقط",
+    "modeBoth": "فردي وجماعي"
   }
 }

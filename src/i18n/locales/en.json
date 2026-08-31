@@ -182,7 +182,8 @@
     "compareAtPrice": "Compare-at price (optional)",
     "images": "Product images",
     "noImages": "No images yet",
-    "manageFor": "Manage — {{name}}"
+    "manageFor": "Manage — {{name}}",
+    "priceRequired": "Price is required"
   },
   "coupons": {
     "title": "Coupons",
@@ -302,6 +303,10 @@
     "minOptionsAlert": "Add at least 2 options",
     "questionTextBothRequired": "Question text is required in both English and Arabic",
     "category": "Category",
-    "noCategory": "No category"
+    "noCategory": "No category",
+    "supportedModes": "Play mode",
+    "modeSolo": "Solo only",
+    "modeTeam": "Team only",
+    "modeBoth": "Solo & Team"
   }
 }

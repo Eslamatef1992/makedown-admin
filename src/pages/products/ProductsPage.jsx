@@ -19,12 +19,14 @@ export default function ProductsPage() {
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState({});
   const [error, setError] = useState('');
+  const [saving, setSaving] = useState(false);
 
   const [detailOpen, setDetailOpen] = useState(false);
   const [detail, setDetail] = useState(null);
   const [variantForm, setVariantForm] = useState({ sku: '', price: '', stockQuantity: 0 });
   const [uploadingImage, setUploadingImage] = useState(false);
   const [imageError, setImageError] = useState('');
+  const [variantError, setVariantError] = useState('');
 
   const [variantTypes, setVariantTypes] = useState([]);
   const [selectedTypeValues, setSelectedTypeValues] = useState({});
@@ -90,23 +92,33 @@ export default function ProductsPage() {
       return;
     }
     setError('');
-    if (editing) {
-      await updateResource(`/admin/products/${editing.id}`, form);
+    setSaving(true);
+    try {
+      if (editing) {
+        await updateResource(`/admin/products/${editing.id}`, form);
+        setModalOpen(false);
+        load();
+        return;
+      }
+      // New product: create it, then immediately drop into the manage modal
+      // (images + variants) so the admin can add the product's gallery
+      // images right away instead of having to close this modal and hunt
+      // for "Manage".
+      const createdProduct = await createResource('/admin/products', form);
       setModalOpen(false);
       load();
-      return;
+      setSelectedTypeValues({});
+      setGenerateForm({ price: '', compareAtPrice: '', stockQuantity: 0 });
+      setGenerateMessage('');
+      setVariantError('');
+      setImageError('');
+      setDetail({ ...createdProduct, variants: [], images: [] });
+      setDetailOpen(true);
+    } catch (err) {
+      setError(err.response?.data?.message || t('common.somethingWentWrong'));
+    } finally {
+      setSaving(false);
     }
-    // New product: create it, then immediately drop into the manage modal
-    // (images + variants) so the admin can add the product's gallery images
-    // right away instead of having to close this modal and hunt for "Manage".
-    const createdProduct = await createResource('/admin/products', form);
-    setModalOpen(false);
-    load();
-    setSelectedTypeValues({});
-    setGenerateForm({ price: '', compareAtPrice: '', stockQuantity: 0 });
-    setGenerateMessage('');
-    setDetail({ ...createdProduct, variants: [], images: [] });
-    setDetailOpen(true);
   };
   const onDelete = async (row) => {
     if (!confirm(t('products.confirmDelete'))) return;
@@ -119,6 +131,8 @@ export default function ProductsPage() {
     setSelectedTypeValues({});
     setGenerateForm({ price: '', compareAtPrice: '', stockQuantity: 0 });
     setGenerateMessage('');
+    setVariantError('');
+    setImageError('');
     setDetailOpen(true);
   };
 
@@ -166,13 +180,23 @@ export default function ProductsPage() {
   };
 
   const addVariant = async () => {
-    await createResource(`/admin/products/${detail.id}/variants`, {
-      ...variantForm,
-      price: Number(variantForm.price),
-      stockQuantity: Number(variantForm.stockQuantity),
-    });
-    setVariantForm({ sku: '', price: '', stockQuantity: 0 });
-    setDetail(await getResource(`/admin/products/${detail.id}`));
+    if (!variantForm.price) {
+      setImageError('');
+      setVariantError(t('products.priceRequired'));
+      return;
+    }
+    setVariantError('');
+    try {
+      await createResource(`/admin/products/${detail.id}/variants`, {
+        ...variantForm,
+        price: Number(variantForm.price),
+        stockQuantity: Number(variantForm.stockQuantity),
+      });
+      setVariantForm({ sku: '', price: '', stockQuantity: 0 });
+      setDetail(await getResource(`/admin/products/${detail.id}`));
+    } catch (err) {
+      setVariantError(err.response?.data?.message || t('common.somethingWentWrong'));
+    }
   };
 
   const deleteVariant = async (variantId) => {
@@ -248,7 +272,7 @@ export default function ProductsPage() {
         footer={
           <>
             <button onClick={() => setModalOpen(false)} className="rounded-xl px-4 py-2 text-sm font-medium text-espresso-600 hover:bg-linen-100">{t('common.cancel')}</button>
-            <button onClick={onSave} className="rounded-xl bg-carissma-600 px-4 py-2 text-sm font-semibold text-white hover:bg-carissma-700">{t('common.save')}</button>
+            <button onClick={onSave} disabled={saving} className="rounded-xl bg-carissma-600 px-4 py-2 text-sm font-semibold text-white hover:bg-carissma-700 disabled:opacity-60">{saving ? t('common.saving') : t('common.save')}</button>
           </>
         }
       >
@@ -311,6 +335,7 @@ export default function ProductsPage() {
               {imageError && <p className="mt-1.5 text-xs text-carnation-600">{imageError}</p>}
             </div>
 
+            {variantError && <p className="rounded-xl bg-carnation-50 px-3 py-2 text-sm text-carnation-700">{variantError}</p>}
             <div className="grid grid-cols-3 gap-2">
               <input
                 placeholder={t('products.sku')}
