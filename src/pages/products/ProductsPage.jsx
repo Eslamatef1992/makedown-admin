@@ -6,7 +6,7 @@ import Modal from '../../components/ui/Modal';
 import Field from '../../components/ui/Field';
 import BilingualField from '../../components/ui/BilingualField';
 import ImageField from '../../components/ui/ImageField';
-import { listResource, getResource, createResource, updateResource, deleteResource } from '../../api/adminApi';
+import { listResource, getResource, createResource, updateResource, deleteResource, uploadImage } from '../../api/adminApi';
 import { findMissingField } from '../../utils/validateFields';
 
 export default function ProductsPage() {
@@ -23,6 +23,8 @@ export default function ProductsPage() {
   const [detailOpen, setDetailOpen] = useState(false);
   const [detail, setDetail] = useState(null);
   const [variantForm, setVariantForm] = useState({ sku: '', price: '', stockQuantity: 0 });
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [imageError, setImageError] = useState('');
 
   const [variantTypes, setVariantTypes] = useState([]);
   const [selectedTypeValues, setSelectedTypeValues] = useState({});
@@ -165,6 +167,32 @@ export default function ProductsPage() {
     setDetail(await getResource(`/admin/products/${detail.id}`));
   };
 
+  const onAddImages = async (e) => {
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
+    setUploadingImage(true);
+    setImageError('');
+    try {
+      for (const file of files) {
+        // eslint-disable-next-line no-await-in-loop
+        const url = await uploadImage(file);
+        // eslint-disable-next-line no-await-in-loop
+        await createResource(`/admin/products/${detail.id}/images`, { imageUrl: url });
+      }
+      setDetail(await getResource(`/admin/products/${detail.id}`));
+    } catch (err) {
+      setImageError(err.response?.data?.message || t('common.uploadFailed'));
+    } finally {
+      setUploadingImage(false);
+      e.target.value = '';
+    }
+  };
+
+  const deleteImage = async (imageId) => {
+    await deleteResource(`/admin/products/${detail.id}/images/${imageId}`);
+    setDetail(await getResource(`/admin/products/${detail.id}`));
+  };
+
   return (
     <AdminLayout title={t('products.title')}>
       <div className="mb-4 flex items-center justify-between gap-3">
@@ -239,6 +267,35 @@ export default function ProductsPage() {
                 </div>
               ))}
               {(detail.variants || []).length === 0 && <p className="p-4 text-sm text-espresso-400">{t('products.noVariants')}</p>}
+            </div>
+
+            <div className="rounded-xl border border-linen-200 p-4">
+              <p className="text-sm font-semibold text-espresso-900">{t('products.images')}</p>
+              <div className="mt-3 flex flex-wrap gap-3">
+                {(detail.images || []).map((img) => (
+                  <div key={img.id} className="group relative h-20 w-20 overflow-hidden rounded-xl border border-linen-200">
+                    <img src={img.image_url} alt="" className="h-full w-full object-cover" />
+                    <button
+                      type="button"
+                      onClick={() => deleteImage(img.id)}
+                      className="absolute inset-0 flex items-center justify-center bg-espresso-900/50 text-xs font-semibold text-white opacity-0 transition group-hover:opacity-100"
+                    >
+                      {t('common.remove')}
+                    </button>
+                  </div>
+                ))}
+                {(detail.images || []).length === 0 && <p className="text-sm text-espresso-400">{t('products.noImages')}</p>}
+              </div>
+              <input
+                type="file"
+                accept="image/png,image/jpeg,image/jpg,image/gif,image/webp"
+                multiple
+                onChange={onAddImages}
+                disabled={uploadingImage}
+                className="mt-3 w-full rounded-xl border border-linen-300 px-3 py-2.5 text-sm text-espresso-900 file:me-3 file:rounded-lg file:border-0 file:bg-carissma-100 file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-carissma-700 hover:file:bg-carissma-200 focus:outline-none focus:ring-2 focus:ring-carissma-500 disabled:opacity-60"
+              />
+              {uploadingImage && <p className="mt-1.5 text-xs text-espresso-400">{t('common.uploading')}</p>}
+              {imageError && <p className="mt-1.5 text-xs text-carnation-600">{imageError}</p>}
             </div>
 
             <div className="grid grid-cols-3 gap-2">

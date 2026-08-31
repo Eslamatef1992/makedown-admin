@@ -146,7 +146,13 @@
     "specialTitle": "Special users",
     "searchPlaceholder": "Search by name, email or phone…",
     "verified": "Verified",
-    "special": "Special"
+    "special": "Special",
+    "addSpecialUser": "+ Add special user",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "password": "Password",
+    "followersCount": "Followers",
+    "followingCount": "Following"
   },
   "schools": {
     "title": "Schools",
@@ -173,7 +179,9 @@
     "generateVariantsHint": "Pick which variant types apply to this product, choose the values, then generate every combination automatically.",
     "noVariantTypes": "No variant types yet — add them from Variant Types in the Ecommerce menu.",
     "generatedResult": "{{created}} created, {{skipped}} already existed",
-    "compareAtPrice": "Compare-at price (optional)"
+    "compareAtPrice": "Compare-at price (optional)",
+    "images": "Product images",
+    "noImages": "No images yet"
   },
   "coupons": {
     "title": "Coupons",
@@ -200,7 +208,8 @@
     "noValues": "No values yet",
     "valueEn": "Value (English)",
     "valueAr": "Value (Arabic)",
-    "addValue": "+ Add value"
+    "addValue": "+ Add value",
+    "hexColor": "Swatch color (for Color-type values)"
   },
   "productCategories": {
     "title": "Ecommerce — Categories"

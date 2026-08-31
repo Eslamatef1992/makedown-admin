@@ -24,7 +24,7 @@ export default function VariantTypesPage() {
 
   const [valuesOpen, setValuesOpen] = useState(false);
   const [valuesFor, setValuesFor] = useState(null);
-  const [valueForm, setValueForm] = useState({ valueEn: '', valueAr: '' });
+  const [valueForm, setValueForm] = useState({ valueEn: '', valueAr: '', hexColor: '' });
 
   const typeFields = [
     { name: 'name', label: t('common.name'), bilingual: true, required: true },
@@ -94,8 +94,11 @@ export default function VariantTypesPage() {
 
   const addValue = async () => {
     if (!valueForm.valueEn.trim() || !valueForm.valueAr.trim()) return;
-    await createResource(`/admin/variant-types/${valuesFor.id}/values`, valueForm);
-    setValueForm({ valueEn: '', valueAr: '' });
+    await createResource(`/admin/variant-types/${valuesFor.id}/values`, {
+      ...valueForm,
+      hexColor: valueForm.hexColor || undefined,
+    });
+    setValueForm({ valueEn: '', valueAr: '', hexColor: '' });
     await refreshValues();
   };
 
@@ -170,7 +173,15 @@ export default function VariantTypesPage() {
             <div className="rounded-xl border border-linen-200">
               {(valuesFor.values || []).map((v) => (
                 <div key={v.id} className="flex items-center justify-between border-b border-linen-100 px-4 py-2 text-sm last:border-0">
-                  <span>{v.value_en} / {v.value_ar}</span>
+                  <span className="flex items-center gap-2">
+                    {v.hex_color && (
+                      <span
+                        className="inline-block h-4 w-4 rounded-full border border-linen-300"
+                        style={{ backgroundColor: v.hex_color }}
+                      />
+                    )}
+                    {v.value_en} / {v.value_ar}
+                  </span>
                   <button onClick={() => deleteValue(v.id)} className="font-medium text-carnation-600 hover:underline">
                     {t('common.delete')}
                   </button>
@@ -193,6 +204,27 @@ export default function VariantTypesPage() {
                 dir="rtl"
                 className="rounded-xl border border-linen-300 px-3 py-2 text-sm"
               />
+            </div>
+            <div className="flex items-center gap-3">
+              <label htmlFor="value-hex-color" className="text-sm text-espresso-600">
+                {t('variantTypes.hexColor')}
+              </label>
+              <input
+                id="value-hex-color"
+                type="color"
+                value={valueForm.hexColor || '#ffffff'}
+                onChange={(e) => setValueForm((f) => ({ ...f, hexColor: e.target.value }))}
+                className="h-9 w-14 cursor-pointer rounded-lg border border-linen-300 p-1"
+              />
+              {valueForm.hexColor && (
+                <button
+                  type="button"
+                  onClick={() => setValueForm((f) => ({ ...f, hexColor: '' }))}
+                  className="text-xs font-medium text-espresso-500 hover:underline"
+                >
+                  {t('common.remove')}
+                </button>
+              )}
             </div>
             <button onClick={addValue} className="w-full rounded-xl bg-carissma-600 py-2 text-sm font-semibold text-white hover:bg-carissma-700">
               {t('variantTypes.addValue')}

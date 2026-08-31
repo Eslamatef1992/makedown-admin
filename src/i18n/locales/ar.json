@@ -145,7 +145,13 @@
     "specialTitle": "المستخدمون المميزون",
     "searchPlaceholder": "ابحث بالاسم أو البريد الإلكتروني أو الهاتف…",
     "verified": "موثّق",
-    "special": "مميز"
+    "special": "مميز",
+    "addSpecialUser": "+ إضافة مستخدم مميز",
+    "firstName": "الاسم الأول",
+    "lastName": "اسم العائلة",
+    "password": "كلمة المرور",
+    "followersCount": "المتابعون",
+    "followingCount": "يتابع"
   },
   "schools": {
     "title": "المدارس",
@@ -172,7 +178,9 @@
     "generateVariantsHint": "اختر أنواع المتغيرات المناسبة لهذا المنتج، ثم اختر القيم، وسيتم توليد جميع التركيبات تلقائياً.",
     "noVariantTypes": "لا توجد أنواع متغيرات بعد — أضفها من أنواع المتغيرات في قائمة المتجر.",
     "generatedResult": "تم إنشاء {{created}}، وكان {{skipped}} موجوداً بالفعل",
-    "compareAtPrice": "سعر المقارنة (اختياري)"
+    "compareAtPrice": "سعر المقارنة (اختياري)",
+    "images": "صور المنتج",
+    "noImages": "لا توجد صور بعد"
   },
   "coupons": {
     "title": "كوبونات الخصم",
@@ -199,7 +207,8 @@
     "noValues": "لا توجد قيم بعد",
     "valueEn": "القيمة (إنجليزي)",
     "valueAr": "القيمة (عربي)",
-    "addValue": "+ إضافة قيمة"
+    "addValue": "+ إضافة قيمة",
+    "hexColor": "لون العينة (لقيم نوع اللون)"
   },
   "productCategories": {
     "title": "المتجر — التصنيفات"
