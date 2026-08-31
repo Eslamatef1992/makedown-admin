@@ -16,6 +16,7 @@ export default function SchoolsPage() {
       fields={[
         { name: 'name', label: t('common.name'), bilingual: true, required: true },
         { name: 'code', label: t('common.code'), required: true },
+        { name: 'password', label: t('schools.password'), type: 'password', placeholder: t('schools.passwordPlaceholder') },
         { name: 'contactEmail', label: t('common.contactEmail'), type: 'email' },
         { name: 'contactPhone', label: t('common.contactPhone') },
         { name: 'logoUrl', label: t('common.logo'), type: 'image' },

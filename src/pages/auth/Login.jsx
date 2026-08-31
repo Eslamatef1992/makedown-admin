@@ -1,18 +1,7 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAdminAuth } from '../../context/AdminAuthContext';
-
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-function CheckIcon() {
-  return (
-    <svg viewBox="0 0 20 20" fill="none" className="h-5 w-5">
-      <circle cx="10" cy="10" r="10" fill="#16A34A" />
-      <path d="M6 10.2l2.5 2.5L14 7" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
 
 function EyeIcon({ off }) {
   return off ? (
@@ -44,12 +33,10 @@ export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
   const { t, i18n } = useTranslation();
-  const [form, setForm] = useState({ email: '', password: '', rememberMe: false });
+  const [form, setForm] = useState({ identifier: '', password: '', rememberMe: false });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-
-  const emailValid = useMemo(() => EMAIL_RE.test(form.email), [form.email]);
 
   const onChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -61,8 +48,8 @@ export default function Login() {
     setError('');
     setLoading(true);
     try {
-      await login(form);
-      navigate(location.state?.from || '/');
+      const result = await login(form);
+      navigate(location.state?.from || (result.role === 'school' ? '/game-sessions' : '/'));
     } catch (err) {
       setError(err.response?.data?.message || t('login.invalidCredentials'));
     } finally {
@@ -95,22 +82,18 @@ export default function Login() {
 
         <form onSubmit={onSubmit} className="space-y-5">
           <label className="block">
-            <span className="mb-2 block text-sm font-bold text-espresso-900">{t('login.email')}</span>
+            <span className="mb-2 block text-sm font-bold text-espresso-900">{t('login.identifier')}</span>
             <div className="relative">
               <input
-                type="email"
-                name="email"
-                placeholder="Example@Gmail.Com"
-                value={form.email}
+                type="text"
+                name="identifier"
+                placeholder={t('login.identifierPlaceholder')}
+                value={form.identifier}
                 onChange={onChange}
                 required
+                autoCapitalize="none"
                 className="w-full rounded-2xl border border-carissma-200 bg-white px-4 py-3 text-espresso-900 placeholder:text-carissma-300 focus:outline-none focus:ring-2 focus:ring-carissma-400"
               />
-              {emailValid && (
-                <span className="pointer-events-none absolute inset-y-0 end-4 flex items-center">
-                  <CheckIcon />
-                </span>
-              )}
             </div>
           </label>
 

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { NAV_SECTIONS } from './navConfig';
+import { useAdminAuth } from '../../context/AdminAuthContext';
 
 function SectionLink({ item, t }) {
   return (
@@ -43,6 +44,10 @@ function SectionGroup({ section, t }) {
 
 export default function Sidebar() {
   const { t } = useTranslation();
+  const { role } = useAdminAuth();
+  const isSchool = role === 'school';
+  const sections = isSchool ? [{ to: '/game-sessions', labelKey: 'nav.myGames' }] : NAV_SECTIONS;
+
   return (
     <aside className="flex h-screen w-64 shrink-0 flex-col border-e border-linen-200 bg-white">
       <div className="flex items-center gap-3 px-5 py-6">
@@ -54,7 +59,7 @@ export default function Sidebar() {
       </div>
 
       <nav className="flex-1 space-y-1 overflow-y-auto px-3 pb-6">
-        {NAV_SECTIONS.map((section) =>
+        {sections.map((section) =>
           section.children ? (
             <SectionGroup key={section.labelKey} section={section} t={t} />
           ) : (

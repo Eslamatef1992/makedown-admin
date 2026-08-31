@@ -4,6 +4,7 @@ import AdminLayout from '../../components/layout/AdminLayout';
 import DataTable from '../../components/ui/DataTable';
 import Modal from '../../components/ui/Modal';
 import { listResource, getResource, createResource } from '../../api/adminApi';
+import { useAdminAuth } from '../../context/AdminAuthContext';
 
 const MODES = [
   { value: 'solo', label: 'Solo' },
@@ -11,10 +12,31 @@ const MODES = [
   { value: 'random', label: 'Random match' },
 ];
 
-const EMPTY_CREATE_FORM = { title: '', mode: 'solo', schoolId: '', quizIds: [], maxPlayers: '' };
+const AUDIENCES = [
+  { value: 'girls', label: 'Only Girl' },
+  { value: 'boys', label: 'Only Boy' },
+  { value: 'mixed', label: 'Boy & Girl' },
+];
+
+const EMPTY_CREATE_FORM = {
+  title: '',
+  mode: 'solo',
+  schoolId: '',
+  quizIds: [],
+  maxPlayers: '',
+  audience: '',
+  scheduledDate: '',
+  scheduledTime: '',
+  team1Name: '',
+  team1Capacity: '',
+  team2Name: '',
+  team2Capacity: '',
+};
 
 export default function GameSessionsPage() {
   const { t } = useTranslation();
+  const { role } = useAdminAuth();
+  const isSchool = role === 'school';
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [viewing, setViewing] = useState(null);
@@ -56,7 +78,7 @@ export default function GameSessionsPage() {
     setCreateOpen(true);
     const [quizResult, schoolResult] = await Promise.all([
       listResource('/admin/quizzes', { pageSize: 100 }),
-      listResource('/admin/schools', { pageSize: 100 }),
+      isSchool ? Promise.resolve({ rows: [] }) : listResource('/admin/schools', { pageSize: 100 }),
     ]);
     setQuizzes(quizResult.rows || []);
     setSchools(schoolResult.rows || []);
@@ -81,8 +103,15 @@ export default function GameSessionsPage() {
         mode: createForm.mode,
         quizIds: createForm.quizIds,
         title: createForm.title || undefined,
-        schoolId: createForm.schoolId || undefined,
+        schoolId: isSchool ? undefined : createForm.schoolId || undefined,
         maxPlayers: createForm.maxPlayers ? Number(createForm.maxPlayers) : undefined,
+        audience: createForm.audience || undefined,
+        scheduledDate: createForm.scheduledDate || undefined,
+        scheduledTime: createForm.scheduledTime || undefined,
+        team1Name: createForm.mode === 'team' ? createForm.team1Name || undefined : undefined,
+        team1Capacity: createForm.mode === 'team' && createForm.team1Capacity ? Number(createForm.team1Capacity) : undefined,
+        team2Name: createForm.mode === 'team' ? createForm.team2Name || undefined : undefined,
+        team2Capacity: createForm.mode === 'team' && createForm.team2Capacity ? Number(createForm.team2Capacity) : undefined,
       });
       setCreated(session);
       load();
@@ -209,19 +238,103 @@ export default function GameSessionsPage() {
               </div>
             </div>
 
+            {!isSchool && (
+              <div>
+                <span className="mb-1.5 block text-sm font-medium text-espresso-800">School (optional)</span>
+                <select
+                  value={createForm.schoolId}
+                  onChange={(e) => setCreateForm((f) => ({ ...f, schoolId: e.target.value }))}
+                  className="w-full rounded-xl border border-linen-300 px-3 py-2 text-sm"
+                >
+                  <option value="">— None —</option>
+                  {schools.map((s) => (
+                    <option key={s.id} value={s.id}>{s.name_en}</option>
+                  ))}
+                </select>
+              </div>
+            )}
+
             <div>
-              <span className="mb-1.5 block text-sm font-medium text-espresso-800">School (optional)</span>
-              <select
-                value={createForm.schoolId}
-                onChange={(e) => setCreateForm((f) => ({ ...f, schoolId: e.target.value }))}
-                className="w-full rounded-xl border border-linen-300 px-3 py-2 text-sm"
-              >
-                <option value="">— None —</option>
-                {schools.map((s) => (
-                  <option key={s.id} value={s.id}>{s.name_en}</option>
+              <span className="mb-1.5 block text-sm font-medium text-espresso-800">Audience (optional)</span>
+              <div className="flex gap-2">
+                {AUDIENCES.map((a) => (
+                  <button
+                    key={a.value}
+                    type="button"
+                    onClick={() => setCreateForm((f) => ({ ...f, audience: f.audience === a.value ? '' : a.value }))}
+                    className={`flex-1 rounded-xl border px-3 py-2 text-sm font-semibold transition ${
+                      createForm.audience === a.value
+                        ? 'border-carissma-500 bg-carissma-600 text-white'
+                        : 'border-linen-300 text-espresso-600 hover:border-carissma-300'
+                    }`}
+                  >
+                    {a.label}
+                  </button>
                 ))}
-              </select>
+              </div>
             </div>
+
+            <div className="flex gap-3">
+              <div className="flex-1">
+                <span className="mb-1.5 block text-sm font-medium text-espresso-800">Game date (optional)</span>
+                <input
+                  type="date"
+                  value={createForm.scheduledDate}
+                  onChange={(e) => setCreateForm((f) => ({ ...f, scheduledDate: e.target.value }))}
+                  className="w-full rounded-xl border border-linen-300 px-3 py-2 text-sm"
+                />
+              </div>
+              <div className="flex-1">
+                <span className="mb-1.5 block text-sm font-medium text-espresso-800">Game time (optional)</span>
+                <input
+                  type="time"
+                  value={createForm.scheduledTime}
+                  onChange={(e) => setCreateForm((f) => ({ ...f, scheduledTime: e.target.value }))}
+                  className="w-full rounded-xl border border-linen-300 px-3 py-2 text-sm"
+                />
+              </div>
+            </div>
+            {createForm.scheduledDate && createForm.scheduledTime && (
+              <p className="-mt-2 text-xs font-medium text-espresso-500">Players can join starting 10 minutes before this time.</p>
+            )}
+
+            {createForm.mode === 'team' && (
+              <div className="space-y-3 rounded-xl border border-linen-200 p-3">
+                <p className="text-sm font-semibold text-espresso-800">Teams</p>
+                <div className="flex gap-3">
+                  <input
+                    value={createForm.team1Name}
+                    onChange={(e) => setCreateForm((f) => ({ ...f, team1Name: e.target.value }))}
+                    placeholder="Team 1 name"
+                    className="flex-1 rounded-xl border border-linen-300 px-3 py-2 text-sm"
+                  />
+                  <input
+                    type="number"
+                    min={1}
+                    value={createForm.team1Capacity}
+                    onChange={(e) => setCreateForm((f) => ({ ...f, team1Capacity: e.target.value }))}
+                    placeholder="Players"
+                    className="w-28 rounded-xl border border-linen-300 px-3 py-2 text-sm"
+                  />
+                </div>
+                <div className="flex gap-3">
+                  <input
+                    value={createForm.team2Name}
+                    onChange={(e) => setCreateForm((f) => ({ ...f, team2Name: e.target.value }))}
+                    placeholder="Team 2 name"
+                    className="flex-1 rounded-xl border border-linen-300 px-3 py-2 text-sm"
+                  />
+                  <input
+                    type="number"
+                    min={1}
+                    value={createForm.team2Capacity}
+                    onChange={(e) => setCreateForm((f) => ({ ...f, team2Capacity: e.target.value }))}
+                    placeholder="Players"
+                    className="w-28 rounded-xl border border-linen-300 px-3 py-2 text-sm"
+                  />
+                </div>
+              </div>
+            )}
 
             <div>
               <span className="mb-1.5 block text-sm font-medium text-espresso-800">Max players (optional)</span>

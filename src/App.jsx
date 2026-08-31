@@ -24,8 +24,8 @@ import SocialLinksPage from './pages/cms/SocialLinksPage';
 import HomeVideoPage from './pages/cms/HomeVideoPage';
 import ContactInfoPage from './pages/cms/ContactInfoPage';
 
-function Protected({ children }) {
-  return <ProtectedRoute>{children}</ProtectedRoute>;
+function Protected({ children, schoolAllowed }) {
+  return <ProtectedRoute schoolAllowed={schoolAllowed}>{children}</ProtectedRoute>;
 }
 
 export default function App() {
@@ -46,7 +46,7 @@ export default function App() {
           <Route path="/quizzes" element={<Protected><QuizzesPage /></Protected>} />
 
           <Route path="/game-categories" element={<Protected><GameCategoriesPage /></Protected>} />
-          <Route path="/game-sessions" element={<Protected><GameSessionsPage /></Protected>} />
+          <Route path="/game-sessions" element={<Protected schoolAllowed><GameSessionsPage /></Protected>} />
 
           <Route path="/orders" element={<Protected><OrdersPage /></Protected>} />
           <Route path="/orders/guest" element={<Protected><OrdersPage /></Protected>} />

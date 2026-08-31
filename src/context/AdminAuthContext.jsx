@@ -4,10 +4,14 @@ import client from '../api/client';
 const AdminAuthContext = createContext(null);
 
 export function AdminAuthProvider({ children }) {
-  const [admin, setAdmin] = useState(null);
+  // { role: 'admin', admin } or { role: 'school', school } — see
+  // admin-auth.service.js#login. Schools log in through the very same form
+  // as super admins (identifier + password); the backend tells us which
+  // one it was.
+  const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const loadAdmin = useCallback(async () => {
+  const loadSession = useCallback(async () => {
     const token = localStorage.getItem('md_admin_token');
     if (!token) {
       setLoading(false);
@@ -15,30 +19,34 @@ export function AdminAuthProvider({ children }) {
     }
     try {
       const { data } = await client.get('/admin/auth/me');
-      setAdmin(data.data);
+      setSession(data.data);
     } catch {
       localStorage.removeItem('md_admin_token');
-      setAdmin(null);
+      setSession(null);
     } finally {
       setLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    loadAdmin();
-  }, [loadAdmin]);
+    loadSession();
+  }, [loadSession]);
 
-  const login = async ({ email, password }) => {
-    const { data } = await client.post('/admin/auth/login', { email, password });
+  const login = async ({ identifier, password }) => {
+    const { data } = await client.post('/admin/auth/login', { identifier, password });
     localStorage.setItem('md_admin_token', data.data.accessToken);
-    setAdmin(data.data.admin);
+    setSession({ role: data.data.role, admin: data.data.admin, school: data.data.school });
     return data.data;
   };
 
   const logout = () => {
     localStorage.removeItem('md_admin_token');
-    setAdmin(null);
+    setSession(null);
   };
+
+  const admin = session?.role === 'admin' ? session.admin : null;
+  const school = session?.role === 'school' ? session.school : null;
+  const role = session?.role || null;
 
   const hasPermission = (key) => {
     if (!admin) return false;
@@ -47,7 +55,9 @@ export function AdminAuthProvider({ children }) {
   };
 
   return (
-    <AdminAuthContext.Provider value={{ admin, loading, isAuthenticated: Boolean(admin), login, logout, hasPermission }}>
+    <AdminAuthContext.Provider
+      value={{ admin, school, role, loading, isAuthenticated: Boolean(session), login, logout, hasPermission }}
+    >
       {children}
     </AdminAuthContext.Provider>
   );

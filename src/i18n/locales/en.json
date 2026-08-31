@@ -54,6 +54,7 @@
   },
   "nav": {
     "dashboard": "Dashboard",
+    "myGames": "My Games",
     "admins": "Admins",
     "roles": "Roles",
     "userManagement": "User management",
@@ -89,6 +90,8 @@
     "welcomeBack": "Welcome Back",
     "subtitle": "Sign In To Make Down",
     "email": "Email",
+    "identifier": "Email or School Code",
+    "identifierPlaceholder": "Email or school code",
     "password": "Password",
     "rememberMe": "Remember me",
     "signIn": "Sign in",
@@ -143,7 +146,9 @@
     "special": "Special"
   },
   "schools": {
-    "title": "Schools"
+    "title": "Schools",
+    "password": "Password",
+    "passwordPlaceholder": "Leave blank to keep current password"
   },
   "gameCategories": {
     "title": "Categories"

@@ -2,8 +2,10 @@ import { useTranslation } from 'react-i18next';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 
 export default function Topbar({ title }) {
-  const { admin, logout } = useAdminAuth();
+  const { admin, school, role, logout } = useAdminAuth();
   const { t, i18n } = useTranslation();
+  const displayName = role === 'school' ? school?.name : admin?.name;
+  const displaySub = role === 'school' ? school?.code : admin?.email;
 
   const toggleLanguage = () => {
     i18n.changeLanguage(i18n.language === 'ar' ? 'en' : 'ar');
@@ -20,8 +22,8 @@ export default function Topbar({ title }) {
           {t('topbar.language')}
         </button>
         <div className="text-end">
-          <p className="text-sm font-medium text-espresso-800">{admin?.name}</p>
-          <p className="text-xs text-espresso-500">{admin?.email}</p>
+          <p className="text-sm font-medium text-espresso-800">{displayName}</p>
+          <p className="text-xs text-espresso-500">{displaySub}</p>
         </div>
         <button
           onClick={logout}
