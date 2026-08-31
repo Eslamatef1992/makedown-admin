@@ -180,7 +180,8 @@
     "generatedResult": "تم إنشاء {{created}}، وكان {{skipped}} موجوداً بالفعل",
     "compareAtPrice": "سعر المقارنة (اختياري)",
     "images": "صور المنتج",
-    "noImages": "لا توجد صور بعد"
+    "noImages": "لا توجد صور بعد",
+    "manageFor": "إدارة — {{name}}"
   },
   "coupons": {
     "title": "كوبونات الخصم",

@@ -90,10 +90,23 @@ export default function ProductsPage() {
       return;
     }
     setError('');
-    if (editing) await updateResource(`/admin/products/${editing.id}`, form);
-    else await createResource('/admin/products', form);
+    if (editing) {
+      await updateResource(`/admin/products/${editing.id}`, form);
+      setModalOpen(false);
+      load();
+      return;
+    }
+    // New product: create it, then immediately drop into the manage modal
+    // (images + variants) so the admin can add the product's gallery images
+    // right away instead of having to close this modal and hunt for "Manage".
+    const createdProduct = await createResource('/admin/products', form);
     setModalOpen(false);
     load();
+    setSelectedTypeValues({});
+    setGenerateForm({ price: '', compareAtPrice: '', stockQuantity: 0 });
+    setGenerateMessage('');
+    setDetail({ ...createdProduct, variants: [], images: [] });
+    setDetailOpen(true);
   };
   const onDelete = async (row) => {
     if (!confirm(t('products.confirmDelete'))) return;
@@ -253,7 +266,7 @@ export default function ProductsPage() {
         })}
       </Modal>
 
-      <Modal open={detailOpen} title={detail ? t('products.variantsFor', { name: detail.name_en }) : ''} onClose={() => setDetailOpen(false)}>
+      <Modal open={detailOpen} title={detail ? t('products.manageFor', { name: detail.name_en }) : ''} onClose={() => setDetailOpen(false)}>
         {detail && (
           <div className="space-y-4">
             <div className="rounded-xl border border-linen-200">

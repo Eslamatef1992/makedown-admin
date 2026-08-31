@@ -181,7 +181,8 @@
     "generatedResult": "{{created}} created, {{skipped}} already existed",
     "compareAtPrice": "Compare-at price (optional)",
     "images": "Product images",
-    "noImages": "No images yet"
+    "noImages": "No images yet",
+    "manageFor": "Manage — {{name}}"
   },
   "coupons": {
     "title": "Coupons",
