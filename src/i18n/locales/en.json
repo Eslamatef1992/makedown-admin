@@ -169,6 +169,10 @@
   "products": {
     "title": "Ecommerce — Products",
     "basePrice": "Base price (KWD)",
+    "offerPrice": "Offer price (optional)",
+    "quantity": "Quantity in stock (leave blank to not track)",
+    "hasGiftBox": "Has gift box option",
+    "giftBoxPrice": "Gift box price (KWD)",
     "thumbnailUrl": "Thumbnail URL",
     "variants": "Variants",
     "variantsFor": "Variants — {{name}}",

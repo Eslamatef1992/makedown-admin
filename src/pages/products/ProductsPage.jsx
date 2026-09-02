@@ -51,6 +51,10 @@ export default function ProductsPage() {
   const productFields = [
     { name: 'slug', label: t('common.slug'), required: true },
     { name: 'basePrice', label: t('products.basePrice'), type: 'number', required: true },
+    { name: 'offerPrice', label: t('products.offerPrice'), type: 'number', required: false },
+    { name: 'quantity', label: t('products.quantity'), type: 'number', required: false },
+    { name: 'hasGiftBox', label: t('products.hasGiftBox'), type: 'checkbox' },
+    { name: 'giftBoxPrice', label: t('products.giftBoxPrice'), type: 'number', required: false },
     { name: 'thumbnailUrl', label: t('products.thumbnailUrl'), type: 'image' },
     { name: 'isActive', label: t('common.active'), type: 'checkbox' },
   ];
@@ -85,6 +89,10 @@ export default function ProductsPage() {
       descriptionEn: row.description_en,
       descriptionAr: row.description_ar,
       basePrice: row.base_price,
+      offerPrice: row.offer_price ?? '',
+      quantity: row.stock_quantity ?? '',
+      hasGiftBox: Boolean(row.has_gift_box),
+      giftBoxPrice: row.gift_box_price ?? '',
       thumbnailUrl: row.thumbnail_url,
       isActive: Boolean(row.is_active),
     });
@@ -351,6 +359,7 @@ export default function ProductsPage() {
         ))}
         {productFields.map((f) => {
           if (f.name === 'isActive') return null;
+          if (f.name === 'giftBoxPrice' && !form.hasGiftBox) return null;
           const change = (name, v) => setForm((s) => ({ ...s, [name]: v }));
           return f.type === 'image' ? (
             <ImageField key={f.name} field={f} value={form[f.name]} onChange={change} />
