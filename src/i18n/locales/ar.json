@@ -124,7 +124,21 @@
     "totalGameCategories": "فئات الألعاب",
     "totalPackages": "الباقات النشطة",
     "totalAdmins": "المشرفون",
-    "totalFaqs": "الأسئلة الشائعة النشطة"
+    "totalFaqs": "الأسئلة الشائعة النشطة",
+    "viewAll": "عرض الكل",
+    "salesChart": "المبيعات (آخر 30 يومًا)",
+    "newUsersDaily": "المستخدمون الجدد (آخر 30 يومًا)",
+    "currency": "د.ك",
+    "users": "مستخدم",
+    "mostSellingItems": "الأكثر مبيعاً",
+    "sold": "مباع",
+    "noSalesYet": "لا توجد مبيعات بعد",
+    "topCategories": "الفئات",
+    "games": "لعبة",
+    "noCategoriesYet": "لا توجد فئات بعد",
+    "noData": "لا توجد بيانات بعد",
+    "unknownProduct": "منتج غير معروف",
+    "unknownCategory": "فئة غير معروفة"
   },
   "admins": {
     "title": "المشرفون",

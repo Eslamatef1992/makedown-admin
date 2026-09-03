@@ -125,7 +125,21 @@
     "totalGameCategories": "Game categories",
     "totalPackages": "Active packages",
     "totalAdmins": "Admins",
-    "totalFaqs": "Active FAQs"
+    "totalFaqs": "Active FAQs",
+    "viewAll": "View all",
+    "salesChart": "Sales (last 30 days)",
+    "newUsersDaily": "New users (last 30 days)",
+    "currency": "KWD",
+    "users": "users",
+    "mostSellingItems": "Most selling items",
+    "sold": "sold",
+    "noSalesYet": "No sales yet",
+    "topCategories": "Categories",
+    "games": "games",
+    "noCategoriesYet": "No categories yet",
+    "noData": "No data yet",
+    "unknownProduct": "Unknown product",
+    "unknownCategory": "Unknown category"
   },
   "admins": {
     "title": "Admins",
