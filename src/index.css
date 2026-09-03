@@ -18,15 +18,15 @@
   }
 
   .wave-layer {
-    animation: wave-scroll 9s linear infinite;
+    animation: wave-scroll 6s linear infinite;
   }
 
   .wave-layer--back {
-    animation-duration: 10s;
+    animation-duration: 7s;
   }
 
   .wave-layer--front {
-    animation-duration: 6s;
+    animation-duration: 4s;
     animation-direction: reverse;
   }
 
