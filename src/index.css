@@ -8,3 +8,31 @@
   html, body, #root { height: 100%; }
   body { @apply bg-linen-50 text-espresso-900 font-sans antialiased; }
 }
+
+@layer utilities {
+  /* Stat-card background wave: two tiled copies of one period sit in a
+     200%-wide <svg>; sliding by exactly -50% (one period) loops seamlessly. */
+  @keyframes wave-scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  .wave-layer {
+    animation: wave-scroll 9s linear infinite;
+  }
+
+  .wave-layer--back {
+    animation-duration: 10s;
+  }
+
+  .wave-layer--front {
+    animation-duration: 6s;
+    animation-direction: reverse;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .wave-layer {
+      animation: none;
+    }
+  }
+}
