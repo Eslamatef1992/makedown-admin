@@ -263,13 +263,11 @@
   "gameSessions": {
     "title": "Games history",
     "game": "Game",
-    "mode": "Mode",
     "school": "School",
     "players": "Players",
     "created": "Created",
     "joinCode": "Join code",
     "player": "Player",
-    "team": "Team",
     "score": "Score",
     "guest": "Guest"
   },
@@ -332,10 +330,6 @@
     "correctOptionMustBeFilledAlert": "Select the correct answer among the options you filled in",
     "questionTextBothRequired": "Question text is required in both English and Arabic",
     "category": "Category",
-    "noCategory": "No category",
-    "supportedModes": "Play mode",
-    "modeSolo": "Solo only",
-    "modeTeam": "Team only",
-    "modeBoth": "Solo & Team"
+    "noCategory": "No category"
   }
 }

@@ -24,6 +24,9 @@ const parseOptions = (value) => {
   return [];
 };
 
+// There's no solo/team distinction to pick any more — every question is
+// simply created with mode 'both' behind the scenes (the backend still has
+// the column, it just isn't a choice the admin makes any more).
 const EMPTY_QUESTION = {
   questionTextEn: '',
   questionTextAr: '',
@@ -42,12 +45,6 @@ const QUESTION_TYPES = [
   { value: 'image', label: 'Image' },
   { value: 'audio', label: 'Audio (listening)' },
   { value: 'qr', label: 'QR-gated' },
-];
-
-const QUESTION_MODES = [
-  { value: 'both', label: 'Solo & Team' },
-  { value: 'solo', label: 'Solo only' },
-  { value: 'team', label: 'Team only' },
 ];
 
 const QUESTION_POINT_VALUES = [200, 400, 600];
@@ -91,16 +88,6 @@ export default function QuizzesPage() {
         { value: 'hard', label: t('quizzes.hard') },
       ],
     },
-    {
-      name: 'supportedModes',
-      label: t('quizzes.supportedModes'),
-      type: 'select',
-      options: [
-        { value: 'both', label: t('quizzes.modeBoth') },
-        { value: 'solo', label: t('quizzes.modeSolo') },
-        { value: 'team', label: t('quizzes.modeTeam') },
-      ],
-    },
     { name: 'coverImageUrl', label: t('quizzes.coverImageUrl'), type: 'image' },
     { name: 'isActive', label: t('common.active'), type: 'checkbox' },
   ];
@@ -125,7 +112,7 @@ export default function QuizzesPage() {
       .catch(() => setCategories([]));
   }, []);
 
-  const openCreate = () => { setEditing(null); setForm({ categoryId: '', supportedModes: 'both' }); setError(''); setModalOpen(true); };
+  const openCreate = () => { setEditing(null); setForm({ categoryId: '' }); setError(''); setModalOpen(true); };
   const openEdit = (row) => {
     setEditing(row);
     setForm({
@@ -133,7 +120,6 @@ export default function QuizzesPage() {
       descriptionEn: row.description_en, descriptionAr: row.description_ar,
       categoryId: row.category_id ? String(row.category_id) : '',
       difficulty: row.difficulty,
-      supportedModes: row.supported_modes || 'both',
       coverImageUrl: row.cover_image_url, isActive: Boolean(row.is_active),
     });
     setError('');
@@ -250,14 +236,6 @@ export default function QuizzesPage() {
           },
           { key: 'difficulty', label: t('quizzes.difficulty') },
           {
-            key: 'supported_modes',
-            label: t('quizzes.supportedModes'),
-            render: (r) => {
-              const labels = { solo: t('quizzes.modeSolo'), team: t('quizzes.modeTeam'), both: t('quizzes.modeBoth') };
-              return labels[r.supported_modes] || labels.both;
-            },
-          },
-          {
             key: 'questions',
             label: t('quizzes.questions'),
             render: (r) => <button onClick={() => openDetail(r)} className="font-medium text-carissma-600 hover:underline">{t('common.manage')}</button>,
@@ -308,7 +286,7 @@ export default function QuizzesPage() {
                     <div className="flex items-center gap-2">
                       <p className="font-medium text-espresso-800">{q.question_text_en}</p>
                       <span className="rounded-full bg-linen-100 px-2 py-0.5 text-[10px] font-semibold uppercase text-espresso-500">
-                        {q.points} pts · {{ solo: 'Solo', team: 'Team', both: 'Solo & Team' }[q.mode] || 'Solo & Team'}
+                        {q.points} pts
                       </span>
                     </div>
                     <p dir="rtl" className="text-espresso-700">{q.question_text_ar}</p>
@@ -336,23 +314,6 @@ export default function QuizzesPage() {
                     }`}
                   >
                     {qt.label}
-                  </button>
-                ))}
-              </div>
-
-              <div className="flex flex-wrap gap-2">
-                {QUESTION_MODES.map((m) => (
-                  <button
-                    key={m.value}
-                    type="button"
-                    onClick={() => setQForm((f) => ({ ...f, mode: m.value }))}
-                    className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition ${
-                      qForm.mode === m.value
-                        ? 'border-espresso-500 bg-espresso-700 text-white'
-                        : 'border-linen-300 text-espresso-600 hover:border-espresso-300'
-                    }`}
-                  >
-                    {m.label}
                   </button>
                 ))}
               </div>

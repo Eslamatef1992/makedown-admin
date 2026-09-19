@@ -262,13 +262,11 @@
   "gameSessions": {
     "title": "سجل الألعاب",
     "game": "اللعبة",
-    "mode": "النمط",
     "school": "المدرسة",
     "players": "اللاعبون",
     "created": "تاريخ الإنشاء",
     "joinCode": "رمز الانضمام",
     "player": "اللاعب",
-    "team": "الفريق",
     "score": "النتيجة",
     "guest": "زائر"
   },
@@ -331,10 +329,6 @@
     "correctOptionMustBeFilledAlert": "اختر الإجابة الصحيحة من بين الخيارات التي أدخلتها",
     "questionTextBothRequired": "نص السؤال مطلوب باللغتين الإنجليزية والعربية",
     "category": "الفئة",
-    "noCategory": "بدون فئة",
-    "supportedModes": "وضع اللعب",
-    "modeSolo": "فردي فقط",
-    "modeTeam": "جماعي فقط",
-    "modeBoth": "فردي وجماعي"
+    "noCategory": "بدون فئة"
   }
 }

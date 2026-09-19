@@ -6,31 +6,25 @@ import Modal from '../../components/ui/Modal';
 import { listResource, getResource, createResource } from '../../api/adminApi';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 
-const MODES = [
-  { value: 'solo', label: 'Solo' },
-  { value: 'team', label: 'Team' },
-  { value: 'random', label: 'Random match' },
-];
-
 const AUDIENCES = [
   { value: 'girls', label: 'Only Girl' },
   { value: 'boys', label: 'Only Boy' },
   { value: 'mixed', label: 'Boy & Girl' },
 ];
 
+// There's no solo/team/random choice any more — every session the admin
+// creates is just 'solo' behind the scenes (no team grouping; any number of
+// players can still join and play individually with the join code/QR).
+const SESSION_MODE = 'solo';
+
 const EMPTY_CREATE_FORM = {
   title: '',
-  mode: 'solo',
   schoolId: '',
   quizIds: [],
   maxPlayers: '',
   audience: '',
   scheduledDate: '',
   scheduledTime: '',
-  team1Name: '',
-  team1Capacity: '',
-  team2Name: '',
-  team2Capacity: '',
 };
 
 export default function GameSessionsPage() {
@@ -100,7 +94,7 @@ export default function GameSessionsPage() {
     setCreating(true);
     try {
       const session = await createResource('/admin/game-sessions', {
-        mode: createForm.mode,
+        mode: SESSION_MODE,
         quizIds: createForm.quizIds,
         title: createForm.title || undefined,
         schoolId: isSchool ? undefined : createForm.schoolId || undefined,
@@ -108,10 +102,6 @@ export default function GameSessionsPage() {
         audience: createForm.audience || undefined,
         scheduledDate: createForm.scheduledDate || undefined,
         scheduledTime: createForm.scheduledTime || undefined,
-        team1Name: createForm.mode === 'team' ? createForm.team1Name || undefined : undefined,
-        team1Capacity: createForm.mode === 'team' && createForm.team1Capacity ? Number(createForm.team1Capacity) : undefined,
-        team2Name: createForm.mode === 'team' ? createForm.team2Name || undefined : undefined,
-        team2Capacity: createForm.mode === 'team' && createForm.team2Capacity ? Number(createForm.team2Capacity) : undefined,
       });
       setCreated(session);
       load();
@@ -138,7 +128,6 @@ export default function GameSessionsPage() {
         rows={rows}
         columns={[
           { key: 'title', label: t('gameSessions.game'), render: (r) => r.title || r.quiz_title || `#${r.id}` },
-          { key: 'mode', label: t('gameSessions.mode') },
           { key: 'status', label: t('common.status') },
           { key: 'school_name', label: t('gameSessions.school'), render: (r) => r.school_name || '—' },
           { key: 'participant_count', label: t('gameSessions.players') },
@@ -152,7 +141,6 @@ export default function GameSessionsPage() {
         {viewing && (
           <div className="space-y-3 text-sm">
             <p>
-              <span className="font-medium text-espresso-700">{t('gameSessions.mode')}:</span> {viewing.mode} ·{' '}
               <span className="font-medium text-espresso-700">{t('common.status')}:</span> {viewing.status}
             </p>
             <p><span className="font-medium text-espresso-700">{t('gameSessions.joinCode')}:</span> {viewing.join_code}</p>
@@ -167,7 +155,6 @@ export default function GameSessionsPage() {
                 <thead className="bg-linen-50 text-espresso-600">
                   <tr>
                     <th className="px-3 py-2">{t('gameSessions.player')}</th>
-                    <th className="px-3 py-2">{t('gameSessions.team')}</th>
                     <th className="px-3 py-2">{t('gameSessions.score')}</th>
                   </tr>
                 </thead>
@@ -175,12 +162,11 @@ export default function GameSessionsPage() {
                   {(viewing.participants || []).map((p) => (
                     <tr key={p.id} className="border-t border-linen-100">
                       <td className="px-3 py-2">{p.full_name || p.guest_name || t('gameSessions.guest')}</td>
-                      <td className="px-3 py-2">{p.team_name || '—'}</td>
                       <td className="px-3 py-2">{p.score}</td>
                     </tr>
                   ))}
                   {(viewing.participants || []).length === 0 && (
-                    <tr><td colSpan={3} className="px-3 py-4 text-center text-espresso-400">No one has joined yet.</td></tr>
+                    <tr><td colSpan={2} className="px-3 py-4 text-center text-espresso-400">No one has joined yet.</td></tr>
                   )}
                 </tbody>
               </table>
@@ -216,26 +202,6 @@ export default function GameSessionsPage() {
                 placeholder="e.g. Grade 6 Science Quiz"
                 className="w-full rounded-xl border border-linen-300 px-3 py-2 text-sm"
               />
-            </div>
-
-            <div>
-              <span className="mb-1.5 block text-sm font-medium text-espresso-800">Type</span>
-              <div className="flex gap-2">
-                {MODES.map((m) => (
-                  <button
-                    key={m.value}
-                    type="button"
-                    onClick={() => setCreateForm((f) => ({ ...f, mode: m.value }))}
-                    className={`flex-1 rounded-xl border px-3 py-2 text-sm font-semibold transition ${
-                      createForm.mode === m.value
-                        ? 'border-carissma-500 bg-carissma-600 text-white'
-                        : 'border-linen-300 text-espresso-600 hover:border-carissma-300'
-                    }`}
-                  >
-                    {m.label}
-                  </button>
-                ))}
-              </div>
             </div>
 
             {!isSchool && (
@@ -296,44 +262,6 @@ export default function GameSessionsPage() {
             </div>
             {createForm.scheduledDate && createForm.scheduledTime && (
               <p className="-mt-2 text-xs font-medium text-espresso-500">Players can join starting 10 minutes before this time.</p>
-            )}
-
-            {createForm.mode === 'team' && (
-              <div className="space-y-3 rounded-xl border border-linen-200 p-3">
-                <p className="text-sm font-semibold text-espresso-800">Teams</p>
-                <div className="flex gap-3">
-                  <input
-                    value={createForm.team1Name}
-                    onChange={(e) => setCreateForm((f) => ({ ...f, team1Name: e.target.value }))}
-                    placeholder="Team 1 name"
-                    className="flex-1 rounded-xl border border-linen-300 px-3 py-2 text-sm"
-                  />
-                  <input
-                    type="number"
-                    min={1}
-                    value={createForm.team1Capacity}
-                    onChange={(e) => setCreateForm((f) => ({ ...f, team1Capacity: e.target.value }))}
-                    placeholder="Players"
-                    className="w-28 rounded-xl border border-linen-300 px-3 py-2 text-sm"
-                  />
-                </div>
-                <div className="flex gap-3">
-                  <input
-                    value={createForm.team2Name}
-                    onChange={(e) => setCreateForm((f) => ({ ...f, team2Name: e.target.value }))}
-                    placeholder="Team 2 name"
-                    className="flex-1 rounded-xl border border-linen-300 px-3 py-2 text-sm"
-                  />
-                  <input
-                    type="number"
-                    min={1}
-                    value={createForm.team2Capacity}
-                    onChange={(e) => setCreateForm((f) => ({ ...f, team2Capacity: e.target.value }))}
-                    placeholder="Players"
-                    className="w-28 rounded-xl border border-linen-300 px-3 py-2 text-sm"
-                  />
-                </div>
-              </div>
             )}
 
             <div>
