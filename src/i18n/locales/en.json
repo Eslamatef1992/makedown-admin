@@ -170,7 +170,7 @@
   "schools": {
     "title": "Schools",
     "password": "Password",
-    "passwordPlaceholder": "Leave blank to keep current password"
+    "passwordPlaceholder": "Required for a new school · leave blank when editing to keep the current password"
   },
   "schoolGames": {
     "title": "School Games",
