@@ -59,7 +59,9 @@
     "admins": "Admins",
     "roles": "Roles",
     "users": "Users",
+    "education": "Education",
     "schools": "Schools",
+    "schoolGames": "School Games",
     "makeDownGames": "Make Down Games",
     "games": "Games",
     "categories": "Categories",
@@ -168,6 +170,10 @@
     "title": "Schools",
     "password": "Password",
     "passwordPlaceholder": "Leave blank to keep current password"
+  },
+  "schoolGames": {
+    "title": "School Games",
+    "comingSoon": "This section is being set up — check back soon."
   },
   "gameCategories": {
     "title": "Categories"

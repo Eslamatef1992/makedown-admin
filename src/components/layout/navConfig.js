@@ -5,7 +5,13 @@ export const NAV_SECTIONS = [
   { labelKey: 'nav.admins', to: '/admins' },
   { labelKey: 'nav.roles', to: '/roles' },
   { labelKey: 'nav.users', to: '/users' },
-  { labelKey: 'nav.schools', to: '/schools' },
+  {
+    labelKey: 'nav.education',
+    children: [
+      { labelKey: 'nav.schools', to: '/schools' },
+      { labelKey: 'nav.schoolGames', to: '/school-games' },
+    ],
+  },
   {
     labelKey: 'nav.makeDownGames',
     children: [

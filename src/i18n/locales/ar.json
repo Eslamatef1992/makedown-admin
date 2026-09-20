@@ -59,7 +59,9 @@
     "admins": "المشرفون",
     "roles": "الأدوار",
     "users": "المستخدمون",
+    "education": "التعليم",
     "schools": "المدارس",
+    "schoolGames": "ألعاب المدارس",
     "makeDownGames": "ألعاب Make Down",
     "games": "الألعاب",
     "categories": "التصنيفات",
@@ -167,6 +169,10 @@
     "title": "المدارس",
     "password": "كلمة المرور",
     "passwordPlaceholder": "اتركها فارغة للاحتفاظ بكلمة المرور الحالية"
+  },
+  "schoolGames": {
+    "title": "ألعاب المدارس",
+    "comingSoon": "هذا القسم قيد الإعداد — تابعنا قريبًا."
   },
   "gameCategories": {
     "title": "التصنيفات"

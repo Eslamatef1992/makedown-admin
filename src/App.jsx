@@ -8,6 +8,7 @@ import AdminsPage from './pages/admins/AdminsPage';
 import RolesPage from './pages/roles/RolesPage';
 import UsersPage from './pages/users/UsersPage';
 import SchoolsPage from './pages/schools/SchoolsPage';
+import SchoolGamesPage from './pages/school-games/SchoolGamesPage';
 import QuizzesPage from './pages/quizzes/QuizzesPage';
 import GameCategoriesPage from './pages/game-categories/GameCategoriesPage';
 import GameSessionsPage from './pages/game-sessions/GameSessionsPage';
@@ -43,6 +44,7 @@ export default function App() {
           <Route path="/users" element={<Protected><UsersPage /></Protected>} />
 
           <Route path="/schools" element={<Protected><SchoolsPage /></Protected>} />
+          <Route path="/school-games" element={<Protected><SchoolGamesPage /></Protected>} />
           <Route path="/quizzes" element={<Protected><QuizzesPage /></Protected>} />
 
           <Route path="/game-categories" element={<Protected><GameCategoriesPage /></Protected>} />
