@@ -9,15 +9,13 @@ export default function SchoolsPage() {
       basePath="/admin/schools"
       columns={[
         { key: 'name_en', label: t('common.name') },
-        { key: 'code', label: t('common.code') },
         { key: 'contact_email', label: t('common.contactEmail') },
         { key: 'is_active', label: t('common.active'), render: (r) => (r.is_active ? t('common.yes') : t('common.no')) },
       ]}
       fields={[
         { name: 'name', label: t('common.name'), bilingual: true, required: true },
-        { name: 'code', label: t('common.code'), required: true },
+        { name: 'contactEmail', label: t('common.contactEmail'), type: 'email', required: true },
         { name: 'password', label: t('schools.password'), type: 'password', placeholder: t('schools.passwordPlaceholder') },
-        { name: 'contactEmail', label: t('common.contactEmail'), type: 'email' },
         { name: 'contactPhone', label: t('common.contactPhone') },
         { name: 'logoUrl', label: t('common.logo'), type: 'image' },
         { name: 'address', label: t('common.address'), type: 'textarea' },
@@ -26,7 +24,6 @@ export default function SchoolsPage() {
       toForm={(row) => ({
         nameEn: row.name_en,
         nameAr: row.name_ar,
-        code: row.code,
         contactEmail: row.contact_email,
         contactPhone: row.contact_phone,
         logoUrl: row.logo_url,
