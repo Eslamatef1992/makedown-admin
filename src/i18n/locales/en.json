@@ -58,9 +58,7 @@
     "myGames": "My Games",
     "admins": "Admins",
     "roles": "Roles",
-    "userManagement": "User management",
     "users": "Users",
-    "specialUsers": "Special users",
     "education": "Education",
     "schools": "Schools",
     "games": "Games",
@@ -157,20 +155,15 @@
   },
   "users": {
     "title": "Users",
-    "specialTitle": "Special users",
     "searchPlaceholder": "Search by name, email or phone…",
     "verified": "Verified",
-    "special": "Special",
-    "addSpecialUser": "+ Add special user",
-    "editSpecialUser": "Edit special user",
     "editUser": "Edit user",
     "firstName": "First name",
     "lastName": "Last name",
     "password": "Password",
     "newPassword": "New password",
     "newPasswordPlaceholder": "Leave blank to keep current password",
-    "followersCount": "Followers",
-    "followingCount": "Following"
+    "addUser": "+ Add user"
   },
   "schools": {
     "title": "Schools",

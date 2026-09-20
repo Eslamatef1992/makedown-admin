@@ -4,13 +4,7 @@ export const NAV_SECTIONS = [
   { labelKey: 'nav.dashboard', to: '/' },
   { labelKey: 'nav.admins', to: '/admins' },
   { labelKey: 'nav.roles', to: '/roles' },
-  {
-    labelKey: 'nav.userManagement',
-    children: [
-      { labelKey: 'nav.users', to: '/users' },
-      { labelKey: 'nav.specialUsers', to: '/users/special' },
-    ],
-  },
+  { labelKey: 'nav.users', to: '/users' },
   {
     labelKey: 'nav.education',
     children: [

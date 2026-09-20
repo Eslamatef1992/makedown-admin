@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import AdminLayout from '../../components/layout/AdminLayout';
 import DataTable from '../../components/ui/DataTable';
@@ -13,14 +12,10 @@ const EMPTY_FORM = {
   phone: '',
   password: '',
   newPassword: '',
-  followersCount: 0,
-  followingCount: 0,
 };
 
 export default function UsersPage() {
   const { t } = useTranslation();
-  const { pathname } = useLocation();
-  const isSpecial = pathname.startsWith('/users/special');
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -35,13 +30,12 @@ export default function UsersPage() {
     setLoading(true);
     try {
       const params = search ? { search } : {};
-      if (isSpecial) params.is_special = 1;
       const result = await listResource('/admin/users', params);
       setRows(result.rows || []);
     } finally {
       setLoading(false);
     }
-  }, [search, isSpecial]);
+  }, [search]);
 
   useEffect(() => {
     load();
@@ -49,11 +43,6 @@ export default function UsersPage() {
 
   const toggleActive = async (row) => {
     await updateResource(`/admin/users/${row.id}`, { isActive: !row.is_active });
-    load();
-  };
-
-  const toggleSpecial = async (row) => {
-    await updateResource(`/admin/users/${row.id}`, { isSpecial: !row.is_special });
     load();
   };
 
@@ -73,8 +62,6 @@ export default function UsersPage() {
       phone: row.phone || '',
       password: '',
       newPassword: '',
-      followersCount: row.followers_count ?? 0,
-      followingCount: row.following_count ?? 0,
     });
     setError('');
     setModalOpen(true);
@@ -93,16 +80,10 @@ export default function UsersPage() {
           firstName: form.firstName,
           lastName: form.lastName,
           phone: form.phone,
-          followersCount: Number(form.followersCount) || 0,
-          followingCount: Number(form.followingCount) || 0,
           ...(form.newPassword ? { password: form.newPassword } : {}),
         });
       } else {
-        await createResource('/admin/users', {
-          ...form,
-          followersCount: Number(form.followersCount) || 0,
-          followingCount: Number(form.followingCount) || 0,
-        });
+        await createResource('/admin/users', form);
       }
       setModalOpen(false);
       load();
@@ -127,24 +108,10 @@ export default function UsersPage() {
         </button>
       ),
     },
-    {
-      key: 'is_special',
-      label: t('users.special'),
-      render: (r) => (
-        <button onClick={() => toggleSpecial(r)} className={r.is_special ? 'text-saffron-600' : 'text-espresso-400'}>
-          {r.is_special ? t('common.yes') : t('common.no')}
-        </button>
-      ),
-    },
   ];
 
-  columns.push(
-    { key: 'followers_count', label: t('users.followersCount'), render: (r) => r.followers_count ?? 0 },
-    { key: 'following_count', label: t('users.followingCount'), render: (r) => r.following_count ?? 0 }
-  );
-
   return (
-    <AdminLayout title={isSpecial ? t('users.specialTitle') : t('users.title')}>
+    <AdminLayout title={t('users.title')}>
       <div className="mb-4 flex items-center justify-between gap-3">
         <input
           value={search}
@@ -152,18 +119,16 @@ export default function UsersPage() {
           placeholder={t('users.searchPlaceholder')}
           className="w-64 rounded-xl border border-linen-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-carissma-500"
         />
-        {isSpecial && (
-          <button onClick={openCreate} className="rounded-xl bg-carissma-600 px-4 py-2 text-sm font-semibold text-white hover:bg-carissma-700">
-            {t('users.addSpecialUser')}
-          </button>
-        )}
+        <button onClick={openCreate} className="rounded-xl bg-carissma-600 px-4 py-2 text-sm font-semibold text-white hover:bg-carissma-700">
+          {t('users.addUser')}
+        </button>
       </div>
 
       <DataTable loading={loading} rows={rows} columns={columns} onEdit={openEdit} />
 
       <Modal
         open={modalOpen}
-        title={editing ? (isSpecial ? t('users.editSpecialUser') : t('users.editUser')) : t('users.addSpecialUser')}
+        title={editing ? t('users.editUser') : t('users.addUser')}
         onClose={() => setModalOpen(false)}
         footer={
           <>
@@ -246,29 +211,6 @@ export default function UsersPage() {
             />
           </div>
         )}
-
-        <div className="grid grid-cols-2 gap-3">
-          <div>
-            <span className="mb-1.5 block text-sm font-medium text-espresso-800">{t('users.followersCount')}</span>
-            <input
-              type="number"
-              min="0"
-              value={form.followersCount}
-              onChange={(e) => setForm((f) => ({ ...f, followersCount: e.target.value }))}
-              className="w-full rounded-xl border border-linen-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-carissma-500"
-            />
-          </div>
-          <div>
-            <span className="mb-1.5 block text-sm font-medium text-espresso-800">{t('users.followingCount')}</span>
-            <input
-              type="number"
-              min="0"
-              value={form.followingCount}
-              onChange={(e) => setForm((f) => ({ ...f, followingCount: e.target.value }))}
-              className="w-full rounded-xl border border-linen-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-carissma-500"
-            />
-          </div>
-        </div>
       </Modal>
     </AdminLayout>
   );

@@ -58,9 +58,7 @@
     "myGames": "ألعابي",
     "admins": "المشرفون",
     "roles": "الأدوار",
-    "userManagement": "إدارة المستخدمين",
     "users": "المستخدمون",
-    "specialUsers": "المستخدمون المميزون",
     "education": "التعليم",
     "schools": "المدارس",
     "games": "الألعاب",
@@ -156,20 +154,15 @@
   },
   "users": {
     "title": "المستخدمون",
-    "specialTitle": "المستخدمون المميزون",
     "searchPlaceholder": "ابحث بالاسم أو البريد الإلكتروني أو الهاتف…",
     "verified": "موثّق",
-    "special": "مميز",
-    "addSpecialUser": "+ إضافة مستخدم مميز",
-    "editSpecialUser": "تعديل مستخدم مميز",
     "editUser": "تعديل المستخدم",
     "firstName": "الاسم الأول",
     "lastName": "اسم العائلة",
     "password": "كلمة المرور",
     "newPassword": "كلمة مرور جديدة",
     "newPasswordPlaceholder": "اتركها فارغة للاحتفاظ بكلمة المرور الحالية",
-    "followersCount": "المتابعون",
-    "followingCount": "يتابع"
+    "addUser": "+ إضافة مستخدم"
   },
   "schools": {
     "title": "المدارس",

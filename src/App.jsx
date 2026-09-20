@@ -42,7 +42,6 @@ export default function App() {
           <Route path="/roles" element={<Protected><RolesPage /></Protected>} />
 
           <Route path="/users" element={<Protected><UsersPage /></Protected>} />
-          <Route path="/users/special" element={<Protected><UsersPage /></Protected>} />
 
           <Route path="/schools" element={<Protected><SchoolsPage /></Protected>} />
           <Route path="/quizzes" element={<Protected><QuizzesPage /></Protected>} />
