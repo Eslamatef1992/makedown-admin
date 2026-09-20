@@ -173,7 +173,7 @@
   },
   "schoolGames": {
     "title": "ألعاب المدارس",
-    "comingSoon": "هذا القسم قيد الإعداد — تابعنا قريبًا."
+    "noGamesYet": "لم تنشئ أي مدرسة لعبة بعد."
   },
   "gameCategories": {
     "title": "التصنيفات"

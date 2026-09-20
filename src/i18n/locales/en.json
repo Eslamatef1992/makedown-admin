@@ -174,7 +174,7 @@
   },
   "schoolGames": {
     "title": "School Games",
-    "comingSoon": "This section is being set up — check back soon."
+    "noGamesYet": "No school has created a game yet."
   },
   "gameCategories": {
     "title": "Categories"

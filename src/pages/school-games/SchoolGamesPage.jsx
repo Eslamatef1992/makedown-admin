@@ -1,17 +1,100 @@
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import AdminLayout from '../../components/layout/AdminLayout';
+import DataTable from '../../components/ui/DataTable';
+import Modal from '../../components/ui/Modal';
+import { listResource, getResource } from '../../api/adminApi';
 
-// Placeholder — Eslam is going to spec out the exact School Games flow
-// (what it manages, how it differs from the regular Make Down Games /
-// Schools sections) separately. This just gives the new "Education" nav
-// group a real page to land on in the meantime instead of 404ing.
+// Read-only, super-admin-facing oversight of every game a school has
+// created — schools manage their own games themselves (My Quizzes / My
+// Games, only visible when logged in AS that school), this page is just
+// so a super admin can see what's out there across every school without
+// having to log into each one. Reuses the same /admin/game-sessions data
+// the "Games history" page already lists (a school-hosted session is just
+// a game_sessions row with school_id set) — just pre-filtered to the ones
+// that have a school attached.
 export default function SchoolGamesPage() {
   const { t } = useTranslation();
+  const [rows, setRows] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [viewing, setViewing] = useState(null);
+  const [open, setOpen] = useState(false);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    try {
+      const result = await listResource('/admin/game-sessions', { pageSize: 100 });
+      setRows((result.rows || []).filter((r) => r.school_id));
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  const view = async (row) => {
+    setViewing(await getResource(`/admin/game-sessions/${row.id}`));
+    setOpen(true);
+  };
+
   return (
     <AdminLayout title={t('schoolGames.title')}>
-      <div className="rounded-2xl border border-dashed border-linen-300 bg-white p-8 text-center">
-        <p className="text-sm font-medium text-espresso-500">{t('schoolGames.comingSoon')}</p>
-      </div>
+      <DataTable
+        loading={loading}
+        rows={rows}
+        columns={[
+          { key: 'title', label: t('gameSessions.game'), render: (r) => r.title || r.quiz_title || `#${r.id}` },
+          { key: 'school_name', label: t('gameSessions.school'), render: (r) => r.school_name || '—' },
+          { key: 'mode', label: 'Mode' },
+          { key: 'status', label: t('common.status') },
+          { key: 'participant_count', label: t('gameSessions.players') },
+          { key: 'join_code', label: t('gameSessions.joinCode') },
+          { key: 'created_at', label: t('gameSessions.created') },
+        ]}
+        onEdit={view}
+      />
+      {rows.length === 0 && !loading && (
+        <p className="mt-4 text-center text-sm text-espresso-400">{t('schoolGames.noGamesYet')}</p>
+      )}
+
+      <Modal open={open} title={viewing ? viewing.title || viewing.quiz_title || `#${viewing.id}` : ''} onClose={() => setOpen(false)}>
+        {viewing && (
+          <div className="space-y-3 text-sm">
+            <p><span className="font-medium text-espresso-700">{t('gameSessions.school')}:</span> {viewing.school_name || '—'}</p>
+            <p><span className="font-medium text-espresso-700">{t('common.status')}:</span> {viewing.status}</p>
+            <p><span className="font-medium text-espresso-700">{t('gameSessions.joinCode')}:</span> {viewing.join_code}</p>
+            {viewing.board?.length > 0 && (
+              <p>
+                <span className="font-medium text-espresso-700">Games on the board:</span>{' '}
+                {viewing.board.map((b) => b.title_en).join(', ')}
+              </p>
+            )}
+            <div className="rounded-xl border border-linen-200">
+              <table className="w-full text-start text-sm">
+                <thead className="bg-linen-50 text-espresso-600">
+                  <tr>
+                    <th className="px-3 py-2">{t('gameSessions.player')}</th>
+                    <th className="px-3 py-2">{t('gameSessions.score')}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {(viewing.participants || []).map((p) => (
+                    <tr key={p.id} className="border-t border-linen-100">
+                      <td className="px-3 py-2">{p.full_name || p.guest_name || t('gameSessions.guest')}</td>
+                      <td className="px-3 py-2">{p.score}</td>
+                    </tr>
+                  ))}
+                  {(viewing.participants || []).length === 0 && (
+                    <tr><td colSpan={2} className="px-3 py-4 text-center text-espresso-400">No one has joined yet.</td></tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+      </Modal>
     </AdminLayout>
   );
 }
