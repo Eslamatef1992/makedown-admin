@@ -46,7 +46,12 @@ export default function Sidebar() {
   const { t } = useTranslation();
   const { role } = useAdminAuth();
   const isSchool = role === 'school';
-  const sections = isSchool ? [{ to: '/game-sessions', labelKey: 'nav.myGames' }] : NAV_SECTIONS;
+  const sections = isSchool
+    ? [
+        { to: '/school-quizzes', labelKey: 'nav.myQuizzes' },
+        { to: '/game-sessions', labelKey: 'nav.myGames' },
+      ]
+    : NAV_SECTIONS;
 
   return (
     <aside className="flex h-screen w-64 shrink-0 flex-col border-e border-linen-200 bg-white">

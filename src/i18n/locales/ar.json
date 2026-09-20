@@ -56,6 +56,7 @@
   "nav": {
     "dashboard": "لوحة التحكم",
     "myGames": "ألعابي",
+    "myQuizzes": "أسئلتي",
     "admins": "المشرفون",
     "roles": "الأدوار",
     "users": "المستخدمون",
@@ -295,6 +296,9 @@
     "supportEmail": "بريد الدعم الإلكتروني",
     "phone": "رقم الهاتف",
     "contactInfoHint": "يظهر في صفحة تواصل معنا على الموقع."
+  },
+  "schoolQuizzes": {
+    "title": "أسئلتي"
   },
   "quizzes": {
     "title": "الألعاب",

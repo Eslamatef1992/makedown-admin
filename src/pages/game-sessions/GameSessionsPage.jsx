@@ -12,9 +12,12 @@ const AUDIENCES = [
   { value: 'mixed', label: 'Boy & Girl' },
 ];
 
-// There's no solo/team/random choice any more — every session the admin
-// creates is just 'solo' behind the scenes (no team grouping; any number of
+// A regular admin-created session has no solo/team/random choice any more —
+// it's always 'solo' behind the scenes (no team grouping; any number of
 // players can still join and play individually with the join code/QR).
+// A SCHOOL creating its own game is the one place team mode still exists
+// (Team1 vs Team2, per the School Games design) — see the mode picker below,
+// only shown when isSchool.
 const SESSION_MODE = 'solo';
 
 const EMPTY_CREATE_FORM = {
@@ -25,6 +28,11 @@ const EMPTY_CREATE_FORM = {
   audience: '',
   scheduledDate: '',
   scheduledTime: '',
+  mode: 'solo',
+  team1Name: '',
+  team1Capacity: '',
+  team2Name: '',
+  team2Capacity: '',
 };
 
 export default function GameSessionsPage() {
@@ -85,16 +93,22 @@ export default function GameSessionsPage() {
     }));
   };
 
+  const isTeamGame = isSchool && createForm.mode === 'team';
+
   const submitCreate = async () => {
     if (!createForm.quizIds.length) {
       setCreateError('Pick at least one category to specialize this game.');
+      return;
+    }
+    if (isTeamGame && (!createForm.team1Name.trim() || !createForm.team2Name.trim())) {
+      setCreateError('Name both teams.');
       return;
     }
     setCreateError('');
     setCreating(true);
     try {
       const session = await createResource('/admin/game-sessions', {
-        mode: SESSION_MODE,
+        mode: isSchool ? createForm.mode : SESSION_MODE,
         quizIds: createForm.quizIds,
         title: createForm.title || undefined,
         schoolId: isSchool ? undefined : createForm.schoolId || undefined,
@@ -102,6 +116,10 @@ export default function GameSessionsPage() {
         audience: createForm.audience || undefined,
         scheduledDate: createForm.scheduledDate || undefined,
         scheduledTime: createForm.scheduledTime || undefined,
+        team1Name: isTeamGame ? createForm.team1Name : undefined,
+        team1Capacity: isTeamGame && createForm.team1Capacity ? Number(createForm.team1Capacity) : undefined,
+        team2Name: isTeamGame ? createForm.team2Name : undefined,
+        team2Capacity: isTeamGame && createForm.team2Capacity ? Number(createForm.team2Capacity) : undefined,
       });
       setCreated(session);
       load();
@@ -203,6 +221,65 @@ export default function GameSessionsPage() {
                 className="w-full rounded-xl border border-linen-300 px-3 py-2 text-sm"
               />
             </div>
+
+            {isSchool && (
+              <div>
+                <span className="mb-1.5 block text-sm font-medium text-espresso-800">Mode</span>
+                <div className="flex gap-2">
+                  {[{ value: 'solo', label: 'Solo' }, { value: 'team', label: 'Team' }].map((m) => (
+                    <button
+                      key={m.value}
+                      type="button"
+                      onClick={() => setCreateForm((f) => ({ ...f, mode: m.value }))}
+                      className={`flex-1 rounded-xl border px-3 py-2 text-sm font-semibold transition ${
+                        createForm.mode === m.value
+                          ? 'border-carissma-500 bg-carissma-600 text-white'
+                          : 'border-linen-300 text-espresso-600 hover:border-carissma-300'
+                      }`}
+                    >
+                      {m.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {isTeamGame && (
+              <div className="flex gap-3">
+                <div className="flex-1 space-y-2">
+                  <input
+                    value={createForm.team1Name}
+                    onChange={(e) => setCreateForm((f) => ({ ...f, team1Name: e.target.value }))}
+                    placeholder="Team 1 name"
+                    className="w-full rounded-xl border border-linen-300 px-3 py-2 text-sm"
+                  />
+                  <input
+                    type="number"
+                    min={1}
+                    value={createForm.team1Capacity}
+                    onChange={(e) => setCreateForm((f) => ({ ...f, team1Capacity: e.target.value }))}
+                    placeholder="Team 1 players"
+                    className="w-full rounded-xl border border-linen-300 px-3 py-2 text-sm"
+                  />
+                </div>
+                <div className="flex-1 space-y-2">
+                  <input
+                    value={createForm.team2Name}
+                    onChange={(e) => setCreateForm((f) => ({ ...f, team2Name: e.target.value }))}
+                    placeholder="Team 2 name"
+                    className="w-full rounded-xl border border-linen-300 px-3 py-2 text-sm"
+                  />
+                  <input
+                    type="number"
+                    min={1}
+                    value={createForm.team2Capacity}
+                    onChange={(e) => setCreateForm((f) => ({ ...f, team2Capacity: e.target.value }))}
+                    placeholder="Team 2 players"
+                    className="w-full rounded-xl border border-linen-300 px-3 py-2 text-sm"
+                  />
+                </div>
+              </div>
+            )}
 
             {!isSchool && (
               <div>

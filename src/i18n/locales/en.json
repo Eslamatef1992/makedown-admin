@@ -56,6 +56,7 @@
   "nav": {
     "dashboard": "Dashboard",
     "myGames": "My Games",
+    "myQuizzes": "My Quizzes",
     "admins": "Admins",
     "roles": "Roles",
     "users": "Users",
@@ -296,6 +297,9 @@
     "supportEmail": "Support email",
     "phone": "Phone number",
     "contactInfoHint": "Shown on the website Contact Us page."
+  },
+  "schoolQuizzes": {
+    "title": "My Quizzes"
   },
   "quizzes": {
     "title": "Games",
