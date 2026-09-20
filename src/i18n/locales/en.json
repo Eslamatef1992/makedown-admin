@@ -59,14 +59,12 @@
     "admins": "Admins",
     "roles": "Roles",
     "users": "Users",
-    "education": "Education",
     "schools": "Schools",
     "games": "Games",
     "categories": "Categories",
     "gamesHistory": "Games history",
     "orders": "Orders",
     "ordersGuest": "Orders as a guest",
-    "chatting": "Chatting",
     "ecommerce": "Ecommerce",
     "products": "Products",
     "variantTypes": "Variant Types",
@@ -281,14 +279,6 @@
     "print": "Print",
     "address": "Address"
   },
-  "chat": {
-    "title": "Chatting",
-    "readOnlyNote": "Read-only view of user-to-user conversations. Sending messages happens live on the website (Socket.io) — full moderation tools are a follow-up.",
-    "noConversations": "No conversations yet",
-    "noMessagesYet": "No messages yet",
-    "conversation": "Conversation",
-    "selectConversation": "Select a conversation"
-  },
   "cms": {
     "pageTitle": "Page title",
     "content": "Content (HTML)",
@@ -301,7 +291,7 @@
     "contactInfoHint": "Shown on the website Contact Us page."
   },
   "quizzes": {
-    "title": "Education — Games",
+    "title": "Games",
     "difficulty": "Difficulty",
     "easy": "Easy",
     "medium": "Medium",

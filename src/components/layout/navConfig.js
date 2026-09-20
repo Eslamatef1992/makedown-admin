@@ -5,16 +5,10 @@ export const NAV_SECTIONS = [
   { labelKey: 'nav.admins', to: '/admins' },
   { labelKey: 'nav.roles', to: '/roles' },
   { labelKey: 'nav.users', to: '/users' },
-  {
-    labelKey: 'nav.education',
-    children: [
-      { labelKey: 'nav.schools', to: '/schools' },
-      { labelKey: 'nav.games', to: '/quizzes' },
-    ],
-  },
+  { labelKey: 'nav.schools', to: '/schools' },
+  { labelKey: 'nav.games', to: '/quizzes' },
   { labelKey: 'nav.categories', to: '/game-categories' },
   { labelKey: 'nav.gamesHistory', to: '/game-sessions' },
-  { labelKey: 'nav.chatting', to: '/chat' },
   {
     labelKey: 'nav.ecommerce',
     children: [

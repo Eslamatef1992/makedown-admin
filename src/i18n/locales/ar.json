@@ -59,14 +59,12 @@
     "admins": "المشرفون",
     "roles": "الأدوار",
     "users": "المستخدمون",
-    "education": "التعليم",
     "schools": "المدارس",
     "games": "الألعاب",
     "categories": "التصنيفات",
     "gamesHistory": "سجل الألعاب",
     "orders": "الطلبات",
     "ordersGuest": "طلبات الزوار",
-    "chatting": "المحادثات",
     "ecommerce": "المتجر",
     "products": "المنتجات",
     "variantTypes": "أنواع المتغيرات",
@@ -280,14 +278,6 @@
     "print": "طباعة",
     "address": "العنوان"
   },
-  "chat": {
-    "title": "المحادثات",
-    "readOnlyNote": "عرض للقراءة فقط لمحادثات المستخدمين. إرسال الرسائل يتم مباشرة على الموقع (Socket.io) — أدوات الإشراف الكاملة قادمة لاحقًا.",
-    "noConversations": "لا توجد محادثات بعد",
-    "noMessagesYet": "لا توجد رسائل بعد",
-    "conversation": "محادثة",
-    "selectConversation": "اختر محادثة"
-  },
   "cms": {
     "pageTitle": "عنوان الصفحة",
     "content": "المحتوى (HTML)",
@@ -300,7 +290,7 @@
     "contactInfoHint": "يظهر في صفحة تواصل معنا على الموقع."
   },
   "quizzes": {
-    "title": "التعليم — الألعاب",
+    "title": "الألعاب",
     "difficulty": "مستوى الصعوبة",
     "easy": "سهل",
     "medium": "متوسط",

@@ -12,7 +12,6 @@ import QuizzesPage from './pages/quizzes/QuizzesPage';
 import GameCategoriesPage from './pages/game-categories/GameCategoriesPage';
 import GameSessionsPage from './pages/game-sessions/GameSessionsPage';
 import OrdersPage from './pages/orders/OrdersPage';
-import ChatPage from './pages/chat/ChatPage';
 import ProductsPage from './pages/products/ProductsPage';
 import VariantTypesPage from './pages/variant-types/VariantTypesPage';
 import CouponsPage from './pages/coupons/CouponsPage';
@@ -51,8 +50,6 @@ export default function App() {
 
           <Route path="/orders" element={<Protected><OrdersPage /></Protected>} />
           <Route path="/orders/guest" element={<Protected><OrdersPage /></Protected>} />
-
-          <Route path="/chat" element={<Protected><ChatPage /></Protected>} />
 
           <Route path="/products" element={<Protected><ProductsPage /></Protected>} />
           <Route path="/variant-types" element={<Protected><VariantTypesPage /></Protected>} />
