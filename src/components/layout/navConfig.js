@@ -6,9 +6,15 @@ export const NAV_SECTIONS = [
   { labelKey: 'nav.roles', to: '/roles' },
   { labelKey: 'nav.users', to: '/users' },
   { labelKey: 'nav.schools', to: '/schools' },
-  { labelKey: 'nav.games', to: '/quizzes' },
-  { labelKey: 'nav.categories', to: '/game-categories' },
-  { labelKey: 'nav.gamesHistory', to: '/game-sessions' },
+  {
+    labelKey: 'nav.makeDownGames',
+    children: [
+      { labelKey: 'nav.games', to: '/quizzes' },
+      { labelKey: 'nav.categories', to: '/game-categories' },
+      { labelKey: 'nav.gamesHistory', to: '/game-sessions' },
+      { labelKey: 'nav.packages', to: '/packages' },
+    ],
+  },
   {
     labelKey: 'nav.ecommerce',
     children: [
@@ -20,7 +26,6 @@ export const NAV_SECTIONS = [
       { labelKey: 'nav.ordersGuest', to: '/orders/guest' },
     ],
   },
-  { labelKey: 'nav.packages', to: '/packages' },
   { labelKey: 'nav.cashOnDelivery', to: '/cms/cash-on-delivery' },
   { labelKey: 'nav.getInTouch', to: '/contact-messages' },
   {
