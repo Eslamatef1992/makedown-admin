@@ -177,7 +177,8 @@
     "noGamesYet": "No school has created a game yet."
   },
   "gameCategories": {
-    "title": "Categories"
+    "title": "Categories",
+    "hasGames": "Has Games"
   },
   "products": {
     "title": "Ecommerce — Products",

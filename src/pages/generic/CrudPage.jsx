@@ -119,6 +119,7 @@ export default function CrudPage({ title, basePath, columns, fields, toForm, sea
         loading={loading}
         onEdit={fields ? openEdit : undefined}
         onDelete={fields ? onDelete : undefined}
+        onReload={load}
       />
 
       {fields && (

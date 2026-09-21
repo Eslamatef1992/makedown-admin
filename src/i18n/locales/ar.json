@@ -176,7 +176,8 @@
     "noGamesYet": "لم تنشئ أي مدرسة لعبة بعد."
   },
   "gameCategories": {
-    "title": "التصنيفات"
+    "title": "التصنيفات",
+    "hasGames": "يحتوي على ألعاب"
   },
   "products": {
     "title": "المتجر — المنتجات",

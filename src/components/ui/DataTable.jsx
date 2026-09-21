@@ -10,7 +10,7 @@ function PrinterIcon(props) {
   );
 }
 
-export default function DataTable({ columns, rows, onEdit, onDelete, onPrint, loading, emptyLabel }) {
+export default function DataTable({ columns, rows, onEdit, onDelete, onPrint, onReload, loading, emptyLabel }) {
   const { t } = useTranslation();
   const hasActions = Boolean(onEdit || onDelete || onPrint);
   return (
@@ -47,7 +47,7 @@ export default function DataTable({ columns, rows, onEdit, onDelete, onPrint, lo
                 <tr key={row.id} className="border-t border-linen-100 hover:bg-linen-50/60">
                   {columns.map((c) => (
                     <td key={c.key} className="whitespace-nowrap px-4 py-3 text-espresso-800">
-                      {c.render ? c.render(row) : String(row[c.key] ?? '—')}
+                      {c.render ? c.render(row, { reload: onReload }) : String(row[c.key] ?? '—')}
                     </td>
                   ))}
                   {hasActions && (

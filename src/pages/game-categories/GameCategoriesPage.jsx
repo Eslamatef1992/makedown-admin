@@ -1,17 +1,29 @@
 import { useTranslation } from 'react-i18next';
 import CrudPage from '../generic/CrudPage';
+import InlineActiveToggle from '../../components/ui/InlineActiveToggle';
+
+const BASE_PATH = '/admin/game-categories';
 
 export default function GameCategoriesPage() {
   const { t } = useTranslation();
   return (
     <CrudPage
       title={t('gameCategories.title')}
-      basePath="/admin/game-categories"
+      basePath={BASE_PATH}
       columns={[
         { key: 'name_en', label: t('common.name') },
         { key: 'slug', label: t('common.slug') },
         { key: 'sort_order', label: t('common.order') },
-        { key: 'is_active', label: t('common.active'), render: (r) => (r.is_active ? t('common.yes') : t('common.no')) },
+        {
+          key: 'is_active',
+          label: t('common.active'),
+          render: (row, { reload } = {}) => <InlineActiveToggle basePath={BASE_PATH} row={row} reload={reload} />,
+        },
+        {
+          key: 'quiz_count',
+          label: t('gameCategories.hasGames'),
+          render: (row) => (Number(row.quiz_count) > 0 ? t('common.yes') : t('common.no')),
+        },
       ]}
       fields={[
         { name: 'name', label: t('common.name'), bilingual: true, required: true },
