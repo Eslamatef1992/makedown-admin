@@ -3,11 +3,13 @@ import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import AdminLayout from '../../components/layout/AdminLayout';
 import DataTable from '../../components/ui/DataTable';
+import Pagination from '../../components/ui/Pagination';
 import Modal from '../../components/ui/Modal';
 import { listResource, getResource, updateResource } from '../../api/adminApi';
 
 const STATUS_OPTIONS = ['pending', 'paid', 'processing', 'shipped', 'delivered', 'cancelled', 'refunded'];
 const PAYMENT_STATUS_OPTIONS = ['unpaid', 'paid', 'failed', 'refunded'];
+const PAGE_SIZE = 20;
 
 function escapeHtml(value) {
   return String(value ?? '').replace(/[&<>"']/g, (c) => (
@@ -380,24 +382,34 @@ export default function OrdersPage() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [paymentFilter, setPaymentFilter] = useState('');
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
 
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const params = { pageSize: 100 };
+      const params = { page, pageSize: PAGE_SIZE };
       if (isGuest) params.guest = '1';
       if (statusFilter) params.status = statusFilter;
       if (paymentFilter) params.payment_status = paymentFilter;
       const result = await listResource('/admin/orders', params);
       setRows(result.rows || []);
+      setTotal(result.total ?? (result.rows ? result.rows.length : 0));
     } finally {
       setLoading(false);
     }
-  }, [isGuest, statusFilter, paymentFilter]);
+  }, [isGuest, statusFilter, paymentFilter, page]);
 
   useEffect(() => {
     load();
   }, [load]);
+
+  // switching status/payment filters (or Orders <-> Guest Orders) changes
+  // the underlying dataset, so land back on page 1 instead of a page that
+  // may no longer exist for the new filter
+  useEffect(() => {
+    setPage(1);
+  }, [isGuest, statusFilter, paymentFilter]);
 
   const filteredRows = useMemo(() => {
     const term = search.trim().toLowerCase();
@@ -498,6 +510,7 @@ export default function OrdersPage() {
         onEdit={view}
         onPrint={printRow}
       />
+      <Pagination page={page} pageSize={PAGE_SIZE} total={total} onPageChange={setPage} />
 
       <Modal open={open} title={viewing ? t('orders.orderTitle', { number: viewing.order_number }) : ''} onClose={() => setOpen(false)}>
         {viewing && (

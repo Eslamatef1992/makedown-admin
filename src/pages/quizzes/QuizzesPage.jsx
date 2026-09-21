@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import AdminLayout from '../../components/layout/AdminLayout';
 import DataTable from '../../components/ui/DataTable';
+import Pagination from '../../components/ui/Pagination';
 import Modal from '../../components/ui/Modal';
 import Field from '../../components/ui/Field';
 import BilingualField from '../../components/ui/BilingualField';
@@ -48,12 +49,15 @@ const QUESTION_TYPES = [
 ];
 
 const QUESTION_POINT_VALUES = [200, 400, 600];
+const PAGE_SIZE = 20;
 
 export default function QuizzesPage() {
   const { t } = useTranslation();
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState(null);
@@ -95,16 +99,22 @@ export default function QuizzesPage() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const result = await listResource('/admin/quizzes', search ? { search } : {});
+      const result = await listResource('/admin/quizzes', { ...(search ? { search } : {}), page, pageSize: PAGE_SIZE });
       setRows(result.rows || []);
+      setTotal(result.total ?? (result.rows ? result.rows.length : 0));
     } finally {
       setLoading(false);
     }
-  }, [search]);
+  }, [search, page]);
 
   useEffect(() => {
     load();
   }, [load]);
+
+  const onSearchChange = (value) => {
+    setSearch(value);
+    setPage(1);
+  };
 
   useEffect(() => {
     listResource('/admin/game-categories', { pageSize: 200 })
@@ -146,7 +156,8 @@ export default function QuizzesPage() {
   const onDelete = async (row) => {
     if (!confirm(t('quizzes.confirmDelete'))) return;
     await deleteResource(`/admin/quizzes/${row.id}`);
-    load();
+    if (rows.length === 1 && page > 1) setPage((p) => p - 1);
+    else load();
   };
 
   const openDetail = async (row) => {
@@ -206,7 +217,7 @@ export default function QuizzesPage() {
     <AdminLayout title={t('quizzes.title')}>
       <div className="mb-4 flex items-center justify-between gap-3">
         <input
-          value={search} onChange={(e) => setSearch(e.target.value)} placeholder={t('common.search')}
+          value={search} onChange={(e) => onSearchChange(e.target.value)} placeholder={t('common.search')}
           className="w-64 rounded-xl border border-linen-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-carissma-500"
         />
         <button onClick={openCreate} className="rounded-xl bg-carissma-600 px-4 py-2 text-sm font-semibold text-white hover:bg-carissma-700">
@@ -245,6 +256,7 @@ export default function QuizzesPage() {
         onEdit={openEdit}
         onDelete={onDelete}
       />
+      <Pagination page={page} pageSize={PAGE_SIZE} total={total} onPageChange={setPage} />
 
       <Modal
         open={modalOpen}

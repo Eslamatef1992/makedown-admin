@@ -51,7 +51,10 @@
     "image": "Image",
     "show": "Show password",
     "hide": "Hide password",
-    "print": "Print"
+    "print": "Print",
+    "previous": "Previous",
+    "next": "Next",
+    "pageOf": "Page {{page}} of {{total}}"
   },
   "nav": {
     "dashboard": "Dashboard",

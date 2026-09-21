@@ -2,8 +2,11 @@ import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import AdminLayout from '../../components/layout/AdminLayout';
 import DataTable from '../../components/ui/DataTable';
+import Pagination from '../../components/ui/Pagination';
 import Modal from '../../components/ui/Modal';
 import { listResource, updateResource, createResource } from '../../api/adminApi';
+
+const PAGE_SIZE = 20;
 
 const EMPTY_FORM = {
   firstName: '',
@@ -19,6 +22,8 @@ export default function UsersPage() {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState(null);
@@ -29,13 +34,19 @@ export default function UsersPage() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const params = search ? { search } : {};
+      const params = { ...(search ? { search } : {}), page, pageSize: PAGE_SIZE };
       const result = await listResource('/admin/users', params);
       setRows(result.rows || []);
+      setTotal(result.total ?? (result.rows ? result.rows.length : 0));
     } finally {
       setLoading(false);
     }
-  }, [search]);
+  }, [search, page]);
+
+  const onSearchChange = (value) => {
+    setSearch(value);
+    setPage(1);
+  };
 
   useEffect(() => {
     load();
@@ -115,7 +126,7 @@ export default function UsersPage() {
       <div className="mb-4 flex items-center justify-between gap-3">
         <input
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => onSearchChange(e.target.value)}
           placeholder={t('users.searchPlaceholder')}
           className="w-64 rounded-xl border border-linen-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-carissma-500"
         />
@@ -125,6 +136,7 @@ export default function UsersPage() {
       </div>
 
       <DataTable loading={loading} rows={rows} columns={columns} onEdit={openEdit} />
+      <Pagination page={page} pageSize={PAGE_SIZE} total={total} onPageChange={setPage} />
 
       <Modal
         open={modalOpen}

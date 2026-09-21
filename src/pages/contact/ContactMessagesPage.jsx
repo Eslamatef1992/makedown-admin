@@ -2,10 +2,12 @@ import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import AdminLayout from '../../components/layout/AdminLayout';
 import DataTable from '../../components/ui/DataTable';
+import Pagination from '../../components/ui/Pagination';
 import Modal from '../../components/ui/Modal';
 import { listResource, updateResource } from '../../api/adminApi';
 
 const STATUS_COLORS = { new: 'text-carissma-600', read: 'text-saffron-700', replied: 'text-espresso-500' };
+const PAGE_SIZE = 20;
 
 export default function ContactMessagesPage() {
   const { t } = useTranslation();
@@ -13,16 +15,19 @@ export default function ContactMessagesPage() {
   const [loading, setLoading] = useState(true);
   const [viewing, setViewing] = useState(null);
   const [open, setOpen] = useState(false);
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
 
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const result = await listResource('/admin/contact-messages');
+      const result = await listResource('/admin/contact-messages', { page, pageSize: PAGE_SIZE });
       setRows(result.rows || []);
+      setTotal(result.total ?? (result.rows ? result.rows.length : 0));
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [page]);
 
   useEffect(() => {
     load();
@@ -57,6 +62,7 @@ export default function ContactMessagesPage() {
         ]}
         onEdit={view}
       />
+      <Pagination page={page} pageSize={PAGE_SIZE} total={total} onPageChange={setPage} />
 
       <Modal open={open} title={viewing?.subject || t('contact.messageFallback')} onClose={() => setOpen(false)}>
         {viewing && (

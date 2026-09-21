@@ -2,11 +2,14 @@ import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import AdminLayout from '../../components/layout/AdminLayout';
 import DataTable from '../../components/ui/DataTable';
+import Pagination from '../../components/ui/Pagination';
 import Modal from '../../components/ui/Modal';
 import BilingualField from '../../components/ui/BilingualField';
 import Field from '../../components/ui/Field';
 import { listResource, getResource, createResource, updateResource, deleteResource } from '../../api/adminApi';
 import { findMissingField } from '../../utils/validateFields';
+
+const PAGE_SIZE = 20;
 
 // Manage reusable variant types (e.g. Color, Width, Height) and, per type,
 // the fixed list of values (e.g. Red/Blue, Small/Large). Products then pick
@@ -16,6 +19,8 @@ export default function VariantTypesPage() {
   const { t } = useTranslation();
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState(null);
@@ -35,12 +40,13 @@ export default function VariantTypesPage() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const result = await listResource('/admin/variant-types', {});
+      const result = await listResource('/admin/variant-types', { page, pageSize: PAGE_SIZE });
       setRows(result.rows || []);
+      setTotal(result.total ?? (result.rows ? result.rows.length : 0));
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [page]);
 
   useEffect(() => {
     load();
@@ -76,7 +82,8 @@ export default function VariantTypesPage() {
   const onDelete = async (row) => {
     if (!confirm(t('common.confirmDelete'))) return;
     await deleteResource(`/admin/variant-types/${row.id}`);
-    load();
+    if (rows.length === 1 && page > 1) setPage((p) => p - 1);
+    else load();
   };
 
   const openValues = async (row) => {
@@ -136,6 +143,7 @@ export default function VariantTypesPage() {
         onEdit={openEdit}
         onDelete={onDelete}
       />
+      <Pagination page={page} pageSize={PAGE_SIZE} total={total} onPageChange={setPage} />
 
       <Modal
         open={modalOpen}

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import AdminLayout from '../../components/layout/AdminLayout';
 import DataTable from '../../components/ui/DataTable';
+import Pagination from '../../components/ui/Pagination';
 import Modal from '../../components/ui/Modal';
 import Field from '../../components/ui/Field';
 import BilingualField from '../../components/ui/BilingualField';
@@ -24,11 +25,13 @@ import { findMissingField } from '../../utils/validateFields';
  *  - searchable: boolean (adds a search box, sent as ?search=)
  *  - addLabel / editLabel: optional overrides for the create/edit modal title
  */
-export default function CrudPage({ title, basePath, columns, fields, toForm, searchable = true, addLabel, editLabel }) {
+export default function CrudPage({ title, basePath, columns, fields, toForm, searchable = true, addLabel, editLabel, pageSize = 20 }) {
   const { t } = useTranslation();
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState({});
@@ -38,16 +41,22 @@ export default function CrudPage({ title, basePath, columns, fields, toForm, sea
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const result = await listResource(basePath, search ? { search } : {});
+      const result = await listResource(basePath, { ...(search ? { search } : {}), page, pageSize });
       setRows(result.rows || []);
+      setTotal(result.total ?? (result.rows ? result.rows.length : 0));
     } finally {
       setLoading(false);
     }
-  }, [basePath, search]);
+  }, [basePath, search, page, pageSize]);
 
   useEffect(() => {
     load();
   }, [load]);
+
+  const onSearchChange = (value) => {
+    setSearch(value);
+    setPage(1);
+  };
 
   const openCreate = () => {
     setEditing(null);
@@ -90,7 +99,10 @@ export default function CrudPage({ title, basePath, columns, fields, toForm, sea
   const onDelete = async (row) => {
     if (!confirm(t('common.confirmDelete'))) return;
     await deleteResource(`${basePath}/${row.id}`);
-    load();
+    // deleting the last row on a page that isn't the first leaves it
+    // empty — step back a page instead of showing a blank table
+    if (rows.length === 1 && page > 1) setPage((p) => p - 1);
+    else load();
   };
 
   return (
@@ -99,7 +111,7 @@ export default function CrudPage({ title, basePath, columns, fields, toForm, sea
         {searchable ? (
           <input
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => onSearchChange(e.target.value)}
             placeholder={t('common.search')}
             className="w-64 rounded-xl border border-linen-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-carissma-500"
           />
@@ -121,6 +133,7 @@ export default function CrudPage({ title, basePath, columns, fields, toForm, sea
         onDelete={fields ? onDelete : undefined}
         onReload={load}
       />
+      <Pagination page={page} pageSize={pageSize} total={total} onPageChange={setPage} />
 
       {fields && (
         <Modal

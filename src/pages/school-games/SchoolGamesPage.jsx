@@ -2,8 +2,11 @@ import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import AdminLayout from '../../components/layout/AdminLayout';
 import DataTable from '../../components/ui/DataTable';
+import Pagination from '../../components/ui/Pagination';
 import Modal from '../../components/ui/Modal';
 import { listResource, getResource } from '../../api/adminApi';
+
+const PAGE_SIZE = 20;
 
 // Read-only, super-admin-facing oversight of every game a school has
 // created — schools manage their own games themselves (My Quizzes / My
@@ -19,16 +22,19 @@ export default function SchoolGamesPage() {
   const [loading, setLoading] = useState(true);
   const [viewing, setViewing] = useState(null);
   const [open, setOpen] = useState(false);
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
 
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const result = await listResource('/admin/game-sessions', { pageSize: 100 });
-      setRows((result.rows || []).filter((r) => r.school_id));
+      const result = await listResource('/admin/game-sessions', { page, pageSize: PAGE_SIZE, has_school: '1' });
+      setRows(result.rows || []);
+      setTotal(result.total ?? (result.rows ? result.rows.length : 0));
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [page]);
 
   useEffect(() => {
     load();
@@ -55,6 +61,7 @@ export default function SchoolGamesPage() {
         ]}
         onEdit={view}
       />
+      <Pagination page={page} pageSize={PAGE_SIZE} total={total} onPageChange={setPage} />
       {rows.length === 0 && !loading && (
         <p className="mt-4 text-center text-sm text-espresso-400">{t('schoolGames.noGamesYet')}</p>
       )}

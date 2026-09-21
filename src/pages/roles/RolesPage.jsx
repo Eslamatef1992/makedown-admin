@@ -2,13 +2,18 @@ import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import AdminLayout from '../../components/layout/AdminLayout';
 import DataTable from '../../components/ui/DataTable';
+import Pagination from '../../components/ui/Pagination';
 import Modal from '../../components/ui/Modal';
 import { listResource, createResource, updateResource, deleteResource, getResource, putResource } from '../../api/adminApi';
+
+const PAGE_SIZE = 20;
 
 export default function RolesPage() {
   const { t } = useTranslation();
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState({ name: '', description: '' });
@@ -21,12 +26,13 @@ export default function RolesPage() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const result = await listResource('/admin/roles');
+      const result = await listResource('/admin/roles', { page, pageSize: PAGE_SIZE });
       setRows(result.rows || []);
+      setTotal(result.total ?? (result.rows ? result.rows.length : 0));
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [page]);
 
   useEffect(() => {
     load();
@@ -51,7 +57,8 @@ export default function RolesPage() {
   const onDelete = async (row) => {
     if (!confirm(t('roles.confirmDelete'))) return;
     await deleteResource(`/admin/roles/${row.id}`);
-    load();
+    if (rows.length === 1 && page > 1) setPage((p) => p - 1);
+    else load();
   };
 
   const openPermissions = async (row) => {
@@ -110,6 +117,7 @@ export default function RolesPage() {
         onEdit={openEdit}
         onDelete={onDelete}
       />
+      <Pagination page={page} pageSize={PAGE_SIZE} total={total} onPageChange={setPage} />
 
       <Modal
         open={modalOpen}

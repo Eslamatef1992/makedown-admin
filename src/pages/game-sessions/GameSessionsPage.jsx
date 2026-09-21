@@ -2,9 +2,12 @@ import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import AdminLayout from '../../components/layout/AdminLayout';
 import DataTable from '../../components/ui/DataTable';
+import Pagination from '../../components/ui/Pagination';
 import Modal from '../../components/ui/Modal';
 import { listResource, getResource, createResource } from '../../api/adminApi';
 import { useAdminAuth } from '../../context/AdminAuthContext';
+
+const PAGE_SIZE = 20;
 
 const AUDIENCES = [
   { value: 'girls', label: 'Only Girl' },
@@ -43,6 +46,8 @@ export default function GameSessionsPage() {
   const [loading, setLoading] = useState(true);
   const [viewing, setViewing] = useState(null);
   const [open, setOpen] = useState(false);
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
 
   // "Create Game" flow — the school/education "specialize categories, get a
   // join code" step. Same game_sessions row the website Play flow uses.
@@ -57,12 +62,13 @@ export default function GameSessionsPage() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const result = await listResource('/admin/game-sessions');
+      const result = await listResource('/admin/game-sessions', { page, pageSize: PAGE_SIZE });
       setRows(result.rows || []);
+      setTotal(result.total ?? (result.rows ? result.rows.length : 0));
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [page]);
 
   useEffect(() => {
     load();
@@ -154,6 +160,7 @@ export default function GameSessionsPage() {
         ]}
         onEdit={view}
       />
+      <Pagination page={page} pageSize={PAGE_SIZE} total={total} onPageChange={setPage} />
 
       <Modal open={open} title={viewing ? viewing.title || viewing.quiz_title || `#${viewing.id}` : ''} onClose={() => setOpen(false)}>
         {viewing && (
