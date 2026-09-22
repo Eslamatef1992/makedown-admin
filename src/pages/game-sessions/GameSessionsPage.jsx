@@ -18,20 +18,20 @@ const AUDIENCES = [
 // A regular admin-created session has no solo/team/random choice any more —
 // it's always 'solo' behind the scenes (no team grouping; any number of
 // players can still join and play individually with the join code/QR).
-// A SCHOOL creating its own game is the one place team mode still exists
-// (Team1 vs Team2, per the School Games design) — see the mode picker below,
-// only shown when isSchool.
+// A SCHOOL creating its own game is always 'team' mode (Team1 vs Team2, per
+// the School Games design) — there's no solo option for a school game, so
+// there's no mode picker in the UI at all; see isTeamGame below.
 const SESSION_MODE = 'solo';
 
 const EMPTY_CREATE_FORM = {
   title: '',
+  titleAr: '',
   schoolId: '',
   quizIds: [],
   maxPlayers: '',
   audience: '',
   scheduledDate: '',
   scheduledTime: '',
-  mode: 'solo',
   team1Name: '',
   team1Capacity: '',
   team2Name: '',
@@ -99,11 +99,16 @@ export default function GameSessionsPage() {
     }));
   };
 
-  const isTeamGame = isSchool && createForm.mode === 'team';
+  // Schools only ever create team games now — no solo option.
+  const isTeamGame = isSchool;
 
   const submitCreate = async () => {
     if (!createForm.quizIds.length) {
       setCreateError('Pick at least one category to specialize this game.');
+      return;
+    }
+    if (isSchool && (!createForm.title.trim() || !createForm.titleAr.trim())) {
+      setCreateError('Enter the game name in both English and Arabic.');
       return;
     }
     if (isTeamGame && (!createForm.team1Name.trim() || !createForm.team2Name.trim())) {
@@ -114,9 +119,10 @@ export default function GameSessionsPage() {
     setCreating(true);
     try {
       const session = await createResource('/admin/game-sessions', {
-        mode: isSchool ? createForm.mode : SESSION_MODE,
+        mode: isSchool ? 'team' : SESSION_MODE,
         quizIds: createForm.quizIds,
         title: createForm.title || undefined,
+        titleAr: isSchool ? createForm.titleAr.trim() : undefined,
         schoolId: isSchool ? undefined : createForm.schoolId || undefined,
         maxPlayers: createForm.maxPlayers ? Number(createForm.maxPlayers) : undefined,
         audience: createForm.audience || undefined,
@@ -219,35 +225,38 @@ export default function GameSessionsPage() {
           <div className="space-y-4">
             {createError && <p className="rounded-xl bg-carnation-50 px-3 py-2 text-sm text-carnation-700">{createError}</p>}
 
-            <div>
-              <span className="mb-1.5 block text-sm font-medium text-espresso-800">Game name (optional)</span>
-              <input
-                value={createForm.title}
-                onChange={(e) => setCreateForm((f) => ({ ...f, title: e.target.value }))}
-                placeholder="e.g. Grade 6 Science Quiz"
-                className="w-full rounded-xl border border-linen-300 px-3 py-2 text-sm"
-              />
-            </div>
-
-            {isSchool && (
-              <div>
-                <span className="mb-1.5 block text-sm font-medium text-espresso-800">Mode</span>
-                <div className="flex gap-2">
-                  {[{ value: 'solo', label: 'Solo' }, { value: 'team', label: 'Team' }].map((m) => (
-                    <button
-                      key={m.value}
-                      type="button"
-                      onClick={() => setCreateForm((f) => ({ ...f, mode: m.value }))}
-                      className={`flex-1 rounded-xl border px-3 py-2 text-sm font-semibold transition ${
-                        createForm.mode === m.value
-                          ? 'border-carissma-500 bg-carissma-600 text-white'
-                          : 'border-linen-300 text-espresso-600 hover:border-carissma-300'
-                      }`}
-                    >
-                      {m.label}
-                    </button>
-                  ))}
+            {isSchool ? (
+              <div className="flex gap-3">
+                <div className="flex-1">
+                  <span className="mb-1.5 block text-sm font-medium text-espresso-800">Game name — English</span>
+                  <input
+                    value={createForm.title}
+                    onChange={(e) => setCreateForm((f) => ({ ...f, title: e.target.value }))}
+                    placeholder="e.g. Grade 6 Science Quiz"
+                    dir="ltr"
+                    className="w-full rounded-xl border border-linen-300 px-3 py-2 text-sm"
+                  />
                 </div>
+                <div className="flex-1">
+                  <span className="mb-1.5 block text-sm font-medium text-espresso-800">Game name — Arabic</span>
+                  <input
+                    value={createForm.titleAr}
+                    onChange={(e) => setCreateForm((f) => ({ ...f, titleAr: e.target.value }))}
+                    placeholder="مثال: اختبار العلوم للصف السادس"
+                    dir="rtl"
+                    className="w-full rounded-xl border border-linen-300 px-3 py-2 text-sm"
+                  />
+                </div>
+              </div>
+            ) : (
+              <div>
+                <span className="mb-1.5 block text-sm font-medium text-espresso-800">Game name (optional)</span>
+                <input
+                  value={createForm.title}
+                  onChange={(e) => setCreateForm((f) => ({ ...f, title: e.target.value }))}
+                  placeholder="e.g. Grade 6 Science Quiz"
+                  className="w-full rounded-xl border border-linen-300 px-3 py-2 text-sm"
+                />
               </div>
             )}
 
