@@ -183,21 +183,29 @@ export default function QuizzesPage() {
   const addQuestion = async () => {
     if (!qForm.questionTextEn.trim() || !qForm.questionTextAr.trim()) return alert(t('quizzes.questionTextBothRequired'));
 
-    const isHalfFilled = qForm.optionsEn.some((en, i) => Boolean(en.trim()) !== Boolean(qForm.optionsAr[i].trim()));
-    if (isHalfFilled) return alert(t('quizzes.optionBothLanguagesAlert'));
+    let optionsEn = [];
+    let optionsAr = [];
+    let correctOptionIndex = 0;
 
-    const usedIndices = qForm.optionsEn.map((_, i) => i).filter((i) => qForm.optionsEn[i].trim() && qForm.optionsAr[i].trim());
-    if (usedIndices.length < 1) return alert(t('quizzes.minOptionsAlert'));
+    // QR-gated questions are graded live by the host during the game (pick
+    // which team answered correctly right after they scan the code) — there
+    // is no multiple-choice UI for this type at all, so no options are
+    // collected or required here.
+    if (qForm.questionType !== 'qr') {
+      const isHalfFilled = qForm.optionsEn.some((en, i) => Boolean(en.trim()) !== Boolean(qForm.optionsAr[i].trim()));
+      if (isHalfFilled) return alert(t('quizzes.optionBothLanguagesAlert'));
 
-    const correctOptionIndex = usedIndices.indexOf(qForm.correctOptionIndex);
-    if (correctOptionIndex === -1) return alert(t('quizzes.correctOptionMustBeFilledAlert'));
+      const usedIndices = qForm.optionsEn.map((_, i) => i).filter((i) => qForm.optionsEn[i].trim() && qForm.optionsAr[i].trim());
+      if (usedIndices.length < 1) return alert(t('quizzes.minOptionsAlert'));
 
-    const payload = {
-      ...qForm,
-      optionsEn: usedIndices.map((i) => qForm.optionsEn[i]),
-      optionsAr: usedIndices.map((i) => qForm.optionsAr[i]),
-      correctOptionIndex,
-    };
+      correctOptionIndex = usedIndices.indexOf(qForm.correctOptionIndex);
+      if (correctOptionIndex === -1) return alert(t('quizzes.correctOptionMustBeFilledAlert'));
+
+      optionsEn = usedIndices.map((i) => qForm.optionsEn[i]);
+      optionsAr = usedIndices.map((i) => qForm.optionsAr[i]);
+    }
+
+    const payload = { ...qForm, optionsEn, optionsAr, correctOptionIndex };
 
     try {
       await createResource(`/admin/quizzes/${detail.id}/questions`, payload);
@@ -409,31 +417,37 @@ export default function QuizzesPage() {
                 />
               </div>
 
-              {qForm.optionsEn.map((_, i) => (
-                <div key={i} className="flex items-center gap-2">
-                  <input
-                    type="radio"
-                    name="correct"
-                    checked={qForm.correctOptionIndex === i}
-                    onChange={() => setQForm((f) => ({ ...f, correctOptionIndex: i }))}
-                  />
-                  <input
-                    placeholder={`${t('quizzes.option', { n: i + 1 })} (${t('common.english')})`}
-                    value={qForm.optionsEn[i]}
-                    dir="ltr"
-                    onChange={(e) => setOption('en', i, e.target.value)}
-                    className="flex-1 rounded-xl border border-linen-300 px-3 py-2 text-sm"
-                  />
-                  <input
-                    placeholder={`${t('quizzes.option', { n: i + 1 })} (${t('common.arabic')})`}
-                    value={qForm.optionsAr[i]}
-                    dir="rtl"
-                    onChange={(e) => setOption('ar', i, e.target.value)}
-                    className="flex-1 rounded-xl border border-linen-300 px-3 py-2 text-sm"
-                  />
-                </div>
-              ))}
-              <p className="text-xs text-espresso-400">{t('quizzes.correctHint')}</p>
+              {qForm.questionType === 'qr' ? (
+                <p className="rounded-xl bg-carissma-50 px-3 py-2 text-xs text-carissma-700">{t('quizzes.qrGradedLiveNote')}</p>
+              ) : (
+                <>
+                  {qForm.optionsEn.map((_, i) => (
+                    <div key={i} className="flex items-center gap-2">
+                      <input
+                        type="radio"
+                        name="correct"
+                        checked={qForm.correctOptionIndex === i}
+                        onChange={() => setQForm((f) => ({ ...f, correctOptionIndex: i }))}
+                      />
+                      <input
+                        placeholder={`${t('quizzes.option', { n: i + 1 })} (${t('common.english')})`}
+                        value={qForm.optionsEn[i]}
+                        dir="ltr"
+                        onChange={(e) => setOption('en', i, e.target.value)}
+                        className="flex-1 rounded-xl border border-linen-300 px-3 py-2 text-sm"
+                      />
+                      <input
+                        placeholder={`${t('quizzes.option', { n: i + 1 })} (${t('common.arabic')})`}
+                        value={qForm.optionsAr[i]}
+                        dir="rtl"
+                        onChange={(e) => setOption('ar', i, e.target.value)}
+                        className="flex-1 rounded-xl border border-linen-300 px-3 py-2 text-sm"
+                      />
+                    </div>
+                  ))}
+                  <p className="text-xs text-espresso-400">{t('quizzes.correctHint')}</p>
+                </>
+              )}
               <button onClick={addQuestion} className="w-full rounded-xl bg-carissma-600 py-2 text-sm font-semibold text-white hover:bg-carissma-700">
                 {t('quizzes.addQuestion')}
               </button>

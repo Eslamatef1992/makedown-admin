@@ -323,6 +323,7 @@
     "questionText": "Question text",
     "option": "Option {{n}}",
     "correctHint": "Select the radio button next to the correct answer.",
+    "qrGradedLiveNote": "No options needed for a QR-gated question — during the game, you'll pick which team answered correctly right after they scan it.",
     "addQuestion": "+ Add question",
     "minOptionsAlert": "Add at least 1 option (in both English and Arabic)",
     "optionBothLanguagesAlert": "Each option needs text in both English and Arabic — fill in both, or clear both",
