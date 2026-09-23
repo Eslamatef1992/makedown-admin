@@ -187,11 +187,17 @@ export default function QuizzesPage() {
     let optionsAr = [];
     let correctOptionIndex = 0;
 
-    // QR-gated questions are graded live by the host during the game (pick
-    // which team answered correctly right after they scan the code) — there
-    // is no multiple-choice UI for this type at all, so no options are
-    // collected or required here.
-    if (qForm.questionType !== 'qr') {
+    if (qForm.questionType === 'qr') {
+      // QR-gated questions carry exactly one option: the answer title shown
+      // to the player once they scan the code (see LiveGamePage.jsx) — not a
+      // multiple-choice set, so there's no correct-answer picker for it.
+      const en = qForm.optionsEn[0].trim();
+      const ar = qForm.optionsAr[0].trim();
+      if (!en || !ar) return alert(t('quizzes.qrAnswerTitleRequiredAlert'));
+      optionsEn = [en];
+      optionsAr = [ar];
+      correctOptionIndex = 0;
+    } else {
       const isHalfFilled = qForm.optionsEn.some((en, i) => Boolean(en.trim()) !== Boolean(qForm.optionsAr[i].trim()));
       if (isHalfFilled) return alert(t('quizzes.optionBothLanguagesAlert'));
 
@@ -418,7 +424,25 @@ export default function QuizzesPage() {
               </div>
 
               {qForm.questionType === 'qr' ? (
-                <p className="rounded-xl bg-carissma-50 px-3 py-2 text-xs text-carissma-700">{t('quizzes.qrGradedLiveNote')}</p>
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <input
+                      placeholder={`${t('quizzes.qrAnswerTitle')} (${t('common.english')})`}
+                      value={qForm.optionsEn[0]}
+                      dir="ltr"
+                      onChange={(e) => setOption('en', 0, e.target.value)}
+                      className="flex-1 rounded-xl border border-linen-300 px-3 py-2 text-sm"
+                    />
+                    <input
+                      placeholder={`${t('quizzes.qrAnswerTitle')} (${t('common.arabic')})`}
+                      value={qForm.optionsAr[0]}
+                      dir="rtl"
+                      onChange={(e) => setOption('ar', 0, e.target.value)}
+                      className="flex-1 rounded-xl border border-linen-300 px-3 py-2 text-sm"
+                    />
+                  </div>
+                  <p className="rounded-xl bg-carissma-50 px-3 py-2 text-xs text-carissma-700">{t('quizzes.qrGradedLiveNote')}</p>
+                </div>
               ) : (
                 <>
                   {qForm.optionsEn.map((_, i) => (
