@@ -4,7 +4,7 @@ import AdminLayout from '../../components/layout/AdminLayout';
 import DataTable from '../../components/ui/DataTable';
 import Pagination from '../../components/ui/Pagination';
 import Modal from '../../components/ui/Modal';
-import { listResource, getResource, createResource, updateResource } from '../../api/adminApi';
+import { listResource, getResource, createResource, updateResource, uploadImage } from '../../api/adminApi';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 
 const PAGE_SIZE = 20;
@@ -132,6 +132,23 @@ export default function GameSessionsPage() {
       ...f,
       quizIds: f.quizIds.includes(id) ? f.quizIds.filter((x) => x !== id) : [...f.quizIds, id],
     }));
+  };
+
+  // Lets the admin set/replace a category's board image right from this
+  // Create/Edit Game screen (used both when creating and when editing —
+  // same list, same handler) instead of having to open the full quiz
+  // editor. Writes straight to the quiz's cover_image_url, which is what
+  // the live game board's category tile ("outer card") renders — falling
+  // back to the generic default artwork only while this is unset.
+  const onQuizImage = async (quizId, file) => {
+    if (!file) return;
+    try {
+      const url = await uploadImage(file);
+      await updateResource(`/admin/quizzes/${quizId}`, { coverImageUrl: url });
+      setQuizzes((qs) => qs.map((q) => (q.id === quizId ? { ...q, cover_image_url: url } : q)));
+    } catch (err) {
+      setFormError(err.response?.data?.message || 'Could not update the image.');
+    }
   };
 
   // Schools only ever create team games now — no solo option.
@@ -415,10 +432,28 @@ export default function GameSessionsPage() {
               <span className="mb-1.5 block text-sm font-medium text-espresso-800">Specialize — pick categories for the board</span>
               <div className="max-h-56 space-y-1 overflow-y-auto rounded-xl border border-linen-200 p-2">
                 {quizzes.map((q) => (
-                  <label key={q.id} className="flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm hover:bg-linen-50">
-                    <input type="checkbox" checked={form.quizIds.includes(q.id)} onChange={() => toggleQuiz(q.id)} />
-                    {q.title_en}
-                  </label>
+                  <div key={q.id} className="flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm hover:bg-linen-50">
+                    <label className="flex flex-1 items-center gap-2">
+                      <input type="checkbox" checked={form.quizIds.includes(q.id)} onChange={() => toggleQuiz(q.id)} />
+                      {q.title_en}
+                    </label>
+                    <div className="h-8 w-8 shrink-0 overflow-hidden rounded-lg border border-linen-200 bg-linen-50">
+                      {q.cover_image_url ? (
+                        <img src={q.cover_image_url} alt="" className="h-full w-full object-cover" />
+                      ) : (
+                        <span className="flex h-full w-full items-center justify-center text-[10px] text-espresso-300">—</span>
+                      )}
+                    </div>
+                    <label className="shrink-0 cursor-pointer rounded-lg border border-linen-300 px-2 py-1 text-xs font-medium text-espresso-600 hover:border-carissma-300">
+                      Image
+                      <input
+                        type="file"
+                        accept="image/png,image/jpeg,image/jpg,image/gif,image/webp"
+                        className="hidden"
+                        onChange={(e) => { onQuizImage(q.id, e.target.files?.[0]); e.target.value = ''; }}
+                      />
+                    </label>
+                  </div>
                 ))}
                 {quizzes.length === 0 && <p className="p-2 text-sm text-espresso-400">No games/quizzes yet — add one first.</p>}
               </div>
