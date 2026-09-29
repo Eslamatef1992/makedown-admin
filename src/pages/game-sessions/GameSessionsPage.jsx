@@ -5,6 +5,7 @@ import DataTable from '../../components/ui/DataTable';
 import Pagination from '../../components/ui/Pagination';
 import Modal from '../../components/ui/Modal';
 import { listResource, getResource, createResource, updateResource, uploadImage } from '../../api/adminApi';
+import ImageField from '../../components/ui/ImageField';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 
 const PAGE_SIZE = 20;
@@ -26,6 +27,7 @@ const SESSION_MODE = 'solo';
 const EMPTY_FORM = {
   title: '',
   titleAr: '',
+  cardImageUrl: '',
   schoolId: '',
   quizIds: [],
   maxPlayers: '',
@@ -114,6 +116,7 @@ export default function GameSessionsPage() {
     setForm({
       title: detail.title || '',
       titleAr: detail.title_ar || '',
+      cardImageUrl: detail.card_image_url || '',
       schoolId: detail.school_id || '',
       quizIds: detail.quizIds || [],
       maxPlayers: detail.max_players || '',
@@ -174,6 +177,11 @@ export default function GameSessionsPage() {
       quizIds: form.quizIds,
       title: form.title || undefined,
       titleAr: isSchool ? form.titleAr.trim() : undefined,
+      // Always sent (never undefined) so clearing the image via the field's
+      // "Remove" button actually clears it on save, instead of the update
+      // endpoint's "undefined = leave alone" rule silently keeping the old
+      // one — see updateSchoolGame's cardImageUrl handling.
+      cardImageUrl: form.cardImageUrl || '',
       schoolId: isSchool ? undefined : form.schoolId || undefined,
       maxPlayers: form.maxPlayers ? Number(form.maxPlayers) : undefined,
       audience: form.audience || undefined,
@@ -319,6 +327,17 @@ export default function GameSessionsPage() {
                 />
               </div>
             )}
+
+            {/* One image for the whole game session (distinct from each
+                category/quiz's own image) — shown as-is on the public
+                "<School> Games" list in place of the auto-composed grid of
+                category images, when set. See GameCard in
+                SchoolDetailPage.jsx on the website. */}
+            <ImageField
+              field={{ name: 'cardImageUrl', label: 'Game Card Image (optional) — shown on the public games list instead of the category grid' }}
+              value={form.cardImageUrl}
+              onChange={(name, value) => setForm((f) => ({ ...f, [name]: value }))}
+            />
 
             {isTeamGame && (
               <div className="flex gap-3">
